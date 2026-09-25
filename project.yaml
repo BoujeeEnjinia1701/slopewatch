@@ -12,7 +12,7 @@ shortlisted: false
 pitch: >-
   A network of low-cost tilt and displacement sensors for waste dumps, tailings dams, pit walls and landslide-prone slopes, reporting through FieldNode and alerting when movement accelerates.
 problem: >-
-  Slope and tailings failures give warning through slow movement, but monitoring is costly and many small mines and hillside communities have none.
+  Slope and tailings failures often give warning through slow movement, but monitoring is costly and many small mines and hillside communities have none.
 budget_usd: 250
 difficulty: 3  # 1 easiest, 5 hardest
 hero_image: media/hero.png
