@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use or build on this design, please cite it as below."
+type: software
+title: "SlopeWatch"
+abstract: "A network of low-cost tilt and displacement sensors for waste dumps, tailings dams, pit walls and landslide-prone slopes, reporting through FieldNode and alerting when movement accelerates."
+authors:
+  - given-names: Amish
+    family-names: Chadha
+    affiliation: Design Molecule
+repository-code: "https://github.com/BoujeeEnjinia1701/slopewatch"
+url: "https://designmolecule.com"
+license:
+  - CERN-OHL-S-2.0
+  - MIT
+keywords:
+  - open-hardware
+  - mining

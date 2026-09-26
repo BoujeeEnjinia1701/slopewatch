@@ -198,3 +198,17 @@ On 2026-09-25 Amish wrote, in chat: "i accept all your recommendations, go with 
 ### TRL 4
 
 TRL 4 remains on hold by Amish's instruction. `trl: 3` and `trl_target: 3` are unchanged. Decided but on hold: the cut-cable and flat-battery fault message (firmware), the CalRig capsule drift test, bench builds and any field trial. None was started.
+
+## Session 2026-09-26: sources strengthened
+
+README.md only; no controlled document changed and no budget change.
+
+| Where | Old source | New source |
+| --- | --- | --- |
+| Country row: Ghana | Ghana News Agency (seven deaths, early report) | Ghana Broadcasting Corporation, the national public broadcaster (eight of twelve miners killed, confirmed by police, NADMO and the ambulance service), plus Froude and Petley (2018) on landslides from illegal mining; the unsourced "collapse regularly" claim removed |
+| Country row: Brazil | House of Commons Library and Zhu, Zhang and Puzrin (2024) | Same sources; the unsourced claim that the failures "drove new rules for large dams" and that small mines "remain largely unmonitored" removed |
+| Country row: Myanmar | Hpakant multi-sensor study | Same source; the unsourced claim that informal mining continues on waste slopes removed |
+| Burning platform, Brumadinho 30 mm | None | Zhu, Zhang and Puzrin (2024) |
+| What sparked the idea | Institution of Civil Engineers and Northern Mine Research Society | Glamorgan Archives and Hansard (House of Commons, 26 October 1967) added as primary sources; ICE kept; NMRS kept only for the Tribunal's record of the tip sinking on the morning, now attributed to the Tribunal. Corrected: the 1944 slip was on Tip 4, not ground under Tip 7. Tips Act 1969 now cited. Inspiration event unchanged |
+
+Not verified this session: the full text of the 1967 Tribunal report (the Durham Mining Museum copy could not be fetched), so the 9 to 10 ft and 20 ft figures rest on the NMRS quotation of it.
