@@ -38,13 +38,15 @@ Requirements not met or at risk:
 
 ### Proposed, awaiting Amish
 
-1. **Budget.** (A) Raise `budget_usd` to $400 so a full site with its FieldNode fits. (B) Cost the FieldNode core in its own project, as SunSpoke does with SwapCell, and use an existing pole instead of the mast where possible, so SlopeWatch-specific parts fit $250. (C) Two stakes per site (about $339 with FieldNode). Recommendation: B. `project.yaml` budget unchanged.
-2. **Tailings dams in the pitch.** Keep them with explicit limits (supplementary layer, owner and engineer of record permission, no claim to detect brittle failure), or narrow the pitch to waste dumps, pit walls and natural slopes. Recommendation: keep, with the limits stated. Pitch unchanged.
-3. Surface tilt stakes plus one crack gauge, rather than borehole inclinometers or GNSS.
-4. Wired RS-485 bus to one FieldNode for the prototype; wireless stakes as a later variant.
-5. Murata SCL3300 inclinometer, with an ADXL355-class accelerometer as fallback.
-6. Alert rules: published 0.01 and 0.1 degrees per hour thresholds as defaults; warning on one stake confirmed on two readings; keyed 30 min silence that re-arms.
-7. Alert unit on the mast at the toe; a second unit near the work face or in the village as an option.
+Status update 2026-09-25: items 1 to 7 are decided by Amish, 2026-09-25: go with recommendation (SLW-DDR-002); items 8 and 9 had no recommendation and remain "Proposed, awaiting Amish".
+
+1. **Budget.** (A) Raise `budget_usd` to $400 so a full site with its FieldNode fits. (B) Cost the FieldNode core in its own project, as SunSpoke does with SwapCell, and use an existing pole instead of the mast where possible, so SlopeWatch-specific parts fit $250. (C) Two stakes per site (about $339 with FieldNode). Recommendation: B. `project.yaml` budget unchanged. Decided by Amish, 2026-09-25: go with recommendation (SLW-DDR-002).
+2. **Tailings dams in the pitch.** Keep them with explicit limits (supplementary layer, owner and engineer of record permission, no claim to detect brittle failure), or narrow the pitch to waste dumps, pit walls and natural slopes. Recommendation: keep, with the limits stated. Pitch unchanged. Decided by Amish, 2026-09-25: go with recommendation (SLW-DDR-002).
+3. Surface tilt stakes plus one crack gauge, rather than borehole inclinometers or GNSS. Decided by Amish, 2026-09-25: go with recommendation (SLW-DDR-002).
+4. Wired RS-485 bus to one FieldNode for the prototype; wireless stakes as a later variant. Decided by Amish, 2026-09-25: go with recommendation (SLW-DDR-002).
+5. Murata SCL3300 inclinometer, with an ADXL355-class accelerometer as fallback. Decided by Amish, 2026-09-25: go with recommendation (SLW-DDR-002).
+6. Alert rules: published 0.01 and 0.1 degrees per hour thresholds as defaults; warning on one stake confirmed on two readings; keyed 30 min silence that re-arms. Decided by Amish, 2026-09-25: go with recommendation (SLW-DDR-002).
+7. Alert unit on the mast at the toe; a second unit near the work face or in the village as an option. Decided by Amish, 2026-09-25: go with recommendation (SLW-DDR-002).
 8. Accept the `problem` wording change in `project.yaml` ("often give warning"), or revert it.
 9. First partner and site type for co-design (artisanal mining cooperative, quarry, or hillside community with a district disaster office).
 
@@ -101,18 +103,20 @@ Key numbers: tilt-rate noise 164 times below the warning rate; SF10 and SF12 air
 
 ### Decisions recorded (SLW-DDR-001)
 
-Adopted as recommended for TRL 3 under Amish's 2026-09-25 instruction, open for his review: D1 budget option B (FieldNode core costed in FieldNode, existing pole where possible; R11 redefined to SlopeWatch-specific parts; `budget_usd` unchanged at $250, no new figure recommended); D2 tailings dams kept in the pitch with limits (pitch unchanged); D3 surface tilt stakes plus a crack gauge; D4 wired RS-485 bus; D5 SCL3300 (mode 1) with ADXL355-class fallback; D6 alert rules and thresholds; D7 alert unit on the mast at the toe, second unit optional.
+Decided by Amish, 2026-09-25: go with recommendation (SLW-DDR-002; previously adopted as recommended for TRL 3, open for his review): D1 budget option B (FieldNode core costed in FieldNode, existing pole where possible; R11 redefined to SlopeWatch-specific parts; `budget_usd` unchanged at $250, no new figure recommended); D2 tailings dams kept in the pitch with limits (pitch unchanged); D3 surface tilt stakes plus a crack gauge; D4 wired RS-485 bus; D5 SCL3300 (mode 1) with ADXL355-class fallback; D6 alert rules and thresholds; D7 alert unit on the mast at the toe, second unit optional.
 
 ### Still awaiting Amish
+
+Status update 2026-09-25: O1 to O3 remain "Proposed, awaiting Amish"; items 4 to 8 are decided by Amish, 2026-09-25: go with recommendation (SLW-DDR-002).
 
 1. **O1, `problem` wording** ("often give warning"), changed at TRL 2 with no recommendation. The wording stays in place; accept or revert.
 2. **O2, first co-design partner and site type.** No preference stated.
 3. **O3, crack-gauge thresholds** (placeholders 1 mm per day over 24 h and 1 mm per hour), to be set with a geotechnical partner.
-4. **New, R11 gap with a new mast ($11).** Options: (a) treat the existing-pole case ($237) as the reference and list the mast as a site option; (b) a cheaper local mast (for example a treated timber post), which would need its own wind check; (c) raise `budget_usd` to $270. Recommendation: (a). Not applied; `budget_usd` stays $250.
-5. **New, FieldNode 12 V rail (R8).** Options: (a) ask FieldNode to specify at least 0.5 A continuous on its 12 V rail; (b) give the alert unit its own small battery and charger (roughly $15, estimate). Recommendation: (a). FieldNode was not edited.
-6. **New, keyed switch location (safety, R7).** The switch sits under a siren giving about 105 dB(A) there. Recommendation: move it about 5 m from the mast on its own lead. Not applied.
-7. **New, precaution beacon duty.** Set at 1 % or less by SLW-CAL-001 (R8); flagged here because it changes how visible the precaution state is.
-8. **New, networks at SF12.** A site that lives at SF12 on The Things Network exceeds its 30 s per day fair use even when hourly (43.5 s). Recommendation: such sites use a TwinKit gateway. Not applied.
+4. **New, R11 gap with a new mast ($11).** Options: (a) treat the existing-pole case ($237) as the reference and list the mast as a site option; (b) a cheaper local mast (for example a treated timber post), which would need its own wind check; (c) raise `budget_usd` to $270. Recommendation: (a). Decided by Amish, 2026-09-25: go with recommendation (SLW-DDR-002). Applied: the existing-pole case is the reference site; `budget_usd` stays $250.
+5. **New, FieldNode 12 V rail (R8).** Options: (a) ask FieldNode to specify at least 0.5 A continuous on its 12 V rail; (b) give the alert unit its own small battery and charger (roughly $15, estimate). Recommendation: (a). Decided by Amish, 2026-09-25: go with recommendation (SLW-DDR-002). Listed as a cross-repo action; FieldNode was not edited.
+6. **New, keyed switch location (safety, R7).** The switch sits under a siren giving about 105 dB(A) there. Recommendation: move it about 5 m from the mast on its own lead. Decided by Amish, 2026-09-25: go with recommendation (SLW-DDR-002). Applied (switch post).
+7. **New, precaution beacon duty.** Set at 1 % or less by SLW-CAL-001 (R8); flagged here because it changes how visible the precaution state is. Decided by Amish, 2026-09-25: go with recommendation (SLW-DDR-002). (1 % or less kept.)
+8. **New, networks at SF12.** A site that lives at SF12 on The Things Network exceeds its 30 s per day fair use even when hourly (43.5 s). Recommendation: such sites use a TwinKit gateway. Decided by Amish, 2026-09-25: go with recommendation (SLW-DDR-002). Applied as a network rule.
 
 Suggestion only, not in the repo: a cut-cable and flat-battery fault message as a firmware rule at TRL 4.
 
@@ -142,3 +146,55 @@ Suggestion only, not in the repo: a cut-cable and flat-battery fault message as 
 ### Recommended next step
 
 TRL 4 is on hold by Amish's instruction; this repo stops at TRL 3. Amish's review is needed on SLW-DDR-001 (D1 to D7), on O1 to O3 and on items 4 to 8 above. For the record only, TRL 4 would need: a bench build of one capsule and the crack-gauge reader on a FieldNode; a lab test report (TST, `environment: lab`) covering capsule offset drift over temperature in CalRig, tilt resolution on a tilt table, bus operation over 60 m of cable, siren output and 12 V rail current during a 30 min alarm; and build log entries. None of this has been started.
+
+## Session 2026-09-25: recommendations accepted
+
+On 2026-09-25 Amish wrote, in chat: "i accept all your recommendations, go with them across all repos." Every item with a recommendation is now "Decided by Amish, 2026-09-25: go with recommendation", recorded in `docs/decisions/0002-recommendations-accepted.md` (SLW-DDR-002 v0.1). This session also regenerated every PDF, drawing and media file so that the footers show designmolecule.com, and rewrote the README's "What sparked the idea".
+
+### Decisions applied and what changed
+
+- **D1 to D7 (SLW-DDR-001):** status changed to decided in SLW-DDR-001 v0.2 and in the documents; no numbers changed. `budget_usd` stays $250 (no new figure was recommended).
+- **R11 reference site (TRL 3 item 4, option a):** the node goes on an existing pole; the mast (BOM line 8, $24) is a site option. R11 restated in SLW-REQ-001 v0.4. SlopeWatch-specific cost $261 with a new mast (not met) to **$245** for the reference site (met on paper, $5 within $250); $269 where the mast is needed.
+- **Keyed switch (TRL 3 item 6):** moved from the mast to its own 26.9 mm post about 5 m away on a 7 m lead. `cad/src/model.py` gains `switch_post()`; new `cad/step/slopewatch-switch-post.step` and `.stl`; SLW-DWG-001 Rev P1 to **P2**; BOM line 7 $25 to $33. Siren level at the switch 105.4 to 95.5 dB(A); NIOSH allowance 4.3 to 43 min. With the box off the mast, the mast base moment falls from 550 to 541 N·m, stress 115 to 113 MPa (factor 2.0 to 2.1), footing factor 2.6 to 2.7.
+- **Precaution beacon (item 7):** 1 % duty or less kept; wording only.
+- **SF12 sites (item 8):** network rule added: a site that needs SF12 uses a TwinKit gateway (hourly SF12 uplinks take 43.5 s a day against The Things Network's 30 s).
+- **FieldNode 12 V rail (item 5, option a):** a request to FieldNode; see cross-repo actions.
+- Documents bumped: SLW-PRB-001 0.3 to 0.4, SLW-PRC-001 0.3 to 0.4, SLW-REQ-001 0.3 to 0.4, SLW-CAL-001 0.1 to 0.2, SLW-DDR-001 0.1 to 0.2; SLW-DDR-002 v0.1 new. `sizing.py` re-run and `results.csv` rewritten; `model.py`, `sheets.py` and `concept_media.py` re-run; hero, exploded view and blueprint checked; `media/_views*` removed. `project.yaml` evidence list gains DDR-002 and the switch-post STEP.
+- **README:** "What sparked the idea" now traces the idea to the 1966 Aberfan colliery tip disaster (Tip 7 had sunk by about 20 ft before it slid), with ICE and Northern Mine Research Society sources; key numbers and components updated.
+
+### Requirement status (SLW-CAL-001 v0.2)
+
+0 not met, 4 at risk, 5 met on paper, 2 met by design, 2 not verifiable at TRL 3.
+
+| ID | Status | Key number |
+| --- | --- | --- |
+| R6 Remote alert | At risk | 4.6 min at SF12 with one lost uplink (limit 5 min); needs coverage |
+| R7 Alarm audible | At risk | 65.5 to 68.5 dB(A) at 100 m; about 5 m of reach over 80 dB(A) plant |
+| R8 Energy autonomy | At risk | 7.3 Wh of 13.1 Wh; 0.45 A on an unrated FieldNode 12 V rail |
+| R9 Survive burial and weather | At risk | FieldNode enclosure above 60 °C in 45 °C sun (FND-CAL-001) |
+| R1, R2, R4, R11, R12 | Met on paper | R11 $245 against $250 (was not met at $261) |
+| R3, R5 | Met by design | 0.024 mm gauge step; 13 s to siren |
+| R10, R13 | Not verifiable at TRL 3 | 43 min per stake; false-alarm rate needs a field record |
+
+### Still awaiting Amish
+
+1. **O1, `problem` wording** ("often give warning"): no recommendation was made; wording stays.
+2. **O2, first co-design partner and site type:** no preference stated.
+3. **O3, crack-gauge thresholds:** placeholders; no recommendation.
+
+### Cross-repo actions
+
+- **FieldNode:** rate the 12 V rail at 0.5 A or more continuous for 30 min (SlopeWatch R8).
+- **FieldNode:** its proposed airtime rule (longer intervals at SF10 and slower on The Things Network) needs an exception for SlopeWatch alert states; SlopeWatch sites that need SF12 now use a TwinKit gateway.
+- **TwinKit:** note that SlopeWatch sites at SF12 rely on a TwinKit gateway (about $290 in parts, outside the SlopeWatch site cost).
+- No other repo was edited.
+
+### Safety
+
+- The keyed switch now stands about 5 m from the siren (about 95 dB(A)); people should still keep away from the mast during an alarm.
+- An existing pole must carry the node, siren and beacon in wind; the installer checks it with the site owner, since SLW-CAL-001 checks only the optional mast.
+- All TRL 2 and TRL 3 safety concerns above still apply.
+
+### TRL 4
+
+TRL 4 remains on hold by Amish's instruction. `trl: 3` and `trl_target: 3` are unchanged. Decided but on hold: the cut-cable and flat-battery fault message (firmware), the CalRig capsule drift test, bench builds and any field trial. None was started.

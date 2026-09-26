@@ -1,4 +1,4 @@
-"""SlopeWatch sizing calculations, SLW-CAL-001 v0.1 (TRL 3).
+"""SlopeWatch sizing calculations, SLW-CAL-001 v0.2 (TRL 3, with the SLW-DDR-002 decisions).
 
 Run from the repo root:  python docs/04-calcs/sizing.py
 Prints every number quoted in docs/04-calcs/01-sizing.md and writes docs/04-calcs/results.csv.
@@ -26,7 +26,7 @@ def db_sum(levels):
     return 10 * math.log10(sum(10 ** (x / 10) for x in levels))
 
 
-print("SlopeWatch sizing, SLW-CAL-001 v0.1")
+print("SlopeWatch sizing, SLW-CAL-001 v0.2")
 print(f"Geometry from cad/src/model.py: pipe {P['pipe'][0]} x {P['pipe'][1]} mm, capsule center "
       f"{P['capsule_depth']:.0f} mm deep, mast {P['mast_h']:.0f} mm, reference-site cable {D['cable_m']:.1f} m")
 
@@ -178,12 +178,20 @@ r_mach = next(r for r in range(1, 500) if spl(r, 0) < need) - 1
 tag("E3", f"near running plant ({BG:.0f} dB(A) background) an alarm 15 dB above ambient ({need:.0f} dB(A)) reaches only "
           f"about {r_mach} m from the mast")
 h_s = D["mast_top"] + P["siren_box"] / 2
-r_switch = math.hypot((h_s - 1600) / 1000, 0.3)
+
+
+def niosh_min(lp):
+    return 8 * 60 / 2 ** ((lp - 85) / 3)
+
+
+r_old = math.hypot((h_s - 1600) / 1000, 0.3)          # TRL 3 v0.1: switch box on the mast
+r_switch = math.hypot((h_s - 1600) / 1000, P["switch_offset"] / 1000)   # SLW-DDR-002: own post about 5 m away
 r_base = math.hypot((h_s - 1600) / 1000, 2.0)
-lp_sw = spl(r_switch, 0)
-t_allow = 8 * 60 / 2 ** ((lp_sw - 85) / 3)
-tag("E4", f"at the keyed switch (ear 1.6 m, 0.3 m from the mast): {lp_sw:.1f} dB(A); 2 m from the mast "
-          f"{spl(r_base, 0):.1f} dB(A); NIOSH 85 dB(A) 8 h, 3 dB exchange allows {t_allow:.1f} min at the switch")
+lp_old, lp_sw = spl(r_old, 0), spl(r_switch, 0)
+tag("E4", f"at a switch on the mast (ear 1.6 m, 0.3 m out): {lp_old:.1f} dB(A), NIOSH 85 dB(A) 8 h with 3 dB exchange "
+          f"allows {niosh_min(lp_old):.1f} min; 2 m from the mast {spl(r_base, 0):.1f} dB(A)")
+tag("E5", f"at the keyed switch on its own post {P['switch_offset'] / 1000:.0f} m from the mast (SLW-DDR-002): "
+          f"{lp_sw:.1f} dB(A), NIOSH allows {niosh_min(lp_sw):.0f} min; lead {P['switch_lead_m']:.0f} m")
 
 # ------------------------------------------------------------------ F. Energy and rail current (R8)
 print("\nF. Energy and rail current")
@@ -252,7 +260,6 @@ loads = [
     ("node enclosure", P["node"][0] * P["node"][2] / 1e6, 1.3, D["node_zc"] / 1000),
     ("siren, horn and beacon", (P["siren_box"] ** 2 + P["horn"][0] * P["horn"][1] + P["beacon"][0] * P["beacon"][1]) / 1e6,
      1.2, (D["mast_top"] + 180) / 1000),
-    ("switch box", P["switch_box"][0] * P["switch_box"][2] / 1e6, 1.3, P["switch_z"] / 1000),
     ("mast", P["mast"][0] * P["mast_h"] / 1e6, 1.2, P["mast_h"] / 2000),
 ]
 F = [(n, q * A * cd, z) for n, A, cd, z in loads]
@@ -315,12 +322,14 @@ cost = {line_no(r): float(r["qty"]) * float(r["unit_cost_usd"]) for r in rows}
 total = sum(cost.values())
 fn = cost.get(6, 0.0)
 specific = total - fn
-no_mast = specific - cost.get(8, 0.0)
-tag("K1", f"BOM {len(rows)} lines, all priced; total with FieldNode core ${total:.2f}")
-tag("K2", f"SlopeWatch-specific (without FieldNode, costed in FieldNode) ${specific:.2f} against ${budget:.0f}: "
-          f"{'within' if specific <= budget else 'over'} by ${abs(budget - specific):.2f} ({(specific / budget - 1) * 100:+.1f} %)")
-tag("K3", f"with an existing pole instead of the mast ${no_mast:.2f}: {'within' if no_mast <= budget else 'over'} "
-          f"by ${abs(budget - no_mast):.2f}")
+no_mast = specific - cost.get(8, 0.0)       # reference site since SLW-DDR-002: existing pole, mast is a site option
+tag("K1", f"BOM {len(rows)} lines, all priced; total with FieldNode core and the optional mast ${total:.2f}")
+tag("K2", f"reference site (SlopeWatch-specific parts, existing pole, FieldNode costed in FieldNode) ${no_mast:.2f} against "
+          f"${budget:.0f}: {'within' if no_mast <= budget else 'over'} by ${abs(budget - no_mast):.2f} "
+          f"({(no_mast / budget - 1) * 100:+.1f} %)")
+tag("K3", f"site option, new mast and footing (line 8) +${cost.get(8, 0.0):.2f}: ${specific:.2f}, "
+          f"{'within' if specific <= budget else 'over'} ${budget:.0f} by ${abs(budget - specific):.2f}; "
+          f"reference site with the FieldNode core ${no_mast + fn:.2f}")
 tag("K4", f"stakes, capsules and heads ${cost[1] + cost[2] + cost[3]:.2f}; per extra stake ${(cost[1] + cost[2] + cost[3]) / 3:.2f} "
           f"plus about 10 m of cable")
 
@@ -328,7 +337,6 @@ tag("K4", f"stakes, capsules and heads ${cost[1] + cost[2] + cost[3]:.2f}; per e
 print("\nL. Results against every requirement")
 wet_rate = wet4[8]
 results = [
-    ("R11", "Affordable", f"${specific:.0f} with a new mast; ${no_mast:.0f} with an existing pole", f"${budget:.0f} SlopeWatch-specific", "Not met"),
     ("R6", "Remote alert", f"{(air[12] + T_NS + T_ALERT_SVC + T_SMS + air[12] * 99 + air[12]) / 60:.1f} min worst at SF12 with one lost uplink", "5 min, where coverage exists", "At risk"),
     ("R7", "Alarm audible", f"{spl(100, GROUND[1]):.1f} to {spl(100, GROUND[0]):.1f} dB(A) at 100 m", "65 dB(A) at 100 m", "At risk"),
     ("R8", "Energy autonomy", f"{e_prec[0.01]:.1f} Wh of {CELL_USABLE * COLD:.1f} Wh worst case; 12 V rail {I_SIREN + I_BEACON:.2f} A unrated", "5 days, one 30 min alarm", "At risk"),
@@ -337,6 +345,7 @@ results = [
     ("R2", "Limit false tilt from temperature", f"{wet4[7]:.4f} deg/day, {wet_rate:.5f} deg/h (wet soil, 0.4 m)", "0.02 deg/day, 0.002 deg/h", "Met on paper"),
     ("R4", "Sample and report", f"10 min reads; {6 * air[12]:.1f} s/h at SF12", "10 min; 60 and 10 min uplinks", "Met on paper"),
     ("R12", "Open, local data", f"{flash / 1000:.0f} kB for 90 days", "90 days, CSV, any server", "Met on paper"),
+    ("R11", "Affordable", f"${no_mast:.0f} for the reference site (existing pole); ${specific:.0f} with the optional new mast", f"${budget:.0f} SlopeWatch-specific, reference site", "Met on paper"),
     ("R3", "Measure crack opening", f"{stroke:.0f} mm stroke, {step:.3f} mm step, {lin:.2f} mm linearity", "100 mm, 0.1 mm", "Met by design"),
     ("R5", "Local alarm without a network", f"{t_siren:.0f} s", "60 s", "Met by design"),
     ("R10", "Installable by a small team", f"{tt:.0f} min estimate", "45 min, hand tools", "Not verifiable at TRL 3"),

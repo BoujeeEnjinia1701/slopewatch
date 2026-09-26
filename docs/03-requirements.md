@@ -3,7 +3,7 @@ doc_id: SLW-REQ-001
 title: SlopeWatch requirements
 project: SlopeWatch
 doc_type: Requirements
-version: "0.3"
+version: "0.4"
 status: Draft
 date: '2026-09-25'
 author: Amish Chadha
@@ -21,13 +21,17 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: TRL 3 status from SLW-CAL-001; R11 redefined to SlopeWatch-specific parts (SLW-DDR-001 D1); reference-site layout and FieldNode port assumptions stated
+- version: "0.4"
+  date: '2026-09-25'
+  author: Amish Chadha
+  change: Recommendations accepted by Amish (DDR-002)
 ---
 
 # SlopeWatch requirements
 
-These are first-pass requirements for one monitored site. Four of the thirteen are met on paper by calculation and two by design; four are at risk, one is not met and two can only be shown in the field (SLW-CAL-001 v0.1, Table 3). The miss is R11: the SlopeWatch-specific parts cost $261 with a new mast against $250, and $237 where an existing pole carries the node. Targets are unchanged from v0.2 except R11, which is redefined under SLW-DDR-001 D1 (the FieldNode core is costed in the FieldNode project); that choice is adopted for TRL 3 work under Amish's 2026-09-25 instruction, open for his review. Targets are still proposals, not yet validated with users, and will be revised after co-design sessions (see SLW-PRB-001). "Met on paper" means shown by calculation, not by test.
+These are first-pass requirements for one monitored site. Five of the thirteen are met on paper by calculation and two by design; four are at risk and two can only be shown in the field (SLW-CAL-001 v0.2, Table 3). None is now unmet. R11 is met because Amish decided on 2026-09-25 (SLW-DDR-002) that the reference site mounts the node on an existing pole, with a new mast as a site option: the SlopeWatch-specific parts cost $245 against $250, and $269 where a new mast is needed. R11 was redefined under SLW-DDR-001 D1 (the FieldNode core is costed in the FieldNode project), now also decided by Amish. Targets are still proposals, not yet validated with users, and will be revised after co-design sessions (see SLW-PRB-001). "Met on paper" means shown by calculation, not by test.
 
-The **reference site** is a slope or dump face up to about 50 m wide with three tilt stakes 10 m apart on the fall line, one crack gauge across a tension crack at the crest, and a mast with the FieldNode core and alert unit 15 m beyond the toe, within 60 m of cable.
+The **reference site** is a slope or dump face up to about 50 m wide with three tilt stakes 10 m apart on the fall line, one crack gauge across a tension crack at the crest, and the FieldNode core and alert unit on an existing pole or building 15 m beyond the toe, within 60 m of cable, with the keyed silence switch on its own post about 5 m from the siren. Where no pole exists, the optional mast (BOM line 8) takes its place (SLW-DDR-002).
 
 Table 1. SlopeWatch requirements for one site.
 
@@ -36,14 +40,14 @@ Table 1. SlopeWatch requirements for one site.
 | R1 | Measure surface tilt | Resolution 0.01 degrees or finer; range ±30 degrees or more on two axes | Datasheet and calculation; later bench tilt table | Met on paper: 0.0055 degree step and ±90 degrees in the sensor's mode 1 (modes 3 and 4 stop at ±10 degrees) |
 | R2 | Limit false tilt from temperature | Apparent tilt change from the daily soil temperature cycle 0.02 degrees or less per day, and 0.002 degrees per hour or less, without software correction | Thermal calculation; later chamber test (CalRig) | Met on paper with the capsule 0.4 m deep: 0.0092 degrees per day and 0.0012 degrees per hour in wet soil; not met at the TRL 2 depth of 0.3 m in wet soil |
 | R3 | Measure crack opening | Range 100 mm or more; resolution 0.1 mm; re-settable in the field without tools beyond a spanner | Datasheet and design review | Met by design (datasheet class); precaution rate taken over 24 h because of the gauge's own thermal swing |
-| R4 | Sample and report often enough to see acceleration | Every sensor read every 10 min or faster; uplink every 60 min in the normal state and every 10 min in the precaution or warning state | Firmware sketch review; airtime calculation | Met on paper: 0.30 % of time at SF12 against the 1 % EU868 limit |
+| R4 | Sample and report often enough to see acceleration | Every sensor read every 10 min or faster; uplink every 60 min in the normal state and every 10 min in the precaution or warning state | Firmware sketch review; airtime calculation | Met on paper: 0.30 % of time at SF12 against the 1 % EU868 limit; a site that runs at SF12 uses a TwinKit gateway rather than The Things Network (SLW-DDR-002) |
 | R5 | Local alarm without a network | Siren and beacon start within 60 s of a warning condition, driven by the on-site node alone | Design review; later bench test | Met by design: about 13 s |
 | R6 | Remote alert | At least two named people notified by SMS or app within 5 min of a warning, where gateway and mobile coverage exist | Latency calculation; later end-to-end test | **At risk:** 1.6 min at the first try, 4.6 min at SF12 with one lost uplink; no remote alert at a site without a gateway |
-| R7 | Alarm audible where people work | 65 dB(A) or more at 100 m from the mast in open ground | Spreading-loss calculation; later field measurement | **At risk:** 65.5 to 68.5 dB(A) in open ground; **not met** near running machinery |
-| R8 | Energy autonomy | 5 days with no sun, including one 30 min alarm, on the FieldNode cell | Energy calculation | Met on energy (7.3 Wh of 13.1 Wh at -10 °C, with the precaution beacon at 1 % duty); **at risk** on the FieldNode 12 V rail current (0.45 A, no rating stated) |
+| R7 | Alarm audible where people work | 65 dB(A) or more at 100 m from the mast in open ground | Spreading-loss calculation; later field measurement | **At risk:** 65.5 to 68.5 dB(A) in open ground; **not met** near running machinery. The keyed switch now sits about 5 m from the mast, at about 95 dB(A) instead of 105 dB(A) (SLW-DDR-002) |
+| R8 | Energy autonomy | 5 days with no sun, including one 30 min alarm, on the FieldNode cell | Energy calculation | Met on energy (7.3 Wh of 13.1 Wh at -10 °C, with the precaution beacon at 1 % duty or less, decided in SLW-DDR-002); **at risk** on the FieldNode 12 V rail current (0.45 A, no rating stated; FieldNode asked to rate it at 0.5 A or more, SLW-DDR-002) |
 | R9 | Survive burial and weather | Capsule and stake head IP67 and buried to 0.4 m; node IP65; operate -10 to 50 °C; cable in conduit rated for burial and UV | Datasheets and design review | **At risk:** SlopeWatch parts met by choice of parts; the FieldNode enclosure exceeds 60 °C in 45 °C sun (FND-CAL-001) |
 | R10 | Installable by a small team | Each stake installed by two trained people with hand tools (post-hole auger or driven pilot, hand-mixed grout) in 45 min or less; no work below an actively moving face | Method review; later timed trial | **Not verifiable at TRL 3:** 43 min estimated, at the limit |
-| R11 | Affordable | Parts specific to SlopeWatch for one reference site $250 or less, excluding the FieldNode core (costed in the FieldNode project) and any LoRaWAN gateway; an existing pole may replace the mast | Priced BOM (`bom/bom.csv`) | **Not met:** $261 with a new mast; met at $237 with an existing pole |
+| R11 | Affordable | Parts specific to SlopeWatch for one reference site (node on an existing pole) $250 or less, excluding the FieldNode core (costed in the FieldNode project), any LoRaWAN gateway and the optional mast, which is a site option (SLW-DDR-002) | Priced BOM (`bom/bom.csv`) | Met on paper: $245; $269 at a site that needs the optional mast |
 | R12 | Open, local data | 90 days or more of raw readings kept on the node; open CSV export; works with any LoRaWAN server | Storage calculation and design review | Met on paper: 363 kB for 90 days on 16 MB of flash |
 | R13 | Trustworthy alarms | No more than one false warning per site per year, and a documented statement of the failure modes the system cannot detect | Field trial with partner | **Not verifiable at TRL 3**; statement in SLW-PRC-001 |
 
@@ -54,3 +58,4 @@ Table 1. SlopeWatch requirements for one site.
 - Siren sound level 110 dB(A) at 1 m, from typical 12 V piezo sirens; spherical spreading with air absorption and 0 to 3 dB of ground attenuation (SLW-CAL-001, section E).
 - Soil temperature ranges and properties as in SLW-CAL-001, Table 1.
 - Stake spacing and site layout will change after co-design; R11 is stated for the reference site only.
+- Network rule (SLW-DDR-002): a site whose uplinks need SF12 uses its own gateway (TwinKit), because hourly uplinks at SF12 take 43.5 s a day, over The Things Network's 30 s fair-use allowance.

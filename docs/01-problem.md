@@ -3,7 +3,7 @@ doc_id: SLW-PRB-001
 title: SlopeWatch problem statement
 project: SlopeWatch
 doc_type: Problem statement
-version: "0.3"
+version: "0.4"
 status: Draft
 date: '2026-09-25'
 author: Amish Chadha
@@ -21,6 +21,10 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Reflect SLW-DDR-001 (budget covers SlopeWatch-specific parts; tailings dams kept with limits); open questions updated
+- version: "0.4"
+  date: '2026-09-25'
+  author: Amish Chadha
+  change: Recommendations accepted by Amish (DDR-002)
 ---
 
 # SlopeWatch problem statement
@@ -60,7 +64,7 @@ Not every failure gives useful warning. The Brumadinho dam showed only about 30 
 
 ## Constraints
 
-- Garage-buildable prototype: the SlopeWatch-specific parts of one site within about $250 USD, with the FieldNode core costed in its own project (SLW-DDR-001 D1, adopted for TRL 3 work pending Amish's review). SLW-CAL-001 puts them at $261 with a new mast and $237 on an existing pole.
+- Garage-buildable prototype: the SlopeWatch-specific parts of one site within about $250 USD, with the FieldNode core costed in its own project (SLW-DDR-001 D1, decided by Amish on 2026-09-25, SLW-DDR-002). The reference site mounts the node on an existing pole, with a new mast as a site option; SLW-CAL-001 v0.2 puts the parts at $245, or $269 with the mast.
 - Built on the lab's shared FieldNode power and radio core for power, logging and LoRaWAN, so SlopeWatch designs only its sensors, alert unit and rules.
 - Installed and serviced by two trained people with hand tools; no drilling rig.
 - A local alarm that does not depend on the network; remote alerts in addition, not instead.
@@ -86,7 +90,7 @@ Not every failure gives useful warning. The Brumadinho dam showed only about 30 
 ## Open questions
 
 - Which partner and which first site type: an artisanal gold mining cooperative, a quarry, or a hillside community with a district disaster office? Proposed, awaiting Amish (SLW-DDR-001 O2).
-- Tailings dams stay in the pitch with the scope limits above (SLW-DDR-001 D2, adopted as recommended for TRL 3 under Amish's 2026-09-25 instruction, open for his review).
+- Tailings dams stay in the pitch with the scope limits above (SLW-DDR-001 D2; decided by Amish, 2026-09-25: go with recommendation, SLW-DDR-002).
 - Who receives alerts and who is allowed to sound or silence the siren? This is a community decision, to be settled in co-design.
 - What stake spacing and how many stakes per site are needed on typical small-mine benches and dumps?
 - Is there LoRaWAN coverage at candidate sites, or does each site need its own gateway?

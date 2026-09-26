@@ -3,7 +3,7 @@ doc_id: SLW-PRC-001
 title: SlopeWatch design precis
 project: SlopeWatch
 doc_type: Design precis
-version: "0.3"
+version: "0.4"
 status: Draft
 date: '2026-09-25'
 author: Amish Chadha
@@ -21,15 +21,19 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: TRL 3 update from SLW-DDR-001 and SLW-CAL-001 (choices adopted for TRL 3 work, capsule 0.4 m deep, crack-gauge reader, beacon duty, checked numbers, cost, drawing SLW-DWG-001)
+- version: "0.4"
+  date: '2026-09-25'
+  author: Amish Chadha
+  change: Recommendations accepted by Amish (DDR-002)
 ---
 
 # SlopeWatch design precis
 
-SlopeWatch watches a slope for accelerating movement with three grouted tilt stakes and a crack gauge, cabled to one FieldNode core on a mast at the toe, and sounds a siren and beacon on site when the tilt rate passes a warning threshold, while sending an SMS through LoRaWAN. The TRL 3 calculations (SLW-CAL-001) show that the inclinometer resolves the tilt-rate thresholds with a wide margin, that a capsule 0.4 m deep keeps temperature drift within R2 even in wet soil, that the siren starts about 13 s after a confirmed warning, and that the FieldNode cell covers five sunless days with an alarm. The SlopeWatch-specific parts cost $261 with a new mast, $11 over the $250 budget, and $237 on an existing pole; the FieldNode core ($126) is costed in its own project. The main risks are siren reach near machinery, the unrated FieldNode 12 V rail current and the remote alert time at the slowest radio setting.
+SlopeWatch watches a slope for accelerating movement with three grouted tilt stakes and a crack gauge, cabled to one FieldNode core on an existing pole (or an optional mast) at the toe, and sounds a siren and beacon on site when the tilt rate passes a warning threshold, while sending an SMS through LoRaWAN. The TRL 3 calculations (SLW-CAL-001) show that the inclinometer resolves the tilt-rate thresholds with a wide margin, that a capsule 0.4 m deep keeps temperature drift within R2 even in wet soil, that the siren starts about 13 s after a confirmed warning, and that the FieldNode cell covers five sunless days with an alarm. Amish accepted the recommended choices on 2026-09-25 (SLW-DDR-002): the reference site uses an existing pole, with the mast as a site option, and the keyed silence switch stands on its own post about 5 m from the siren. The SlopeWatch-specific parts then cost $245 against the $250 budget, or $269 where a new mast is needed; the FieldNode core ($126) is costed in its own project. The main risks are siren reach near machinery, the unrated FieldNode 12 V rail current and the remote alert time at the slowest radio setting.
 
 ![Hero render](../media/hero.png)
 
-*Figure 1. SlopeWatch on a 25 degree slope (spacing compressed for the picture; the reference site has stakes 10 m apart): three tilt stakes on the fall line, a crack gauge (purple) across a tension crack at the crest, and the mast with FieldNode core, siren and beacon at the toe. Grey figure: 1.75 m person for scale.*
+*Figure 1. SlopeWatch on a 25 degree slope (spacing compressed for the picture; the reference site has stakes 10 m apart): three tilt stakes on the fall line, a crack gauge (purple) across a tension crack at the crest, the mast (a site option; an existing pole in the reference site) with FieldNode core, siren and beacon at the toe, and the keyed switch on its own post. Grey figure: 1.75 m person for scale.*
 
 ## How it works
 
@@ -46,7 +50,7 @@ SlopeWatch watches a slope for accelerating movement with three grouted tilt sta
 
 ### Alert rules
 
-The tilt rules below are adopted for TRL 3 work (SLW-DDR-001 D6, pending Amish's review). The crack-opening thresholds are placeholders to be set per site and remain open (SLW-DDR-001 O3).
+The tilt rules below were decided by Amish on 2026-09-25 (SLW-DDR-001 D6, SLW-DDR-002). The crack-opening thresholds are placeholders to be set per site and remain open (SLW-DDR-001 O3).
 
 Table 1. Alert states.
 
@@ -55,7 +59,7 @@ Table 1. Alert states.
 | Normal | No condition below | Read every 10 min; uplink hourly |
 | Precaution | Any stake tilts faster than 0.01 degrees per hour averaged over 3 h, or the crack opens faster than 1 mm per day over 24 h (placeholder) | Uplink every 10 min; message to the site manager and engineer; beacon flashes slowly at 1 % duty or less (for example 100 ms every 10 s) |
 | Warning | Any stake tilts faster than 0.1 degrees per hour over 1 h, confirmed on two consecutive readings, or the crack opens faster than 1 mm per hour (placeholder) | Siren and fast beacon on site; SMS to everyone on the list; inverse-velocity plot flagged |
-| Silenced | Keyed switch at the mast | Siren off for 30 min, beacon stays on; the node re-arms automatically |
+| Silenced | Keyed switch on its post about 5 m from the mast | Siren off for 30 min, beacon stays on; the node re-arms automatically |
 
 ## Main components
 
@@ -63,7 +67,7 @@ Numbers match the exploded view (Figure 3) and `bom/bom.csv`.
 
 Table 2. Main components.
 
-| # | Component | Choice (adopted for TRL 3 work) | Notes |
+| # | Component | Choice (decided by Amish, 2026-09-25) | Notes |
 | --- | --- | --- | --- |
 | 1 | Tilt stake (3 per site) | 48.3 x 3.2 mm galvanized steel pipe, 1.0 m long, 0.8 m in ground, lower 450 mm in a 110 mm grout column | Couples the stake to the surface layer; steel passes R2 (SLW-CAL-001, section B) |
 | 2 | Tilt sensor capsule (3) | Murata SCL3300 inclinometer in mode 1, small microcontroller, RS-485 transceiver and 3.3 V regulator, potted in a 34 x 130 mm tube | Sits 0.4 m below ground between foam plugs to damp temperature swings |
@@ -71,8 +75,8 @@ Table 2. Main components.
 | 4 | Crack displacement gauge | 100 mm linear potentiometer displacement sensor between two anchor pins, with guard and an RS-485 reader | Re-settable when the crack opens past range |
 | 5 | Sensor bus cable | Four-core shielded outdoor cable (power and RS-485) in corrugated conduit, about 60 m | Surface-laid in the prototype; buried where the ground allows |
 | 6 | FieldNode core | Lab shared node: IP65 box, 6 W panel, LiFePO4 3.2 V 6 Ah, MPPT charger, STM32WL-class LoRaWAN radio, two M12 ports | Costed in the FieldNode project (SLW-DDR-001 D1) |
-| 7 | Siren and beacon alert unit | 12 V piezo siren, about 110 dB(A) at 1 m, and an amber LED beacon, switched by the node | Keyed silence switch in a box on the mast |
-| 8 | Mast and footing | 48.3 x 3.2 mm galvanized pipe, 3.2 m above ground, in a 320 mm x 0.6 m concrete footing, with an earth rod | An existing pole or building can replace it |
+| 7 | Siren and beacon alert unit | 12 V piezo siren, about 110 dB(A) at 1 m, and an amber LED beacon, switched by the node | Keyed silence switch on its own post about 5 m from the mast, on a 7 m lead (SLW-DDR-002) |
+| 8 | Mast and footing (site option) | 48.3 x 3.2 mm galvanized pipe, 3.2 m above ground, in a 320 mm x 0.6 m concrete footing, with an earth rod | Only where no existing pole or building can carry the node (SLW-DDR-002) |
 | 9 | Gateway and alert software | Any LoRaWAN server; open alert service with SMS and inverse-velocity plot | Not shown in the media; gateway (TwinKit, about $290) not in site cost |
 
 ![Exploded view](../media/exploded.png)
@@ -83,7 +87,7 @@ Table 2. Main components.
 
 *Figure 4. Section through one tilt stake on its axis, showing the grout column, the capsule 0.4 m below ground between foam plugs, and the lead to the cable gland.*
 
-The general arrangement drawing [SLW-DWG-001](../cad/drawings/SLW-DWG-001.pdf) (Rev P1) gives the main dimensions of the stake, crack gauge and mast, generated from the parametric model `cad/src/model.py`.
+The general arrangement drawing [SLW-DWG-001](../cad/drawings/SLW-DWG-001.pdf) (Rev P2) gives the main dimensions of the stake, crack gauge, mast and switch post, generated from the parametric model `cad/src/model.py`.
 
 ## Key numbers (SLW-CAL-001)
 
@@ -106,7 +110,8 @@ Table 3. Key numbers and requirement status.
 | 30 min alarm | 3.00 Wh, 0.45 A at 12 V, 2.00 A from the cell | R8 at risk on rail current |
 | 5 sunless days in precaution with one alarm | 7.3 Wh of 13.1 Wh usable at -10 °C | R8 met on energy |
 | Bus cable; voltage drop | 59.2 m; 0.096 V on the 5 V rail | |
-| Mast in a 35 m/s gust | 115 MPa (factor 2.0); footing factor 2.6 | |
+| Mast in a 35 m/s gust (switch box off the mast) | 113 MPa (factor 2.1); footing factor 2.7 | |
+| Siren level at the keyed switch | about 95 dB(A) on its post 5 m away (43 min NIOSH allowance); about 105 dB(A) on the mast (4 min) | Safety |
 | Stake installation | 43 min estimated; 3.6 L of grout | R10 not verifiable at TRL 3 |
 | 90 days of raw data | 363 kB | R12 met on paper |
 
@@ -117,25 +122,28 @@ Table 4. Parts cost for the reference site (see `bom/bom.csv`).
 | Group | Cost | Requirement |
 | --- | --- | --- |
 | Stakes, capsules and heads (items 1 to 3, three sets) | $123 | |
-| Crack gauge with reader, cable, alert unit, mast, consumables (items 4, 5, 7, 8, 10) | $138 | |
-| **SlopeWatch-specific parts** | **$261** | R11 not met, 4.4 % over $250 |
-| Same on an existing pole (no item 8) | $237 | R11 met |
+| Crack gauge with reader, cable, alert unit with switch post, consumables (items 4, 5, 7, 10) | $122 | |
+| **SlopeWatch-specific parts, reference site (existing pole)** | **$245** | R11 met on paper, $5 within $250 |
+| Optional mast and footing (item 8), where no pole exists | +$24, giving $269 | Site option (SLW-DDR-002) |
 | FieldNode core (item 6, costed in FieldNode) | $126 | Outside R11 |
-| Site total with FieldNode | $387 | |
+| Reference site total with FieldNode | $371 | |
 | LoRaWAN gateway, if the site has no coverage | not in site cost (TwinKit gateway about $290) | |
 
 ## Key design choices
 
-The choices below are adopted as recommended for TRL 3 work under Amish's 2026-09-25 instruction, open for his review (SLW-DDR-001). None is a decision by Amish.
+Amish accepted every recommended choice on 2026-09-25 ("i accept all your recommendations, go with them across all repos"), recorded in SLW-DDR-002. Each choice below is decided by Amish, 2026-09-25: go with recommendation.
 
-- **Budget (D1).** The FieldNode core is costed in its own project, as SunSpoke does with the SwapCell pack, and an existing pole replaces the mast where one exists; the $250 budget covers SlopeWatch-specific parts. With a new mast the parts still exceed it by $11 (options in `docs/REVIEW.md`).
+- **Budget (D1).** The FieldNode core is costed in its own project, as SunSpoke does with the SwapCell pack; the $250 budget covers SlopeWatch-specific parts.
+- **Reference site on an existing pole (DDR-002 item 4).** The node and alert unit go on an existing pole or building; the mast and footing (item 8) are a site option. This closes the $11 gap that a new mast left.
 - **Tailings dams in the pitch (D2).** Kept, with the scope limits in SLW-PRB-001 stated in every document: supplementary layer only, installed with the owner's and engineer of record's permission, no claim to detect brittle failure.
 - **Surface tilt stakes plus a crack gauge (D3),** rather than borehole in-place inclinometers (deep movement, but a drill rig and far higher cost), GNSS receivers (costly and slower to resolve millimeters) or crack gauges alone.
 - **Wired bus to one FieldNode (D4).** About $41 per extra stake plus cable, against a FieldNode on every stake. A wireless stake variant is recorded for later.
 - **Inclinometer (D5).** SCL3300 in mode 1, with an ADXL355-class accelerometer as the fallback.
-- **Alert rules (D6).** The published 0.01 and 0.1 degrees per hour tilt-rate thresholds as defaults; warning on one stake confirmed on two consecutive readings (20 min); keyed 30 min silence that re-arms. Site values are set by an engineer after a baseline period.
-- **Alert unit location (D7).** On the mast at the toe; a second unit near the work face or in the village, linked by LoRa, as an option after co-design.
-- **Changes from the calculations.** The capsule sits 0.4 m deep with foam plugs; the crack gauge has its own reader; the precaution beacon is held to 1 % duty; the crack precaution rate is taken over 24 h. These follow from SLW-CAL-001 and stay within the adopted choices.
+- **Alert rules (D6).** The published 0.01 and 0.1 degrees per hour tilt-rate thresholds as defaults; warning on one stake confirmed on two consecutive readings (20 min); keyed 30 min silence that re-arms. Site values are set by an engineer after a baseline period. The precaution beacon flashes at 1 % duty or less (DDR-002 item 7).
+- **Alert unit location (D7).** On the pole or mast at the toe; a second unit near the work face or in the village, linked by LoRa, as an option after co-design.
+- **Keyed switch on its own post (DDR-002 item 6).** The switch box stands on a 26.9 mm post about 5 m from the siren, on a 7 m lead in conduit, where the siren gives about 95 dB(A) instead of about 105 dB(A) under it (SLW-CAL-001, section E).
+- **Own gateway at SF12 sites (DDR-002 item 8).** A site whose uplinks need SF12 uses a TwinKit gateway, because hourly uplinks at SF12 exceed The Things Network's 30 s daily fair use.
+- **Changes from the calculations.** The capsule sits 0.4 m deep with foam plugs; the crack gauge has its own reader; the crack precaution rate is taken over 24 h.
 
 ## Safety
 
@@ -146,17 +154,16 @@ The choices below are adopted as recommended for TRL 3 work under Amish's 2026-0
 - **False alarms.** Repeated false alarms teach people to ignore the siren. Thresholds and confirmation rules must be set with the community and reviewed after each alarm.
 - **Lithium cell.** The FieldNode core holds a 19 Wh LiFePO4 cell, which supplies about 2 A during an alarm. Use the FieldNode's fuse and cold-charge lockout, do not charge a damaged cell, and keep the box out of standing water.
 - **Cement grout.** Wet cement is alkaline and can burn skin and eyes. Wear gloves and eye protection and wash off splashes at once.
-- **Mast and height.** Erecting a 3.2 m mast needs two people; keep well clear of overhead power lines. An exposed mast on a ridge can attract lightning: bond the mast to an earth rod and fit surge protection where the long bus cable enters the node.
-- **Noise.** A 110 dB(A) siren can damage hearing at close range: about 105 dB(A) at the keyed switch below it, where the NIOSH limit allows about 4 min (SLW-CAL-001, section E). Mount it at least 3 m above ground, silence it only with the keyed switch, and keep people away from the mast during an alarm.
+- **Mast and height.** Where the optional mast is used, erecting a 3.2 m mast needs two people; keep well clear of overhead power lines. An exposed mast on a ridge can attract lightning: bond the mast to an earth rod and fit surge protection where the long bus cable enters the node.
+- **Noise.** A 110 dB(A) siren can damage hearing at close range: about 105 dB(A) directly below it, where the NIOSH limit allows about 4 min. The keyed switch therefore stands on its own post about 5 m away, at about 95 dB(A) (about 43 min allowed; SLW-CAL-001, section E). Mount the siren at least 3 m above ground, silence it only with the keyed switch, and keep people away from the mast during an alarm.
 
 ## Open questions
 
-- Confirm that the FieldNode 12 V rail supplies at least 0.5 A continuously for 30 min, or give the alert unit its own small battery (R8).
+- FieldNode to confirm that its 12 V rail supplies at least 0.5 A continuously for 30 min (R8); decided by Amish as a request to FieldNode (SLW-DDR-002), not yet actioned there.
 - Decide whether sites with machinery get a second alert unit near the work face or a radio pager (R7).
-- Close the $11 cost gap with a new mast, or accept the existing-pole case (R11).
 - Decide how to protect a surface cable from rockfall and movement, and how to detect a cut cable.
 - Set crack-gauge thresholds with a geotechnical partner (SLW-DDR-001 O3).
-- Confirm LoRaWAN coverage at candidate sites, or budget a gateway; a site at SF12 on The Things Network exceeds its fair-use limit.
+- Confirm LoRaWAN coverage at candidate sites; a site that needs SF12 gets a TwinKit gateway (SLW-DDR-002).
 - Choose the first partner and site type for co-design (SLW-DDR-001 O2).
 - Measure temperature drift of a buried capsule in a chamber (CalRig) and at a site; this is TRL 4 work and on hold.
 

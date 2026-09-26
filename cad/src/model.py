@@ -4,8 +4,9 @@ Run from the repo root:  python cad/src/model.py
 Exports STEP and STL into cad/step and cad/stl:
     slopewatch-stake.step / .stl         one tilt stake (items 1 to 3, bus lead, foam plugs)
     slopewatch-crack-gauge.step / .stl   crack displacement gauge with reader box (item 4)
-    slopewatch-mast.step / .stl          mast, footing, earth rod, FieldNode massing, alert unit (items 6 to 8)
-    slopewatch-arrangement.step / .stl   the three assemblies side by side on level ground (drawing SLW-DWG-001)
+    slopewatch-mast.step / .stl          mast, footing, earth rod, FieldNode massing, siren and beacon (items 6 to 8)
+    slopewatch-switch-post.step / .stl   keyed silence switch on its own post, about 5 m from the mast (item 7)
+    slopewatch-arrangement.step / .stl   the four assemblies side by side on level ground (drawing SLW-DWG-001)
 
 Axes: Z is up and the local ground surface at each assembly is z = 0. Each assembly is built on
 its own axis at x = y = 0. On a site, +X points downslope. The FieldNode core faces -Y, as in the
@@ -42,11 +43,14 @@ PARAMS = {
     "node": (150.0, 90.0, 200.0), "node_z0": 1750.0, "node_plate_y0": -42.0, "node_plate": (180.0, 320.0, 3.0),
     "panel": (290.0, 200.0, 17.0), "panel_tilt": 40.0, "panel_c": (-115.0, 385.0),
     # 7 alert unit: siren box (cube side) on the mast top, horn (dia x length, faces -Y), beacon (dia x height),
-    #   keyed silence switch box (W x D x H) and its center height, on the +Y side of the mast
+    #   keyed silence switch box (W x D x H) and its center height; since SLW-DDR-002 the switch sits on its
+    #   own post (OD x wall, height above ground, length driven in) about 5 m from the mast on the +Y side,
+    #   away from the horn, on a lead in conduit (switch_lead_m)
     "siren_box": 120.0, "horn": (110.0, 140.0), "beacon": (110.0, 220.0),
     "switch_box": (100.0, 60.0, 70.0), "switch_z": 1300.0,
-    # layout of the arrangement drawing (x of each assembly axis on level ground)
-    "arr_x": (0.0, 1300.0, 2900.0),
+    "switch_post": (26.9, 2.6, 1400.0, 500.0), "switch_offset": 5000.0, "switch_lead_m": 7.0,
+    # layout of the arrangement drawing (x of each assembly axis on level ground; not site spacing)
+    "arr_x": (0.0, 1300.0, 2900.0, 4400.0),
 }
 
 # Reference site layout used by the calculations (m); the media scene compresses these distances
@@ -69,6 +73,7 @@ BOM = {  # model key: (BOM line, name)
     "cable": (5, "Sensor bus cable in conduit"),
     "node": (6, "FieldNode core (massing)"),
     "alert": (7, "Siren and beacon alert unit"),
+    "switch": (7, "Keyed silence switch on its own post"),
     "mast": (8, "Mast, footing and earth rod"),
 }
 
@@ -183,23 +188,34 @@ def mast(p=PARAMS):
     posts = (Pos(80, -60, z0 + 300) * Box(25, 3, 200) + Pos(-80, -60, z0 + 300) * Box(25, 3, 200))
     ant = Pos(58, y_back - nd / 2, z0 - 95) * Cylinder(5, 190)
     node = plate + enc + vblocks + panel + posts + ant
-    # alert unit on the mast top, keyed switch box on the +Y side
+    # alert unit on the mast top (the keyed switch is on its own post, see switch_post())
     s = p["siren_box"]
     siren = Pos(0, 0, H + s / 2) * Box(s, s, s)
     hd, hl = p["horn"]
     horn = Pos(0, -s / 2 - hl / 2, H + s / 2) * _y_cyl(hd / 2, hl)
     bd, bh = p["beacon"]
     beacon = Pos(0, 0, H + s + bh / 2) * Cylinder(bd / 2, bh)
-    sw, sd, sh = p["switch_box"]
-    switch = Pos(0, od / 2 + sd / 2 + 5, p["switch_z"]) * Box(sw, sd, sh)
-    alert = siren + horn + beacon + switch
+    alert = siren + horn + beacon
     return {"mast": pole + footing + rod + bond, "node": node, "alert": alert}
 
 
+def switch_post(p=PARAMS):
+    """Keyed silence switch box on its own driven post, ground at z = 0 (SLW-DDR-002). Returns {key: shape}."""
+    from build123d import Box, Cylinder, Pos
+    od, t, above, embed = p["switch_post"]
+    L = above + embed
+    post = Pos(0, 0, above - L / 2) * (Cylinder(od / 2, L) - Cylinder(od / 2 - t, L + 2))
+    cap = Pos(0, 0, above + 5) * Cylinder(od / 2 + 2, 10)
+    sw, sd, sh = p["switch_box"]
+    box = Pos(0, -(od / 2 + sd / 2 + 5), p["switch_z"]) * Box(sw, sd, sh)      # faces the mast (-Y)
+    gland = Pos(0, -(od / 2 + sd / 2 + 5), p["switch_z"] - sh / 2 - 12) * Cylinder(8, 24)
+    return {"post": post + cap, "switch": box + gland}
+
+
 def arrangement(p=PARAMS):
-    """Stake, crack gauge and mast side by side on level ground, for drawing SLW-DWG-001."""
+    """Stake, crack gauge, mast and switch post side by side on level ground, for drawing SLW-DWG-001."""
     from build123d import Compound, Pos
-    xs, xg, xm = p["arr_x"]
+    xs, xg, xm, xw = p["arr_x"]
     parts = []
     for k, sh in stake(p).items():
         parts.append(Pos(xs, 0, 0) * sh)
@@ -207,6 +223,8 @@ def arrangement(p=PARAMS):
         parts.append(Pos(xg, 0, 0) * sh)
     for k, sh in mast(p).items():
         parts.append(Pos(xm, 0, 0) * sh)
+    for k, sh in switch_post(p).items():
+        parts.append(Pos(xw, 0, 0) * sh)
     return Compound(children=parts)
 
 
@@ -220,7 +238,8 @@ def export_all():
     root = Path(__file__).resolve().parents[1]
     (root / "step").mkdir(exist_ok=True); (root / "stl").mkdir(exist_ok=True)
     items = {"slopewatch-stake": _compound(stake()), "slopewatch-crack-gauge": _compound(crack_gauge()),
-             "slopewatch-mast": _compound(mast()), "slopewatch-arrangement": arrangement()}
+             "slopewatch-mast": _compound(mast()), "slopewatch-switch-post": _compound(switch_post()),
+             "slopewatch-arrangement": arrangement()}
     for name, shape in items.items():
         export_step(shape, str(root / "step" / f"{name}.step"))
         export_stl(shape, str(root / "stl" / f"{name}.stl"))

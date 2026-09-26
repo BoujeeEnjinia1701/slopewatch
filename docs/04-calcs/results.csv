@@ -1,5 +1,4 @@
 id,requirement,value,target,status
-R11,Affordable,$261 with a new mast; $237 with an existing pole,$250 SlopeWatch-specific,Not met
 R6,Remote alert,4.6 min worst at SF12 with one lost uplink,"5 min, where coverage exists",At risk
 R7,Alarm audible,65.5 to 68.5 dB(A) at 100 m,65 dB(A) at 100 m,At risk
 R8,Energy autonomy,7.3 Wh of 13.1 Wh worst case; 12 V rail 0.45 A unrated,"5 days, one 30 min alarm",At risk
@@ -8,6 +7,7 @@ R1,Measure surface tilt,"0.0055 deg step, 0.00054 deg noise, +-90 deg in mode 1"
 R2,Limit false tilt from temperature,"0.0092 deg/day, 0.00120 deg/h (wet soil, 0.4 m)","0.02 deg/day, 0.002 deg/h",Met on paper
 R4,Sample and report,10 min reads; 10.9 s/h at SF12,10 min; 60 and 10 min uplinks,Met on paper
 R12,"Open, local data",363 kB for 90 days,"90 days, CSV, any server",Met on paper
+R11,Affordable,$245 for the reference site (existing pole); $269 with the optional new mast,"$250 SlopeWatch-specific, reference site",Met on paper
 R3,Measure crack opening,"100 mm stroke, 0.024 mm step, 0.10 mm linearity","100 mm, 0.1 mm",Met by design
 R5,Local alarm without a network,13 s,60 s,Met by design
 R10,Installable by a small team,43 min estimate,"45 min, hand tools",Not verifiable at TRL 3

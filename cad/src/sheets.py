@@ -1,4 +1,4 @@
-"""SlopeWatch general arrangement sheet SLW-DWG-001, Rev P1 (TRL 3).
+"""SlopeWatch general arrangement sheet SLW-DWG-001, Rev P2 (TRL 3, SLW-DDR-002).
 
 Run from the repo root:  python cad/src/sheets.py
 Writes cad/drawings/SLW-DWG-001.svg, .pdf and .png from the parametric model in cad/src/model.py
@@ -102,15 +102,16 @@ def main():
     views = safe_views(asm, work)
     sec = safe_views(stake_section(), work / "section", names=("front",))
     bb = asm.bounding_box()
-    s = Sheet(project="SlopeWatch", title="General arrangement", dwg_no="SLW-DWG-001", rev="P1",
+    s = Sheet(project="SlopeWatch", title="General arrangement", dwg_no="SLW-DWG-001", rev="P2",
               author="Amish Chadha", date=DATE, scale=None, theme="technical",
               material="Galvanized steel, cement grout, bought-in parts per bom/bom.csv. PRELIMINARY, NOT FOR FABRICATION",
-              revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC")])
+              revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC"),
+                         ("P2", "Keyed switch on own post 5 m from mast; mast a site option (DDR-002)", DATE, "AC")])
     s.add_ortho(views)
     k = s.scale
     c = ortho_cells(s, views)
     L = []
-    xs, xg, xm = P["arr_x"]
+    xs, xg, xm, xw = P["arr_x"]
 
     # front view (from -Y): X to the right, Z up
     x, y, w, h = c["front"]
@@ -142,7 +143,8 @@ def main():
     L += leader(X(xg) + 5, Z(P["gauge_z"] + 70), X(xg) + 8, Z(450), "4 CRACK GAUGE")
     L += leader(X(xm), Z(D["panel_cz"]), X(xm) - 12, Z(D["panel_cz"] + 500), "6 FIELDNODE CORE", "end")
     L += leader(X(xm), Z(P["mast_h"] + 300), X(xm) - 12, Z(P["mast_h"] + 700), "7 SIREN AND BEACON", "end")
-    L += leader(X(xm) + 1, Z(P["switch_z"]), X(xm) - 12, Z(P["switch_z"] - 400), "7 KEYED SWITCH", "end")
+    L += leader(X(xw), Z(P["switch_z"] + 40), X(xw) - 4, Z(P["switch_z"] + 1100), "7 KEYED SWITCH POST", "end")
+    L += leader(X(xm), Z(1000), X(xm) - 12, Z(1200), "8 MAST (SITE OPTION)", "end")
 
     # top view: note the facing
     x, y, w, h = c["top"]
@@ -174,7 +176,8 @@ def main():
         f"Stake {P['pipe'][0]} x {P['pipe'][1]} galv. pipe, {P['pipe_l']:.0f} long, {P['embed']:.0f} in ground",
         f"Grout {P['grout_d']:.0f} dia x {P['grout_l']:.0f}, {D['grout_vol_l']:.1f} L; capsule {P['capsule_depth']:.0f} deep",
         f"Crack gauge: anchors {P['anchor_span']:.0f} apart, pins {P['pin_d']:.0f} x {P['pin_l']:.0f}, stroke {P['stroke']:.0f}",
-        f"Mast {P['mast'][0]} x {P['mast'][1]}, {P['mast_h']:,.0f} above ground; footing {P['footing'][0]:.0f} x {P['footing'][1]:.0f}",
+        f"Mast (option) {P['mast'][0]} x {P['mast'][1]}, {P['mast_h']:,.0f} high; footing {P['footing'][0]:.0f} x {P['footing'][1]:.0f}",
+        f"Switch post {P['switch_post'][0]} dia, {P['switch_post'][2]:,.0f} high, {P['switch_offset'] / 1000:.0f} m from mast on site",
         f"FieldNode massing per FND model; node bottom {P['node_z0']:,.0f}",
         f"Bus: 4-core 0.5 mm2 on the 5 V port; alert unit on the 12 V port",
         f"Site: stakes {SITE['stake_spacing_m']:.0f} m apart on the fall line; cable {D['cable_m']:.0f} m",

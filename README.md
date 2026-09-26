@@ -8,7 +8,7 @@ A network of low-cost tilt and displacement sensors for waste dumps, tailings da
 
 ![SlopeWatch concept](media/hero.png)
 
-[Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement SLW-DWG-001 (PDF)](cad/drawings/SLW-DWG-001.pdf) · [Calculations SLW-CAL-001](docs/04-calcs/01-sizing.md) · [Review note](docs/REVIEW.md)
+[Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement SLW-DWG-001 (PDF)](cad/drawings/SLW-DWG-001.pdf) · [Calculations SLW-CAL-001](docs/04-calcs/01-sizing.md) · [Decisions SLW-DDR-002](docs/decisions/0002-recommendations-accepted.md) · [Review note](docs/REVIEW.md)
 
 ## Concept rationale
 
@@ -48,7 +48,7 @@ The people most exposed have the least monitoring. An estimated 44 million peopl
 
 ## What sparked the idea
 
-It came out of a September 2026 review of Design Molecule's applied research areas against the open projects already in the lab. Geotechnical safety is the third mining gap, and the same hardware serves hillside communities. In the same month, a pit collapse at an informal gold mine in Ghana's Ashanti Region killed seven miners ([Ghana News Agency, 2026](https://gna.org.gh/2026/09/seven-dead-one-trapped-after-galamsey-pit-collapses/)), a reminder that the smallest sites carry the least protection.
+The starting point was the Aberfan disaster of 21 October 1966, when colliery spoil Tip 7 slid onto a village and its school in South Wales and killed 144 people, 116 of them children ([Institution of Civil Engineers](https://www.ice.org.uk/what-is-civil-engineering/infrastructure-projects/aberfan-disaster-lessons-learned)). The tip had been built over material that slipped in 1944, and on the morning of the disaster the crew found its top had sunk by 9 to 10 ft (about 3 m), and then by about 20 ft (6 m), before the slide ([Northern Mine Research Society](https://nmrs.org.uk/mines-map/accidents-disasters/glamorganshire/aberfan-disaster-merthyr-tydfil-1966/)). The movement was seen, yet nothing turned it into a timely warning for the people below. The Mines and Quarries (Tips) Act 1969 made tip stability and inspection a legal duty in Britain; SlopeWatch asks what a low-cost rate-of-movement alarm could do for the waste dumps and informal pits that have no such regime.
 
 ## Problem
 
@@ -65,11 +65,11 @@ Full design precis: [docs/02-concept.md](docs/02-concept.md)
 - Three tilt stakes: 48.3 mm steel pipe grouted 0.8 m into the slope, each with a sealed MEMS inclinometer capsule 0.4 m below ground
 - Crack displacement gauge (100 mm range) with its own bus reader, across a tension crack at the crest
 - RS-485 sensor bus cable in conduit
-- FieldNode power and radio core (shared lab component) on a mast at the toe
-- Siren and beacon alert unit driven by the node, with a keyed silence switch
+- FieldNode power and radio core (shared lab component) on an existing pole at the toe, or on the optional mast
+- Siren and beacon alert unit driven by the node, with a keyed silence switch on its own post about 5 m from the mast
 - Gateway and alert software: any LoRaWAN server, SMS alerts and an inverse-velocity plot
 
-Checked by calculation at TRL 3 ([SLW-CAL-001](docs/04-calcs/01-sizing.md)): readings every 10 min; the siren starts about 13 s after a confirmed warning with no network; temperature drift of a buried capsule stays within 0.0012 degrees per hour, about eight times below the precaution threshold; five sunless days in the precaution state with one alarm use about 7.3 Wh of the FieldNode cell's 13.1 Wh at -10 °C. The SlopeWatch-specific parts cost $261 per site with a new mast, $11 over the $250 budget, and $237 on an existing pole; the FieldNode core ($126) is costed in its own project. Siren reach near machinery, the FieldNode 12 V rail current and the remote alert time at the slowest radio setting are at risk. See the [design precis](docs/02-concept.md) and [requirements](docs/03-requirements.md), including the requirement not met.
+Checked by calculation at TRL 3 ([SLW-CAL-001](docs/04-calcs/01-sizing.md)): readings every 10 min; the siren starts about 13 s after a confirmed warning with no network; temperature drift of a buried capsule stays within 0.0012 degrees per hour, about eight times below the precaution threshold; five sunless days in the precaution state with one alarm use about 7.3 Wh of the FieldNode cell's 13.1 Wh at -10 °C. Under Amish's decisions of 2026-09-25 ([SLW-DDR-002](docs/decisions/0002-recommendations-accepted.md)), the reference site mounts the node on an existing pole, with the mast as a site option, and the keyed silence switch stands on its own post about 5 m from the mast, where the siren gives about 95 dB(A) instead of about 105 dB(A). The SlopeWatch-specific parts cost $245 per reference site against the $250 budget ($269 where a new mast is needed); the FieldNode core ($126) is costed in its own project. Siren reach near machinery, the FieldNode 12 V rail current, the FieldNode enclosure temperature and the remote alert time at the slowest radio setting are at risk. See the [design precis](docs/02-concept.md) and [requirements](docs/03-requirements.md).
 
 The priced bill of materials is in [bom/bom.csv](bom/bom.csv); the parametric model is `cad/src/model.py`, with STEP and STL files in `cad/step/` and `cad/stl/`.
 

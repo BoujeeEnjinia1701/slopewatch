@@ -56,7 +56,7 @@ ground = ground - crack
 
 # ---------------- parts from the parametric model (cad/src/model.py) ----------------
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from model import PARAMS as P, stake, crack_gauge, mast, derived  # noqa: E402
+from model import PARAMS as P, stake, crack_gauge, mast, switch_post, derived  # noqa: E402
 D = derived(P)
 PIPE_R = P["pipe"][0] / 2
 HEAD_R = P["head"][0] / 2
@@ -83,6 +83,12 @@ MX, MY = 3400.0, -600.0
 MAST_H = P["mast_h"]
 ms = {k: Pos(MX, MY, 0) * v for k, v in mast().items()}
 node, siren, mast_s = ms["node"], ms["alert"], ms["mast"]
+# 7: keyed silence switch on its own post, away from the siren (about 5 m on site, compressed here),
+#    with its lead from the mast foot in conduit
+SWX, SWY = 5100.0, 1200.0
+sp = switch_post()
+siren = (siren + Pos(SWX, SWY, 0) * (sp["post"] + sp["switch"])
+         + tube3((MX + 30, MY + 30, 25), (SWX, SWY - 60, 25), 9))
 
 # ---------------- 5: sensor bus cable in conduit, on the surface ----------------
 def surf(x, y, lift=25.0):
@@ -114,8 +120,8 @@ parts = [
     Part("Crack displacement gauge with reader", gauge, "#7C3AED", 4),
     Part("Sensor bus cable in conduit", cable, "#111827", 5),
     Part("FieldNode core with 6 W panel", node, "#1E3A8A", 6),
-    Part("Siren and beacon alert unit", siren, "#C2410C", 7),
-    Part("Mast, footing and earth rod", mast_s, "#94A3B8", 8),
+    Part("Siren, beacon and keyed switch post", siren, "#C2410C", 7),
+    Part("Mast, footing and earth rod (site option)", mast_s, "#94A3B8", 8),
 ]
 
 # Person on the toe bench for scale (added as context so the figure stands on the bench,
@@ -126,10 +132,10 @@ person.name = "1.75 m person"
 render_all(
     parts, project="SlopeWatch", title="Slope movement monitor concept", dwg_no="SLW-DWG-010",
     key_figures=["3 grouted tilt stakes, capsule 0.4 m deep; 0.0055 deg output step",
-                 "Precaution 0.01 deg/h, warning 0.1 deg/h (adopted for TRL 3, open for review)",
+                 "Precaution 0.01 deg/h, warning 0.1 deg/h (decided 2026-09-25)",
                  "Thermal drift 0.0012 deg/h worst case (wet soil), R2 limit 0.002",
                  "Reads every 10 min; siren 13 s after a confirmed warning",
-                 "$261 SlopeWatch parts ($237 on an existing pole); FieldNode $126 extra"],
+                 "$245 SlopeWatch parts on an existing pole; mast option +$24; FieldNode $126"],
     cut=False, scale_figure=False, context=[person],
     flow={"title": "data and alert flow (latencies are estimates)", "unit": "min",
           "stages": [("Stakes, crack gauge", "read every 10 min"),
@@ -162,8 +168,11 @@ def kit_layout():
     ex.append(Part("Sensor bus cable in conduit (coil)", coil, "#111827", 5))
     ms = {k: Pos(3600.0, 0, P["footing"][1]) * v for k, v in mast().items()}
     ex.append(Part("FieldNode core with 6 W panel", ms["node"], "#1E3A8A", 6, (0, -700, 0)))
-    ex.append(Part("Siren, beacon and keyed switch", ms["alert"], "#C2410C", 7, (0, 0, 450)))
-    ex.append(Part("Mast, footing and earth rod", ms["mast"], "#94A3B8", 8))
+    ex.append(Part("Siren and beacon", ms["alert"], "#C2410C", 7, (0, 0, 450)))
+    sp = switch_post()
+    ex.append(Part("Keyed switch on its own post", Pos(4300.0, 0, P["switch_post"][3]) * (sp["post"] + sp["switch"]),
+                   "#C2410C", 7))
+    ex.append(Part("Mast, footing and earth rod (site option)", ms["mast"], "#94A3B8", 8))
     return ex
 
 
