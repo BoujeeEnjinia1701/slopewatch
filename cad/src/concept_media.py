@@ -1,4 +1,4 @@
-"""SlopeWatch concept massing model and media (TRL 2).
+"""SlopeWatch concept massing model and media (TRL 3, parts from cad/src/model.py).
 
 Run from the repo root:  python cad/src/concept_media.py
 Proportions and main parts only; not for fabrication.
@@ -54,55 +54,42 @@ ground = extrude(Plane.XZ * profile, amount=HALF_W, both=True)
 crack = Pos(CRACK_X, 0, CREST_Z - 200) * Rot(0, 0, 8) * Box(70, 2 * HALF_W + 400, 420)
 ground = ground - crack
 
-# ---------------- 1 to 3: tilt stakes (three, down the fall line at Y = 0) ----------------
-STAKE_X = (-2300.0, -500.0, 1200.0)
-PIPE_R, PIPE_L, EMBED = 24.0, 1000.0, 800.0      # 48 mm pipe, 1.0 m long, 0.8 m in ground
-GROUT_R, GROUT_L = 55.0, 450.0                   # 110 mm grout column around the lower pipe
-CAPSULE_R, CAPSULE_L, CAPSULE_DEPTH = 17.0, 130.0, 300.0
-HEAD_R, HEAD_L = 60.0, 170.0
+# ---------------- parts from the parametric model (cad/src/model.py) ----------------
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from model import PARAMS as P, stake, crack_gauge, mast, derived  # noqa: E402
+D = derived(P)
+PIPE_R = P["pipe"][0] / 2
+HEAD_R = P["head"][0] / 2
 
+# 1 to 3: tilt stakes, three down the fall line at Y = 0 (scene spacing compressed; site spacing 10 m)
+STAKE_X = (-2300.0, -500.0, 1200.0)
 stakes = capsules = heads = None
 for sx in STAKE_X:
     gz = surface_z(sx)
-    pipe = Pos(sx, 0, gz - EMBED + PIPE_L / 2) * Cylinder(PIPE_R, PIPE_L)
-    grout = Pos(sx, 0, gz - EMBED + GROUT_L / 2) * (Cylinder(GROUT_R, GROUT_L) - Cylinder(PIPE_R, GROUT_L + 2))
-    cap = Pos(sx, 0, gz - CAPSULE_DEPTH) * Cylinder(CAPSULE_R, CAPSULE_L)
-    top = gz - EMBED + PIPE_L
-    head = (Pos(sx, 0, top + HEAD_L / 2 - 40) * Cylinder(HEAD_R, HEAD_L)
-            + Pos(sx + HEAD_R, 0, top + 20) * Rot(0, 90, 0) * Cylinder(14, 40))   # cable gland facing down-slope
-    s = pipe + grout
-    stakes = s if stakes is None else stakes + s
-    capsules = cap if capsules is None else capsules + cap
-    heads = head if heads is None else heads + head
+    st = {k: Pos(sx, 0, gz) * v for k, v in stake().items()}
+    s_ = st["stake"] + st["plugs"] + st["lead"]
+    stakes = s_ if stakes is None else stakes + s_
+    capsules = st["capsule"] if capsules is None else capsules + st["capsule"]
+    heads = st["head"] if heads is None else heads + st["head"]
 
-# ---------------- 4: crack displacement gauge across the tension crack ----------------
+# 4: crack gauge across the tension crack on the crest bench
 GY = 900.0
-a1, a2 = CRACK_X - 450, CRACK_X + 450
-gauge = (Pos(a1, GY, CREST_Z - 200 + 150) * Cylinder(20, 700)          # anchor pins, 0.5 m in ground
-         + Pos(a2, GY, CREST_Z - 200 + 150) * Cylinder(20, 700)
-         + Pos(CRACK_X, GY, CREST_Z + 110) * Box(1000, 90, 60)          # guarded sensor body and rod
-         + Pos(a1, GY, CREST_Z + 60) * Box(80, 120, 120)
-         + Pos(a2, GY, CREST_Z + 60) * Box(80, 120, 120))
-gauge_cover = Pos(CRACK_X, GY, CREST_Z + 170) * Box(1150, 200, 20)
+cg = crack_gauge()
+gauge = Pos(CRACK_X, GY, CREST_Z) * (cg["gauge"] + cg["reader"])
+a2 = CRACK_X + P["anchor_span"] / 2
 
-# ---------------- 6 to 8: mast with FieldNode core and alert unit on the toe bench ----------------
+# 6 to 8: mast with FieldNode core and alert unit on the toe bench
 MX, MY = 3400.0, -600.0
-MAST_H = 3200.0
-mast = (Pos(MX, MY, MAST_H / 2) * Cylinder(30, MAST_H)
-        + Pos(MX, MY, -300) * Cylinder(160, 600))                        # concrete footing, 0.6 m deep
-node_box = Pos(MX - 30 - 60, MY, 1500) * Box(120, 180, 220)
-panel = Pos(MX - 30 - 60 - 60, MY, 2050) * Rot(0, -35, 0) * Box(260, 360, 25)
-node = node_box + panel
-siren = (Pos(MX, MY, MAST_H + 60) * Box(120, 120, 120)
-         + Pos(MX, MY - 60 - 70, MAST_H + 60) * Rot(90, 0, 0) * Cylinder(55, 140)   # horn
-         + Pos(MX, MY, MAST_H + 120 + 110) * Cylinder(55, 220))                    # beacon
+MAST_H = P["mast_h"]
+ms = {k: Pos(MX, MY, 0) * v for k, v in mast().items()}
+node, siren, mast_s = ms["node"], ms["alert"], ms["mast"]
 
 # ---------------- 5: sensor bus cable in conduit, on the surface ----------------
 def surf(x, y, lift=25.0):
     return (x, y, surface_z(x) + lift)
 
 
-pts = [(STAKE_X[0] + 90, 0), (STAKE_X[1] + 90, 0), (STAKE_X[2] + 90, 0), (TOE_X, 0),
+pts = [(STAKE_X[0] + 110, 0), (STAKE_X[1] + 110, 0), (STAKE_X[2] + 110, 0), (TOE_X, 0),
        (MX - 200, MY), (MX - 40, MY)]
 cable = None
 for (x0, y0), (x1, y1) in zip(pts[:-1], pts[1:]):
@@ -115,8 +102,8 @@ for (x0, y0), (x1, y1) in zip(pts[:-1], pts[1:]):
         cable = seg if cable is None else cable + seg
 # branch from the crack gauge down to the first stake, and riser up the mast to the node
 cable = (cable + tube3(surf(a2 + 60, GY), surf(STAKE_X[0] - 300, GY), 10)
-         + tube3(surf(STAKE_X[0] - 300, GY), surf(STAKE_X[0] + 90, 0), 10)
-         + tube3((MX - 40, MY, 25), (MX - 40, MY, 1390), 10))
+         + tube3(surf(STAKE_X[0] - 300, GY), surf(STAKE_X[0] + 110, 0), 10)
+         + tube3((MX - 40, MY, 25), (MX - 40, MY, P["node_z0"] - 60), 10))
 
 # Site scene: hero, blueprint and 3D viewer. BOM numbers on every SlopeWatch part.
 parts = [
@@ -124,11 +111,11 @@ parts = [
     Part("Tilt stakes, pipe and grout (3)", stakes, STEEL, 1),
     Part("Tilt sensor capsules (3)", capsules, ACCENT, 2),
     Part("Stake heads with cable gland (3)", heads, "#D4A017", 3),
-    Part("Crack displacement gauge", gauge + gauge_cover, "#7C3AED", 4),
+    Part("Crack displacement gauge with reader", gauge, "#7C3AED", 4),
     Part("Sensor bus cable in conduit", cable, "#111827", 5),
     Part("FieldNode core with 6 W panel", node, "#1E3A8A", 6),
     Part("Siren and beacon alert unit", siren, "#C2410C", 7),
-    Part("Mast and footing", mast, "#94A3B8", 8),
+    Part("Mast, footing and earth rod", mast_s, "#94A3B8", 8),
 ]
 
 # Person on the toe bench for scale (added as context so the figure stands on the bench,
@@ -138,19 +125,19 @@ person.name = "1.75 m person"
 
 render_all(
     parts, project="SlopeWatch", title="Slope movement monitor concept", dwg_no="SLW-DWG-010",
-    key_figures=["3 grouted tilt stakes, 0.005 deg tilt sensitivity (sensor datasheet)",
-                 "Precaution 0.01 deg/h, warning 0.1 deg/h tilt rate (proposed)",
-                 "Crack gauge 100 mm range, 0.1 mm resolution",
-                 "Reads every 10 min; siren within about 1 min (estimate)",
-                 "About $380 per site with FieldNode, $254 without (indicative)"],
+    key_figures=["3 grouted tilt stakes, capsule 0.4 m deep; 0.0055 deg output step",
+                 "Precaution 0.01 deg/h, warning 0.1 deg/h (adopted for TRL 3, open for review)",
+                 "Thermal drift 0.0012 deg/h worst case (wet soil), R2 limit 0.002",
+                 "Reads every 10 min; siren 13 s after a confirmed warning",
+                 "$261 SlopeWatch parts ($237 on an existing pole); FieldNode $126 extra"],
     cut=False, scale_figure=False, context=[person],
     flow={"title": "data and alert flow (latencies are estimates)", "unit": "min",
           "stages": [("Stakes, crack gauge", "read every 10 min"),
                      ("FieldNode at site", "rate vs threshold"),
                      ("LoRaWAN gateway", "hourly, 10 min on alert"),
                      ("Alert server", "inverse-velocity trend"),
-                     ("People on alert list", "SMS, about 5 min")],
-          "losses": [(1, "Local siren and beacon (estimate)", 1)]},
+                     ("People on alert list", "SMS, 1.6 to 4.6 min")],
+          "losses": [(1, "Local siren and beacon, no network (estimate)", 0.2)]},
 )
 
 
@@ -160,36 +147,23 @@ render_all(
 # view shows one stake, the crack gauge, a coil of bus cable and the mast set side by side.
 def kit_layout():
     ex = []
-    sx = 0.0
-    pipe = Pos(sx, 0, PIPE_L / 2) * Cylinder(PIPE_R, PIPE_L)
-    grout = Pos(sx, 0, GROUT_L / 2) * (Cylinder(GROUT_R, GROUT_L) - Cylinder(PIPE_R, GROUT_L + 2))
-    cap = Pos(sx, 0, PIPE_L - CAPSULE_DEPTH + 120) * Cylinder(CAPSULE_R, CAPSULE_L)
-    head = (Pos(sx, 0, PIPE_L + HEAD_L / 2 - 40) * Cylinder(HEAD_R, HEAD_L)
-            + Pos(sx + HEAD_R, 0, PIPE_L + 20) * Rot(0, 90, 0) * Cylinder(14, 40))
-    ex.append(Part("Tilt stake, pipe and grout (1 of 3)", pipe + grout, STEEL, 1))
-    ex.append(Part("Tilt sensor capsule (1 of 3)", cap, ACCENT, 2, (0, 0, 650)))
-    ex.append(Part("Stake head with cable gland (1 of 3)", head, "#D4A017", 3, (0, 0, 1050)))
-    gx, gz = 1300.0, 0.0
-    g = (Pos(gx - 450, 0, gz + 350) * Cylinder(20, 700) + Pos(gx + 450, 0, gz + 350) * Cylinder(20, 700)
-         + Pos(gx, 0, gz + 800) * Box(1000, 90, 60)
-         + Pos(gx - 450, 0, gz + 750) * Box(80, 120, 120) + Pos(gx + 450, 0, gz + 750) * Box(80, 120, 120)
-         + Pos(gx, 0, gz + 860) * Box(1150, 200, 20))
-    ex.append(Part("Crack displacement gauge", g, "#7C3AED", 4))
+    st = {k: Pos(0, 0, P["embed"]) * v for k, v in stake().items()}      # stake stands on z = 0
+    ex.append(Part("Tilt stake, pipe, grout and plugs (1 of 3)", st["stake"] + st["plugs"], STEEL, 1))
+    ex.append(Part("Tilt sensor capsule (1 of 3)", st["capsule"], ACCENT, 2, (0, 0, 750)))
+    ex.append(Part("Stake head with cable gland (1 of 3)", st["head"], "#D4A017", 3, (0, 0, 650)))
+    cg = crack_gauge()
+    gx = 1300.0
+    ex.append(Part("Crack displacement gauge with reader", Pos(gx, 0, P["pin_embed"]) * (cg["gauge"] + cg["reader"]),
+                   "#7C3AED", 4))
     coil = None
     for k in range(4):
         t = Pos(2550, 0, 320 + 18 * k) * Torus(260, 10)
         coil = t if coil is None else coil + t
     ex.append(Part("Sensor bus cable in conduit (coil)", coil, "#111827", 5))
-    mx = 3500.0
-    ex.append(Part("FieldNode core with 6 W panel",
-                   Pos(mx - 90, 0, 1500) * Box(120, 180, 220)
-                   + Pos(mx - 150, 0, 2050) * Rot(0, -35, 0) * Box(260, 360, 25), "#1E3A8A", 6, (-450, 0, 0)))
-    ex.append(Part("Siren and beacon alert unit",
-                   Pos(mx, 0, MAST_H + 60) * Box(120, 120, 120)
-                   + Pos(mx, -130, MAST_H + 60) * Rot(90, 0, 0) * Cylinder(55, 140)
-                   + Pos(mx, 0, MAST_H + 230) * Cylinder(55, 220), "#C2410C", 7, (0, 0, 450)))
-    ex.append(Part("Mast and footing", Pos(mx, 0, MAST_H / 2) * Cylinder(30, MAST_H)
-                   + Pos(mx, 0, -300) * Cylinder(160, 600), "#94A3B8", 8))
+    ms = {k: Pos(3600.0, 0, P["footing"][1]) * v for k, v in mast().items()}
+    ex.append(Part("FieldNode core with 6 W panel", ms["node"], "#1E3A8A", 6, (0, -700, 0)))
+    ex.append(Part("Siren, beacon and keyed switch", ms["alert"], "#C2410C", 7, (0, 0, 450)))
+    ex.append(Part("Mast, footing and earth rod", ms["mast"], "#94A3B8", 8))
     return ex
 
 
@@ -200,38 +174,28 @@ _render(kit_layout(), concept.ROOT / "media" / "exploded.png", offsets=True, lab
 
 # ---------------- cutaway: one tilt stake in the slope, cut on its axis ----------------
 def stake_cutaway():
-    gz = 0.0
     big = 6000.0
     cutter = Pos(0, big / 2, 0) * Box(big, big, big)
     # a 1.4 m block of slope around one stake; surface rises toward -X at the slope angle
     h = 700.0 * TAN
     blk = Polygon(*[(-700, -1300), (700, -1300), (700, -h), (-700, h)], align=None)
     block = extrude(Plane.XZ * blk, amount=450, both=True)
-    bore = (Pos(0, 0, gz - EMBED + GROUT_L / 2) * Cylinder(GROUT_R, GROUT_L)
-            + Pos(0, 0, gz - EMBED + PIPE_L / 2) * Cylinder(PIPE_R, PIPE_L))
-    pipe = Pos(0, 0, gz - EMBED + PIPE_L / 2) * (Cylinder(PIPE_R, PIPE_L) - Cylinder(PIPE_R - 4, PIPE_L - 8))
-    grout = Pos(0, 0, gz - EMBED + GROUT_L / 2) * (Cylinder(GROUT_R, GROUT_L) - Cylinder(PIPE_R, GROUT_L + 2))
-    cap = Pos(0, 0, gz - CAPSULE_DEPTH) * Cylinder(CAPSULE_R, CAPSULE_L)
-    potting = Pos(0, 0, gz - CAPSULE_DEPTH - CAPSULE_L / 2 - 60) * Cylinder(PIPE_R - 4, 120)
-    top = gz - EMBED + PIPE_L
-    head = (Pos(0, 0, top + HEAD_L / 2 - 40) * (Cylinder(HEAD_R, HEAD_L) - Pos(0, 0, -10) * Cylinder(HEAD_R - 5, HEAD_L - 10))
-            + Pos(HEAD_R, 0, top + 20) * Rot(0, 90, 0) * Cylinder(14, 40))
-    lead = tube3((0, 0, gz - CAPSULE_DEPTH + CAPSULE_L / 2), (0, 0, top + 40), 4) \
-        + tube3((0, 0, top + 40), (HEAD_R + 20, 0, top + 20), 4)
+    st = stake()
+    bore = Pos(0, 0, -P["embed"] / 2 - 10) * Cylinder(P["grout_d"] / 2, P["embed"] + 20)
     ps = [Part("Slope soil (site)", block - bore, GROUND, None),
-          Part("Tilt stake: 48 mm pipe in 110 mm grout column", pipe + grout, STEEL, 1),
-          Part("Tilt sensor capsule, about 300 mm below ground", cap, ACCENT, 2),
-          Part("Stake head with cable gland", head, "#D4A017", 3),
-          Part("Bus lead from capsule to gland", lead, "#111827", 5),
-          Part("Foam plug below capsule", potting, "#E5E7EB", None)]
+          Part("Tilt stake: 48.3 mm pipe in 110 mm grout column", st["stake"], STEEL, 1),
+          Part("Tilt sensor capsule, 0.4 m below ground", st["capsule"], ACCENT, 2),
+          Part("Stake head with cable gland", st["head"], "#D4A017", 3),
+          Part("Bus lead from capsule to gland", st["lead"], "#111827", 5),
+          Part("Foam plugs above and below the capsule", st["plugs"], "#E5E7EB", None)]
     out = []
     for p in ps:
-        s = p.shape & cutter
-        if s.volume > 1e-6:
-            out.append(Part(p.name, s, p.color, p.bom))
+        s_ = p.shape & cutter
+        if s_.volume > 1e-6:
+            out.append(Part(p.name, s_, p.color, p.bom))
     return out
 
 
 _render(stake_cutaway(), concept.ROOT / "media" / "cutaway.png", azim=-90, elev=8, labels=True,
         title="SlopeWatch: cutaway of one tilt stake",
-        note="Section on the stake axis. Burying the capsule damps the daily temperature swing that shifts the sensor offset.")
+        note="Section on the stake axis. At 0.4 m the daily soil temperature swing is damped enough to meet R2 (SLW-CAL-001).")

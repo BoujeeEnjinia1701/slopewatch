@@ -2,12 +2,23 @@
 name: SlopeWatch
 slug: slopewatch
 area: Mining
-trl: 2                   # Technology Readiness Level, see .kit/STANDARDS.md section 9
+trl: 3                   # Technology Readiness Level, see .kit/STANDARDS.md section 9
 trl_target: 3
 trl_evidence:
   - docs/01-problem.md
   - docs/02-concept.md
   - docs/03-requirements.md
+  - docs/decisions/0001-trl2-review-decisions.md
+  - docs/04-calcs/01-sizing.md
+  - docs/04-calcs/sizing.py
+  - cad/src/model.py
+  - cad/step/slopewatch-arrangement.step
+  - cad/step/slopewatch-stake.step
+  - cad/step/slopewatch-crack-gauge.step
+  - cad/step/slopewatch-mast.step
+  - cad/drawings/SLW-DWG-001.svg
+  - cad/drawings/SLW-DWG-001.pdf
+  - bom/bom.csv
 shortlisted: false
 pitch: >-
   A network of low-cost tilt and displacement sensors for waste dumps, tailings dams, pit walls and landslide-prone slopes, reporting through FieldNode and alerting when movement accelerates.

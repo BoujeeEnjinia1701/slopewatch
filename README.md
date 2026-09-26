@@ -1,14 +1,14 @@
 # SlopeWatch
 
-![TRL 2](https://img.shields.io/badge/TRL-2%20of%209-0F766E) ![Hardware: CERN-OHL-S-2.0](https://img.shields.io/badge/hardware-CERN--OHL--S--2.0-111827) ![Software: MIT](https://img.shields.io/badge/software-MIT-111827)
+![TRL 3](https://img.shields.io/badge/TRL-3%20of%209-0F766E) ![Hardware: CERN-OHL-S-2.0](https://img.shields.io/badge/hardware-CERN--OHL--S--2.0-111827) ![Software: MIT](https://img.shields.io/badge/software-MIT-111827)
 
-**Area:** Mining · **TRL:** 2 of 9 (concept formulated) · **Prototype budget:** about $250 USD · **Difficulty:** 3 of 5
+**Area:** Mining · **TRL:** 3 of 9 (proof of concept on paper) · **Prototype budget:** about $250 USD · **Difficulty:** 3 of 5
 
 A network of low-cost tilt and displacement sensors for waste dumps, tailings dams, pit walls and landslide-prone slopes, reporting through FieldNode and alerting when movement accelerates.
 
 ![SlopeWatch concept](media/hero.png)
 
-[Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [Review note](docs/REVIEW.md)
+[Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement SLW-DWG-001 (PDF)](cad/drawings/SLW-DWG-001.pdf) · [Calculations SLW-CAL-001](docs/04-calcs/01-sizing.md) · [Review note](docs/REVIEW.md)
 
 ## Concept rationale
 
@@ -62,16 +62,16 @@ Full design precis: [docs/02-concept.md](docs/02-concept.md)
 
 ## Key components
 
-- Three tilt stakes: 48 mm steel pipe grouted 0.8 m into the slope, each with a sealed MEMS inclinometer capsule about 300 mm below ground
-- Crack displacement gauge (100 mm range) across a tension crack at the crest
+- Three tilt stakes: 48.3 mm steel pipe grouted 0.8 m into the slope, each with a sealed MEMS inclinometer capsule 0.4 m below ground
+- Crack displacement gauge (100 mm range) with its own bus reader, across a tension crack at the crest
 - RS-485 sensor bus cable in conduit
 - FieldNode power and radio core (shared lab component) on a mast at the toe
 - Siren and beacon alert unit driven by the node, with a keyed silence switch
 - Gateway and alert software: any LoRaWAN server, SMS alerts and an inverse-velocity plot
 
-First-order estimates (to be checked at TRL 3): readings every 10 min, siren within about 1 min of a warning without any network, under 1 mW of sensor load on the FieldNode, and about $380 in parts per site with the FieldNode core (about $254 without it), above the $250 budget. See the [design precis](docs/02-concept.md) and [requirements](docs/03-requirements.md), including the requirements not yet met.
+Checked by calculation at TRL 3 ([SLW-CAL-001](docs/04-calcs/01-sizing.md)): readings every 10 min; the siren starts about 13 s after a confirmed warning with no network; temperature drift of a buried capsule stays within 0.0012 degrees per hour, about eight times below the precaution threshold; five sunless days in the precaution state with one alarm use about 7.3 Wh of the FieldNode cell's 13.1 Wh at -10 °C. The SlopeWatch-specific parts cost $261 per site with a new mast, $11 over the $250 budget, and $237 on an existing pole; the FieldNode core ($126) is costed in its own project. Siren reach near machinery, the FieldNode 12 V rail current and the remote alert time at the slowest radio setting are at risk. See the [design precis](docs/02-concept.md) and [requirements](docs/03-requirements.md), including the requirement not met.
 
-The working bill of materials is in [bom/bom.csv](bom/bom.csv).
+The priced bill of materials is in [bom/bom.csv](bom/bom.csv); the parametric model is `cad/src/model.py`, with STEP and STL files in `cad/step/` and `cad/stl/`.
 
 ## Safety
 
