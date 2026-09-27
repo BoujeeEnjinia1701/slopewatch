@@ -6,9 +6,9 @@
 
 A network of low-cost tilt and displacement sensors for waste dumps, tailings dams, pit walls and landslide-prone slopes, reporting through FieldNode and alerting when movement accelerates.
 
-![SlopeWatch concept](media/hero.png)
+![SlopeWatch: buried tilt sensor stake for moving slopes, product render](media/render-hero.png)
 
-[Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement SLW-DWG-001 (PDF)](cad/drawings/SLW-DWG-001.pdf) · [Calculations SLW-CAL-001](docs/04-calcs/01-sizing.md) · [Decisions SLW-DDR-002](docs/decisions/0002-recommendations-accepted.md) · [Review note](docs/REVIEW.md)
+[Exploded render](media/render-exploded.png) · [Detail render](media/render-detail.png) · [Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement SLW-DWG-001 (PDF)](cad/drawings/SLW-DWG-001.pdf) · [Calculations SLW-CAL-001](docs/04-calcs/01-sizing.md) · [Decisions SLW-DDR-002](docs/decisions/0002-recommendations-accepted.md) · [Review note](docs/REVIEW.md)
 
 ## Concept rationale
 

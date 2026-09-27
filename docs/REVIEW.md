@@ -212,3 +212,33 @@ README.md only; no controlled document changed and no budget change.
 | What sparked the idea | Institution of Civil Engineers and Northern Mine Research Society | Glamorgan Archives and Hansard (House of Commons, 26 October 1967) added as primary sources; ICE kept; NMRS kept only for the Tribunal's record of the tip sinking on the morning, now attributed to the Tribunal. Corrected: the 1944 slip was on Tip 4, not ground under Tip 7. Tips Act 1969 now cited. Inspiration event unchanged |
 
 Not verified this session: the full text of the 1967 Tribunal report (the Durham Mining Museum copy could not be fetched), so the 9 to 10 ft and 20 ft figures rest on the NMRS quotation of it.
+
+## Session 2026-09-26: product appearance model and photoreal renders
+
+Amish chose this repo for the first batch of product renders on 2026-09-26. This session added `cad/src/product_model.py` (an appearance model for one tilt stake, items 1 to 3 with its bus lead) and pointed the README hero image at `media/render-hero.png`, with a link to `media/render-exploded.png`. The render files are produced separately by the orchestrator. No controlled document, BOM line, budget or `model.py` dimension changed.
+
+### What `product_model.py` adds
+
+- `product_parts()`: 26 parts (13 shell, 9 internal, 4 context) with colour, material, BOM line, group and explode offset, all built from `PARAMS`, `SITE` and `derived()` in `model.py`.
+- Stake head: 10 mm filleted crown, a molding line above the skirt, a white retroreflective band, a curved stake ID label with print and a teal tag, a raised teal arrow on the crown pointing downslope, two stainless cap screws, the reducer ring, and the M20 gland as a locknut, body and domed seal nut.
+- Bus cable leaving the gland in a smooth drip loop into a short ribbed stub of the 20 mm corrugated conduit (item 5), which runs buried downslope.
+- Below ground: the galvanized pipe, bottom plug and grout column; the potted sensor capsule with dark end caps, a teal band and a label with an up arrow; the two closed-cell foam plugs; and the capsule lead up to the gland.
+- Context: a compact patch of 25 degree slope (subsoil, a 45 mm topsoil layer and a few surface stones). The front downslope quarter of the ground, grout, buried pipe and foam plugs is cut away so the capsule 0.4 m below ground shows.
+- `TITLE` and three `RENDER_VIEWS`: hero (stake in the cut-away slope patch), exploded (head, pipe and grout, with the plugs, capsule and lead drawn out to the side) and detail (the stake head above ground, without the slope, so the head fills the frame).
+
+### Where the appearance model differs from `model.py`
+
+Each item is **Proposed, awaiting Amish**.
+
+1. **Head colour.** The BOM says the head is "painted for visibility" without a colour. The model uses a signal amber with a white retroreflective band. Recommendation: adopt amber plus a retroreflective band, which reads at a distance and in headlamps on a working slope.
+2. **Stake ID label and downslope arrow.** Neither is in the BOM. The label identifies each of the three stakes; the arrow on the crown shows that the gland must face downslope at installation. Recommendation: adopt both as item 10 consumables (printed outdoor label and a painted or molded arrow).
+3. **Two cap screws.** `model.py` shows the head resting on its reducer ring with no fixing. The model adds two stainless screws through the head into the pipe, in the 40 mm overlap. Recommendation: adopt, so the head cannot be lifted or turned by animals or wind-blown debris; add them to item 10.
+4. **Conduit stub at the stake.** `model.py` stops the bus lead 60 mm outside the head. The model adds a drip loop and a 20 mm conduit stub about 70 mm out of the ground, 175 mm downslope of the stake. Recommendation: adopt as the reference arrangement; the conduit is already in item 5.
+5. **Lead routing inside the head.** In `model.py` the lead turns horizontal at 230 mm above ground; here it bends to the gland axis at 220 mm. The gland position and size are unchanged. No action needed beyond noting it.
+6. **Pipe split at ground level.** The pipe is two render parts (above and below ground) so the detail view can omit the buried parts. Size and length are unchanged. No action needed.
+
+The cable gland hex (30 mm across flats) is slightly larger than the 28 mm gland envelope in `model.py`; this is a cosmetic difference, not a change of gland size.
+
+### Status
+
+This is an appearance model only: no tolerances and no fabrication detail. `trl: 3` and `trl_target: 3` in `project.yaml` are unchanged, and TRL 4 remains on hold by Amish's instruction.
