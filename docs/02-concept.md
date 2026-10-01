@@ -3,9 +3,9 @@ doc_id: SLW-PRC-001
 title: SlopeWatch design precis
 project: SlopeWatch
 doc_type: Design precis
-version: "0.4"
+version: "0.5"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-01'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -25,11 +25,15 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Recommendations accepted by Amish (DDR-002)
+- version: "0.5"
+  date: '2026-10-01'
+  author: Amish Chadha
+  change: Constructable design (SLW-DDR-003) and build plan SLW-BLD-001; cost against the value-engineering target; key numbers from SLW-CAL-001 v0.3
 ---
 
 # SlopeWatch design precis
 
-SlopeWatch watches a slope for accelerating movement with three grouted tilt stakes and a crack gauge, cabled to one FieldNode core on an existing pole (or an optional mast) at the toe, and sounds a siren and beacon on site when the tilt rate passes a warning threshold, while sending an SMS through LoRaWAN. The TRL 3 calculations (SLW-CAL-001) show that the inclinometer resolves the tilt-rate thresholds with a wide margin, that a capsule 0.4 m deep keeps temperature drift within R2 even in wet soil, that the siren starts about 13 s after a confirmed warning, and that the FieldNode cell covers five sunless days with an alarm. Amish accepted the recommended choices on 2026-09-25 (SLW-DDR-002): the reference site uses an existing pole, with the mast as a site option, and the keyed silence switch stands on its own post about 5 m from the siren. The SlopeWatch-specific parts then cost $245 against the $250 budget, or $269 where a new mast is needed; the FieldNode core ($126) is costed in its own project. The main risks are siren reach near machinery, the unrated FieldNode 12 V rail current and the remote alert time at the slowest radio setting.
+SlopeWatch watches a slope for accelerating movement with three grouted tilt stakes and a crack gauge, cabled to one FieldNode core on an existing pole (or an optional mast) at the toe, and sounds a siren and beacon on site when the tilt rate passes a warning threshold, while sending an SMS through LoRaWAN. The TRL 3 calculations (SLW-CAL-001) show that the inclinometer resolves the tilt-rate thresholds with a wide margin, that a capsule 0.4 m deep keeps temperature drift within R2 even in wet soil, that the siren starts about 13 s after a confirmed warning, and that the FieldNode cell covers five sunless days with an alarm. Amish accepted the recommended choices on 2026-09-25 (SLW-DDR-002): the reference site uses an existing pole, with the mast as a site option, and the keyed silence switch stands on its own post about 5 m from the siren. Making the design physically buildable (SLW-DDR-003, open for Amish's review) added end caps, stand tubes and centring collars to the stakes, stake heads from stock drainage fittings with conduit fittings, clamp blocks and ball joints on the crack gauge, and a pole mounting for the alert unit; the prototype build plan is SLW-BLD-001. Value-engineering target: USD 250. Estimated cost of the constructable design: USD 296.50 for the SlopeWatch-specific parts of the reference site (USD 46.50 over the target), or $324.50 where a new mast is needed; the FieldNode core ($126) is costed in its own project. The main risks are siren reach near machinery, the unrated FieldNode 12 V rail current and the remote alert time at the slowest radio setting.
 
 ![Hero render](../media/hero.png)
 
@@ -69,13 +73,13 @@ Table 2. Main components.
 
 | # | Component | Choice (decided by Amish, 2026-09-25) | Notes |
 | --- | --- | --- | --- |
-| 1 | Tilt stake (3 per site) | 48.3 x 3.2 mm galvanized steel pipe, 1.0 m long, 0.8 m in ground, lower 450 mm in a 110 mm grout column | Couples the stake to the surface layer; steel passes R2 (SLW-CAL-001, section B) |
-| 2 | Tilt sensor capsule (3) | Murata SCL3300 inclinometer in mode 1, small microcontroller, RS-485 transceiver and 3.3 V regulator, potted in a 34 x 130 mm tube | Sits 0.4 m below ground between foam plugs to damp temperature swings |
-| 3 | Stake head (3) | 120 mm PVC cap with cable gland facing downslope | Keeps rain out of the pipe; marks the stake |
-| 4 | Crack displacement gauge | 100 mm linear potentiometer displacement sensor between two anchor pins, with guard and an RS-485 reader | Re-settable when the crack opens past range |
+| 1 | Tilt stake (3 per site) | 48.3 x 3.2 mm galvanized steel pipe, 1.0 m long, 0.8 m in ground, screwed end cap, lower 450 mm in a 110 mm grout column | Couples the stake to the surface layer; steel passes R2 (SLW-CAL-001, section B) |
+| 2 | Tilt sensor capsule (3) | Murata SCL3300 inclinometer in mode 1, small microcontroller, RS-485 transceiver and 3.3 V regulator, potted in a 34 x 130 mm tube with two centring collars | Sits 0.4 m below ground on a stand tube, under a foam plug, to damp temperature swings |
+| 3 | Stake head (3) | 110 mm PVC drainage reducer, pipe and cap, with conduit fittings for the bus in (upslope) and out (downslope) | Keeps rain out of the pipe; joins the capsule to the bus; marks the stake |
+| 4 | Crack displacement gauge | 100 mm linear potentiometer displacement sensor on ball joints between clamp blocks on two anchor pins, under a folded guard, with an RS-485 reader | Re-settable when the crack opens past range |
 | 5 | Sensor bus cable | Four-core shielded outdoor cable (power and RS-485) in corrugated conduit, about 60 m | Surface-laid in the prototype; buried where the ground allows |
 | 6 | FieldNode core | Lab shared node: IP65 box, 6 W panel, LiFePO4 3.2 V 6 Ah, MPPT charger, STM32WL-class LoRaWAN radio, two M12 ports | Costed in the FieldNode project (SLW-DDR-001 D1) |
-| 7 | Siren and beacon alert unit | 12 V piezo siren, about 110 dB(A) at 1 m, and an amber LED beacon, switched by the node | Keyed silence switch on its own post about 5 m from the mast, on a 7 m lead (SLW-DDR-002) |
+| 7 | Siren and beacon alert unit | 12 V piezo siren, about 110 dB(A) at 1 m, and an amber LED beacon, switched by the node, in an alert box on a back plate clamped to the pole with V-blocks and band clamps | Keyed silence switch on its own post about 5 m from the mast, on a 7 m lead (SLW-DDR-002) |
 | 8 | Mast and footing (site option) | 48.3 x 3.2 mm galvanized pipe, 3.2 m above ground, in a 320 mm x 0.6 m concrete footing, with an earth rod | Only where no existing pole or building can carry the node (SLW-DDR-002) |
 | 9 | Gateway and alert software | Any LoRaWAN server; open alert service with SMS and inverse-velocity plot | Not shown in the media; gateway (TwinKit, about $290) not in site cost |
 
@@ -87,7 +91,7 @@ Table 2. Main components.
 
 *Figure 4. Section through one tilt stake on its axis, showing the grout column, the capsule 0.4 m below ground between foam plugs, and the lead to the cable gland.*
 
-The general arrangement drawing [SLW-DWG-001](../cad/drawings/SLW-DWG-001.pdf) (Rev P2) gives the main dimensions of the stake, crack gauge, mast and switch post, generated from the parametric model `cad/src/model.py`.
+The general arrangement drawing [SLW-DWG-001](../cad/drawings/SLW-DWG-001.pdf) (Rev P4) gives the main dimensions of the stake, crack gauge, mast and switch post, generated from the parametric model `cad/src/model.py`.
 
 ## Key numbers (SLW-CAL-001)
 
@@ -110,31 +114,31 @@ Table 3. Key numbers and requirement status.
 | 30 min alarm | 3.00 Wh, 0.45 A at 12 V, 2.00 A from the cell | R8 at risk on rail current |
 | 5 sunless days in precaution with one alarm | 7.3 Wh of 13.1 Wh usable at -10 °C | R8 met on energy |
 | Bus cable; voltage drop | 59.2 m; 0.096 V on the 5 V rail | |
-| Mast in a 35 m/s gust (switch box off the mast) | 113 MPa (factor 2.1); footing factor 2.7 | |
-| Siren level at the keyed switch | about 95 dB(A) on its post 5 m away (43 min NIOSH allowance); about 105 dB(A) on the mast (4 min) | Safety |
-| Stake installation | 43 min estimated; 3.6 L of grout | R10 not verifiable at TRL 3 |
+| Mast in a 35 m/s gust (alert unit side-mounted) | 136 MPa (factor 1.7); footing factor 2.2 | |
+| Siren level at the keyed switch | about 95 dB(A) on its post 5 m away (42 min NIOSH allowance); about 106 dB(A) on the mast (4 min) | Safety |
+| Stake installation | 44 min estimated; 3.7 L of grout | R10 not verifiable at TRL 3 |
 | 90 days of raw data | 363 kB | R12 met on paper |
 
 ### Cost
 
-Table 4. Parts cost for the reference site (see `bom/bom.csv`).
+Table 4. Parts cost for the reference site (see `bom/bom.csv`). Value-engineering target: USD 250 (`budget_usd`, a hypothetical control target, not a limit). Estimated cost of the constructable design: USD 296.50 (USD 46.50 over the target).
 
 | Group | Cost | Requirement |
 | --- | --- | --- |
-| Stakes, capsules and heads (items 1 to 3, three sets) | $123 | |
-| Crack gauge with reader, cable, alert unit with switch post, consumables (items 4, 5, 7, 10) | $122 | |
-| **SlopeWatch-specific parts, reference site (existing pole)** | **$245** | R11 met on paper, $5 within $250 |
-| Optional mast and footing (item 8), where no pole exists | +$24, giving $269 | Site option (SLW-DDR-002) |
+| Stakes, capsules and heads (items 1 to 3, three sets) | $154.50 | |
+| Crack gauge with reader, cable, alert unit with switch post, consumables (items 4, 5, 7, 10) | $142.00 | |
+| **SlopeWatch-specific parts, reference site (existing pole)** | **$296.50** | R11 over the value-engineering target by $46.50 |
+| Optional mast and footing (item 8), where no pole exists | +$28, giving $324.50 | Site option (SLW-DDR-002) |
 | FieldNode core (item 6, costed in FieldNode) | $126 | Outside R11 |
-| Reference site total with FieldNode | $371 | |
+| Reference site total with FieldNode | $422.50 | |
 | LoRaWAN gateway, if the site has no coverage | not in site cost (TwinKit gateway about $290) | |
 
 ## Key design choices
 
 Amish accepted every recommended choice on 2026-09-25 ("i accept all your recommendations, go with them across all repos"), recorded in SLW-DDR-002. Each choice below is decided by Amish, 2026-09-25: go with recommendation.
 
-- **Budget (D1).** The FieldNode core is costed in its own project, as SunSpoke does with the SwapCell pack; the $250 budget covers SlopeWatch-specific parts.
-- **Reference site on an existing pole (DDR-002 item 4).** The node and alert unit go on an existing pole or building; the mast and footing (item 8) are a site option. This closes the $11 gap that a new mast left.
+- **Budget (D1).** The FieldNode core is costed in its own project, as SunSpoke does with the SwapCell pack; the $250 value-engineering target covers SlopeWatch-specific parts.
+- **Reference site on an existing pole (DDR-002 item 4).** The node and alert unit go on an existing pole or building; the mast and footing (item 8) are a site option. This closed the $11 gap that a new mast left at the time.
 - **Tailings dams in the pitch (D2).** Kept, with the scope limits in SLW-PRB-001 stated in every document: supplementary layer only, installed with the owner's and engineer of record's permission, no claim to detect brittle failure.
 - **Surface tilt stakes plus a crack gauge (D3),** rather than borehole in-place inclinometers (deep movement, but a drill rig and far higher cost), GNSS receivers (costly and slower to resolve millimeters) or crack gauges alone.
 - **Wired bus to one FieldNode (D4).** About $41 per extra stake plus cable, against a FieldNode on every stake. A wireless stake variant is recorded for later.

@@ -3,9 +3,9 @@ doc_id: SLW-CAL-001
 title: SlopeWatch sizing calculations
 project: SlopeWatch
 doc_type: Calculation
-version: "0.2"
+version: "0.3"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-01'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -17,17 +17,21 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Recommendations accepted by Amish (DDR-002)
+- version: "0.3"
+  date: '2026-10-01'
+  author: Amish Chadha
+  change: Re-run for the constructable design (SLW-DDR-003); crack gauge rod, side-mounted alert unit, hole depth, install time and cost updated; cost reported against the value-engineering target
 ---
 
 # SlopeWatch sizing calculations
 
-On paper, SlopeWatch meets seven of its thirteen requirements (five by calculation, two by design), has four at risk, misses none and leaves two that only a field trial can show. This issue applies Amish's decisions of 2026-09-25 (SLW-DDR-002): the reference site mounts the node on an existing pole, with a new mast as a site option, so R11 is met at $245 against $250 ($269 with the optional mast); and the keyed silence switch moves to its own post about 5 m from the siren, which cuts the level there from about 105 to about 95 dB(A). The four at risk are the remote alert time at the slowest radio setting (R6), siren reach (R7), the FieldNode 12 V rail current during an alarm (R8) and the FieldNode enclosure temperature (R9). The v0.1 calculations changed four details of the TRL 2 concept: the sensor capsule moves from 0.3 m to 0.4 m deep, because at 0.3 m wet soil lets the daily temperature cycle through faster than R2 allows; the crack gauge gets its own RS-485 reader; the precaution beacon is limited to 1 % duty, because a 5 % slow flash would drain the cell in a long precaution spell; and the crack-gauge precaution rate is taken over 24 h. Every number here is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [B5], is the line of that script's output that carries it.
+On paper, SlopeWatch meets six of its thirteen requirements (four by calculation, two by design), has four at risk, misses none, leaves two that only a field trial can show, and is over its value-engineering target on cost (R11). This issue (v0.3) re-runs the calculations for the constructable design of SLW-DDR-003: the parts added to make the design buildable bring the reference site to $296.50, $46.50 over the $250 value-engineering target, and the side-mounted alert unit lowers the optional mast's factor on yield from 2.1 to 1.7. It keeps Amish's decisions of 2026-09-25 (SLW-DDR-002): the reference site mounts the node on an existing pole, with a new mast as a site option; and the keyed silence switch moves to its own post about 5 m from the siren, which cuts the level there from about 105 to about 95 dB(A). The four at risk are the remote alert time at the slowest radio setting (R6), siren reach (R7), the FieldNode 12 V rail current during an alarm (R8) and the FieldNode enclosure temperature (R9). The v0.1 calculations changed four details of the TRL 2 concept: the sensor capsule moves from 0.3 m to 0.4 m deep, because at 0.3 m wet soil lets the daily temperature cycle through faster than R2 allows; the crack gauge gets its own RS-485 reader; the precaution beacon is limited to 1 % duty, because a 5 % slow flash would drain the cell in a long precaution spell; and the crack-gauge precaution rate is taken over 24 h. Every number here is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [B5], is the line of that script's output that carries it.
 
 > **Safety:** These are first-principles estimates for a paper proof of concept. They do not show that any slope is safe or that an alarm will come in time. SlopeWatch cannot warn of brittle failures, deep-seated movement or failures between its stakes. See SLW-PRC-001, Safety.
 
 ## Scope and method
 
-The note checks every requirement in SLW-REQ-001 v0.4 against the design in SLW-PRC-001 v0.4 and the parametric model `cad/src/model.py`. The script imports the model's `PARAMS`, `SITE` and `derived()`, so the pipe, capsule depth, grout column, gauge, mast and cable run used here are the ones in the STEP files and in drawing SLW-DWG-001. It reads `bom/bom.csv` and `budget_usd` in `project.yaml`, and writes the results table to `docs/04-calcs/results.csv`. Run it from the repo root with `python docs/04-calcs/sizing.py`.
+The note checks every requirement in SLW-REQ-001 v0.5 against the design in SLW-PRC-001 v0.5, the constructable design of SLW-DDR-003 and the parametric model `cad/src/model.py`. The script imports the model's `PARAMS`, `SITE` and `derived()`, so the pipe, capsule depth, grout column, gauge, mast and cable run used here are the ones in the STEP files and in drawing SLW-DWG-001. It reads `bom/bom.csv` and `budget_usd` in `project.yaml`, and writes the results table to `docs/04-calcs/results.csv`. Run it from the repo root with `python docs/04-calcs/sizing.py`.
 
 The design case is the reference site of SLW-REQ-001: three stakes 10 m apart on the fall line of a 25 degree face (20 m of face, 8.5 m of rise), a crack gauge 8 m above the top stake, and the node on an existing pole (or the optional mast) 15 m beyond the toe, with the keyed switch on its own post about 5 m from the siren, and ambient -10 to 50 °C at the surface.
 
@@ -75,8 +79,8 @@ The daily soil temperature wave shrinks with depth by exp(-z/d), where d is the 
 
 ## C. Crack gauge (R3)
 
-- **Resolution.** A 12-bit reading of the 100 mm stroke steps by 0.0244 mm; the 0.1 % linearity class gives 0.10 mm of absolute error [C1]. The rate of opening, which drives the alerts, depends on repeatability rather than linearity. **R3 is met by design** (datasheet class); re-setting after 100 mm needs only a spanner on the rod clamp.
-- **Thermal swing.** The 580 mm steel rod and 260 mm aluminum body under the guard change length by 0.39 mm over a 30 K day, a peak apparent rate of 0.051 mm per hour [C2]. Over a 3 h window that reads as up to 1.22 mm per day, above the 1 mm per day precaution placeholder; over a 24 h window it cancels [C3]. The crack-gauge precaution rate is therefore taken over 24 h. The 1 mm per hour warning placeholder is 20 times the thermal rate, and at that rate the stroke lasts 100 h [C4].
+- **Resolution.** A 12-bit reading of the 100 mm stroke steps by 0.0244 mm; the 0.1 % linearity class gives 0.10 mm of absolute error [C1]. The rate of opening, which drives the alerts, depends on repeatability rather than linearity. **R3 is met by design** (datasheet class); re-setting after 100 mm needs only an Allen key on a clamp block set screw.
+- **Thermal swing.** The 501 mm steel extension rod and 260 mm aluminum body under the guard change length by 0.36 mm over a 30 K day, a peak apparent rate of 0.047 mm per hour [C2]. Over a 3 h window that reads as up to 1.13 mm per day, above the 1 mm per day precaution placeholder; over a 24 h window it cancels [C3]. The crack-gauge precaution rate is therefore taken over 24 h. The 1 mm per hour warning placeholder is 21 times the thermal rate, and at that rate the stroke lasts 100 h [C4].
 - **Reader.** The gauge sits about 60 m of cable from the node, too far for a clean analog signal on a cable shared with the RS-485 bus. It gets the capsule's board without the inclinometer, in a small IP67 box (BOM line 4, +$6).
 
 ## D. Sampling, airtime and alert latency (R4, R5, R6)
@@ -90,7 +94,7 @@ The daily soil temperature wave shrinks with depth by exp(-z/d), where d is the 
 
 - **Open ground.** The siren gives 65.5 to 68.5 dB(A) at 100 m [E1] and reaches 65 dB(A) out to about 105 to 139 m [E2]. **R7 is at risk**: met in open, quiet ground with 0.5 dB to spare over soft ground, before any allowance for a siren that falls short of its rating or for wind.
 - **Near machinery.** Against 80 dB(A) of running plant, an alarm 15 dB above ambient reaches only about 5 m [E3]. Sites with machinery need a second alert unit at the work face or a radio pager for operators (D7 option).
-- **Close range.** A switch box on the mast, as in v0.1, would sit at about 105 dB(A), and 2 m from the mast the level is about 102 dB(A); at 105 dB(A) the NIOSH limit allows about 4 min [E4]. Under SLW-DDR-002 the keyed switch stands on its own post about 5 m from the mast, on a 7 m lead, where the level is 95.5 dB(A) and the NIOSH allowance about 43 min [E5]. Silencing takes seconds; people should still not stand at the mast during an alarm.
+- **Close range.** The siren now sits on the side-mounted alert box, its centre 3.23 m above ground on the mast (SLW-DDR-003; 3.26 m before). A switch box on the mast, as in v0.1, would sit at about 106 dB(A), and 2 m from the mast the level is about 102 dB(A); at 106 dB(A) the NIOSH limit allows about 4 min [E4]. Under SLW-DDR-002 the keyed switch stands on its own post about 5 m from the mast, on a 7 m lead, where the level is 95.5 dB(A) and the NIOSH allowance about 42 min [E5]. Silencing takes seconds; people should still not stand at the mast during an alarm.
 
 ## F. Energy and rail current (R8)
 
@@ -108,14 +112,14 @@ The daily soil temperature wave shrinks with depth by exp(-z/d), where d is the 
 
 ## H. Mast in wind
 
-- **Loads.** The mast is a site option (SLW-DDR-002); where it is used, a 35 m/s gust puts 51 N on the panel, 29 N on the node enclosure, 48 N on the siren, horn and beacon and 136 N on the mast: 264 N and a base moment of 541 N·m [H1]. The switch box is no longer on the mast.
-- **Mast.** The 48.3 x 3.2 mm pipe sees 113 MPa, a factor of 2.1 on the 235 MPa yield [H2], and deflects 62 mm at the top [H3]. The alert unit on the mast adds about 40 % to the base moment of a node alone. An existing pole must carry the same loads; the installer checks it by eye and with the site owner.
-- **Footing.** The 320 mm by 600 mm footing resists 704 N sideways in medium soil, a factor of 2.7 [H4]. Soft or wet ground needs a site check. This is not a code check.
+- **Loads.** The mast is a site option (SLW-DDR-002); where it is used, a 35 m/s gust puts 51 N on the panel, 29 N on the node enclosure, 81 N on the alert box, horn, beacon and the part of its back plate below the box, and 136 N on the mast: 298 N and a base moment of 653 N·m [H1]. The switch box is no longer on the mast. The side-mounted alert unit of SLW-DDR-003 adds its back plate to the wind area, which v0.2 (48 N, 541 N·m) did not count.
+- **Mast.** The 48.3 x 3.2 mm pipe sees 136 MPa, a factor of 1.7 on the 235 MPa yield [H2], and deflects 79 mm at the top [H3]. The alert unit on the mast adds about 70 % to the base moment of a node alone. An existing pole must carry the same loads; the installer checks it by eye and with the site owner.
+- **Footing.** The 320 mm by 600 mm footing resists 668 N sideways in medium soil, a factor of 2.2 [H4]. Soft or wet ground needs a site check. This is not a code check.
 
 ## I. Installing one stake (R10)
 
-- **Materials.** Each hole is 110 mm by 820 mm (7.8 L of spoil); the grout column takes 3.64 L, about 7.3 kg of dry mix [I1].
-- **Time.** Augering (15 min), mixing (5 min), setting and grouting (5 min), backfilling (8 min), fitting the capsule and head (7 min) and checking the reading (3 min) add up to 43 min against the 45 min of R10 [I2]. The grout then sets for 24 h before the baseline starts [I3]. **R10 is not verifiable at TRL 3**: the estimate is at the limit and the auger rate depends on the ground; only a timed installation can show it.
+- **Materials.** Each hole is 110 mm by 829 mm (7.9 L of spoil), deep enough for 20 mm of grout under the screwed end cap; the grout column takes 3.68 L, about 7.4 kg of dry mix [I1].
+- **Time.** Augering (15 min), mixing (5 min), setting and grouting (5 min), backfilling (8 min), fitting the stand tube, capsule, foam plug, head and conduit fittings and joining the bus (8 min) and checking the reading (3 min) add up to 44 min against the 45 min of R10 [I2]. The grout then sets for 24 h before the baseline starts [I3]. **R10 is not verifiable at TRL 3**: the estimate is at the limit and the auger rate depends on the ground; only a timed installation can show it.
 
 ## J. Data (R12)
 
@@ -123,11 +127,15 @@ A 28-byte record per reading gives 363 kB for 90 days in binary, or 1.04 MB as C
 
 ## K. Cost (R11)
 
-The BOM has 10 lines, all priced, totaling $395.00 with the FieldNode core and the optional mast [K1]. Under SLW-DDR-001 D1 the FieldNode core ($126) is costed in FieldNode, and under SLW-DDR-002 the reference site mounts the node on an existing pole, so the $250 `budget_usd` covers the SlopeWatch-specific parts without the mast: $245.00, $5.00 (2.0 %) within budget [K2]. A site that needs the mast and footing (line 8, $24) comes to $269.00, $19.00 over; the reference site with the FieldNode core comes to $371.00 [K3]. The three stake sets cost $123.00, $41.00 per extra stake plus about 10 m of cable [K4]. The TRL 3 changes added $6 for the crack-gauge reader and $1 for foam plugs; SLW-DDR-002 added $8 for the switch post and lead (line 7, $25 to $33). **R11 is met on paper** for the reference site. A LoRaWAN gateway, where needed, is outside the site cost.
+`budget_usd` is a hypothetical value-engineering target, not a spending limit (STANDARDS section 18). The BOM has 10 lines, all priced, totaling $450.50 with the FieldNode core and the optional mast [K1]. Under SLW-DDR-001 D1 the FieldNode core ($126) is costed in FieldNode, and under SLW-DDR-002 the reference site mounts the node on an existing pole.
+
+Value-engineering target: USD 250. Estimated cost of the constructable design: USD 296.50 for the reference site (USD 46.50, or 18.6 %, over the target) [K2]. A site that needs the mast and footing (line 8, $28) comes to $324.50, $74.50 over the target; the reference site with the FieldNode core comes to $422.50 [K3]. The three stake sets cost $154.50, $51.50 per extra stake plus about 10 m of cable [K4].
+
+The constructable design (SLW-DDR-003) added $51.50 to the reference site: screwed end caps and stand tubes ($12 for three stakes), centring collars ($1.50), stake heads from stock drainage fittings with two conduit fittings and lever connectors ($18), the crack gauge clamp blocks, ball joints, rod coupling, folded guard and pegs ($8), the alert unit's back plate, V-blocks and band clamps and the switch back plate and hose clips ($10), and tape and a field-wireable plug ($2). Earlier, the TRL 3 changes added $6 for the crack-gauge reader and $1 for foam plugs, and SLW-DDR-002 added $8 for the switch post and lead. **R11 is over the value-engineering target by $46.50.** The main cost drivers and the savings worth trying are listed in the design decisions register (SLW-DEC-001). A LoRaWAN gateway, where needed, is outside the site cost.
 
 ## L. Results against every requirement
 
-*Table 3. Requirement status from this note [L]. At-risk items first; none is unmet.*
+*Table 3. Requirement status from this note [L]. At-risk items first; none is unmet; R11 is reported against the value-engineering target.*
 
 | ID | Requirement | Value | Target | Status |
 | --- | --- | --- | --- | --- |
@@ -139,13 +147,13 @@ The BOM has 10 lines, all priced, totaling $395.00 with the FieldNode core and t
 | R2 | Limit false tilt from temperature | 0.0092 degrees per day, 0.0012 degrees per hour (wet soil, 0.4 m) | 0.02 per day, 0.002 per hour | Met on paper |
 | R4 | Sample and report | 10 min readings; 10.9 s per hour at SF12 | 10 min; 60 and 10 min uplinks | Met on paper |
 | R12 | Open, local data | 363 kB for 90 days | 90 days, CSV, any server | Met on paper |
-| R11 | Affordable | $245 for the reference site (existing pole); $269 with the optional mast | $250, SlopeWatch-specific parts, reference site | Met on paper |
+| R11 | Affordable | $296.50 for the reference site (existing pole); $324.50 with the optional mast | $250 value-engineering target, SlopeWatch-specific parts, reference site | Over the value-engineering target by $46.50 |
 | R3 | Measure crack opening | 100 mm stroke, 0.024 mm step, 0.10 mm linearity | 100 mm, 0.1 mm | Met by design |
 | R5 | Local alarm without a network | 13 s | 60 s | Met by design |
-| R10 | Installable by a small team | 43 min estimate | 45 min, hand tools | Not verifiable at TRL 3 |
+| R10 | Installable by a small team | 44 min estimate | 45 min, hand tools | Not verifiable at TRL 3 |
 | R13 | Trustworthy alarms | Needs a field record | One false warning per year or fewer | Not verifiable at TRL 3 |
 
-Counts: 0 not met, 4 at risk, 5 met on paper, 2 met by design, 2 not verifiable at TRL 3. In v0.1, R11 was not met ($261 with a new mast).
+Counts: 0 not met, 4 at risk, 4 met on paper, 2 met by design, 2 not verifiable at TRL 3, and R11 over the value-engineering target. In v0.1, R11 was not met ($261 with a new mast); in v0.2 it was within the target ($245) before the parts needed for construction were added.
 
 ## Checks against the TRL 2 figures
 
@@ -161,5 +169,5 @@ Counts: 0 not met, 4 at risk, 5 met on paper, 2 met by design, 2 not verifiable 
 | Siren about 65 to 70 dB(A) at 100 m | 65.5 to 68.5 dB(A) | Stands |
 | Bus drop about 0.1 V | 0.096 V | Stands |
 | About 3 kB per day | 363 kB for 90 days (about 4 kB per day) | Stands |
-| About $254 without FieldNode, $380 with | $261 and $387 in v0.1; $245 and $371 for the reference site in v0.2 (SLW-DDR-002) | Precis, BOM notes and README updated |
+| About $254 without FieldNode, $380 with | $261 and $387 in v0.1; $245 and $371 for the reference site in v0.2 (SLW-DDR-002); $296.50 and $422.50 in v0.3 (SLW-DDR-003) | Precis, BOM notes and README updated |
 | TwinKit gateway about $285 | About $290 (TwinKit TRL 3 BOM) | Updated |

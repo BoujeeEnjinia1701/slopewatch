@@ -116,11 +116,11 @@ parts = [
     Part("Ground: 25 degree slope with tension crack (site)", ground, GROUND, None),
     Part("Tilt stakes, pipe and grout (3)", stakes, STEEL, 1),
     Part("Tilt sensor capsules (3)", capsules, ACCENT, 2),
-    Part("Stake heads with cable gland (3)", heads, "#D4A017", 3),
+    Part("Stake heads with conduit fittings (3)", heads, "#D4A017", 3),
     Part("Crack displacement gauge with reader", gauge, "#7C3AED", 4),
     Part("Sensor bus cable in conduit", cable, "#111827", 5),
     Part("FieldNode core with 6 W panel", node, "#1E3A8A", 6),
-    Part("Siren, beacon and keyed switch post", siren, "#C2410C", 7),
+    Part("Alert unit and keyed switch post", siren, "#C2410C", 7),
     Part("Mast, footing and earth rod (site option)", mast_s, "#94A3B8", 8),
 ]
 
@@ -154,9 +154,9 @@ render_all(
 def kit_layout():
     ex = []
     st = {k: Pos(0, 0, P["embed"]) * v for k, v in stake().items()}      # stake stands on z = 0
-    ex.append(Part("Tilt stake, pipe, grout and plugs (1 of 3)", st["stake"] + st["plugs"], STEEL, 1))
+    ex.append(Part("Tilt stake: pipe, end cap, grout, stand tube, plug (1 of 3)", st["stake"] + st["plugs"], STEEL, 1))
     ex.append(Part("Tilt sensor capsule (1 of 3)", st["capsule"], ACCENT, 2, (0, 0, 750)))
-    ex.append(Part("Stake head with cable gland (1 of 3)", st["head"], "#D4A017", 3, (0, 0, 650)))
+    ex.append(Part("Stake head with conduit fittings (1 of 3)", st["head"], "#D4A017", 3, (0, 0, 650)))
     cg = crack_gauge()
     gx = 1300.0
     ex.append(Part("Crack displacement gauge with reader", Pos(gx, 0, P["pin_embed"]) * (cg["gauge"] + cg["reader"]),
@@ -168,9 +168,9 @@ def kit_layout():
     ex.append(Part("Sensor bus cable in conduit (coil)", coil, "#111827", 5))
     ms = {k: Pos(3600.0, 0, P["footing"][1]) * v for k, v in mast().items()}
     ex.append(Part("FieldNode core with 6 W panel", ms["node"], "#1E3A8A", 6, (0, -700, 0)))
-    ex.append(Part("Siren and beacon", ms["alert"], "#C2410C", 7, (0, 0, 450)))
+    ex.append(Part("Alert unit on its back plate", ms["alert"], "#C2410C", 7, (0, 0, 450)))
     sp = switch_post()
-    ex.append(Part("Keyed switch on its own post", Pos(4300.0, 0, P["switch_post"][3]) * (sp["post"] + sp["switch"]),
+    ex.append(Part("keyed switch on its own post", Pos(4300.0, 0, P["switch_post"][3]) * (sp["post"] + sp["switch"]),
                    "#C2410C", 7))
     ex.append(Part("Mast, footing and earth rod (site option)", ms["mast"], "#94A3B8", 8))
     return ex
@@ -190,13 +190,13 @@ def stake_cutaway():
     blk = Polygon(*[(-700, -1300), (700, -1300), (700, -h), (-700, h)], align=None)
     block = extrude(Plane.XZ * blk, amount=450, both=True)
     st = stake()
-    bore = Pos(0, 0, -P["embed"] / 2 - 10) * Cylinder(P["grout_d"] / 2, P["embed"] + 20)
+    bore = Pos(0, 0, -D["hole_depth"] / 2) * Cylinder(P["grout_d"] / 2, D["hole_depth"])
     ps = [Part("Slope soil (site)", block - bore, GROUND, None),
           Part("Tilt stake: 48.3 mm pipe in 110 mm grout column", st["stake"], STEEL, 1),
           Part("Tilt sensor capsule, 0.4 m below ground", st["capsule"], ACCENT, 2),
-          Part("Stake head with cable gland", st["head"], "#D4A017", 3),
-          Part("Bus lead from capsule to gland", st["lead"], "#111827", 5),
-          Part("Foam plugs above and below the capsule", st["plugs"], "#E5E7EB", None)]
+          Part("Stake head with conduit fittings", st["head"], "#D4A017", 3),
+          Part("Capsule lead and bus conduit", st["lead"], "#111827", 5),
+          Part("Foam plug above the capsule; stand tube below", st["plugs"], "#E5E7EB", None)]
     out = []
     for p in ps:
         s_ = p.shape & cutter

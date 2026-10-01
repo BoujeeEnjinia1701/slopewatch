@@ -1,4 +1,4 @@
-"""SlopeWatch general arrangement sheet SLW-DWG-001, Rev P2 (TRL 3, SLW-DDR-002).
+"""SlopeWatch general arrangement sheet SLW-DWG-001, Rev P4 (TRL 3, constructable design SLW-DDR-003).
 
 Run from the repo root:  python cad/src/sheets.py
 Writes cad/drawings/SLW-DWG-001.svg, .pdf and .png from the parametric model in cad/src/model.py
@@ -15,6 +15,7 @@ from drawing import Sheet, _viewbox, _t, M, TB_Y, INK, MUTED  # noqa: E402
 from model import PARAMS as P, SITE, arrangement, stake, derived  # noqa: E402
 
 DATE = "2026-09-25"
+DATE4 = "2026-10-01"
 
 
 def safe_views(part, workdir, names=("front", "top", "right", "iso"), line_weight=0.35):
@@ -103,12 +104,13 @@ def main():
     views = safe_views(asm, work)
     sec = safe_views(stake_section(), work / "section", names=("front",))
     bb = asm.bounding_box()
-    s = Sheet(project="SlopeWatch", title="General arrangement", dwg_no="SLW-DWG-001", rev="P3",
-              author="Amish Chadha", date=DATE, scale=None, theme="technical",
+    s = Sheet(project="SlopeWatch", title="General arrangement", dwg_no="SLW-DWG-001", rev="P4",
+              author="Amish Chadha", date=DATE4, scale=None, theme="technical",
               material="Galvanized steel, cement grout, bought-in parts per bom/bom.csv. PRELIMINARY, NOT FOR FABRICATION",
               revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC"),
                          ("P2", "Keyed switch on own post 5 m from mast; mast a site option (DDR-002)", DATE, "AC"),
-                         ("P3", "Layout and labels tidied", DATE, "AC")])
+                         ("P3", "Layout and labels tidied", DATE, "AC"),
+                         ("P4", "Constructable design (DDR-003)", DATE4, "AC")])
     s.add_ortho(views)
     k = s.scale
     c = ortho_cells(s, views)
@@ -144,7 +146,7 @@ def main():
     L += leader(X(xs), Z(D["head_top"]), X(xs) - 2, Z(1700), "1-3 TILT STAKE (DETAIL A)", "end")
     L += leader(X(xg) + 5, Z(P["gauge_z"] + 70), X(xg) + 8, Z(450), "4 CRACK GAUGE")
     L += leader(X(xm), Z(D["panel_cz"]), X(xm) - 12, Z(D["panel_cz"] + 500), "6 FIELDNODE CORE", "end")
-    L += leader(X(xm), Z(P["mast_h"] + 300), X(xm) - 12, Z(P["mast_h"] + 700), "7 SIREN AND BEACON", "end")
+    L += leader(X(xm), Z(D["siren_z"] + 200), X(xm) - 12, Z(P["mast_h"] + 700), "7 ALERT UNIT, SIDE MOUNTED", "end")
     L += leader(X(xw), Z(P["switch_z"] + 40), X(xw) - 4, Z(P["switch_z"] + 1100), "7 KEYED SWITCH POST", "end")
     L += leader(X(xm), Z(1000), X(xm) - 12, Z(1200), "8 MAST (SITE OPTION)", "end")
 
@@ -154,8 +156,8 @@ def main():
 
     s._layers += L
     # detail A: stake section at 1:10 in the right column
-    s.add_svg(sec["front"], 290, 34, 40, 120, scale=0.1, label="Detail A", sublabel="Stake section, scale 1:10")
-    dx0, dy0 = 290, 34
+    s.add_svg(sec["front"], 290, 40, 40, 120, scale=0.1, label="Detail A", sublabel="Stake section, scale 1:10")
+    dx0, dy0 = 290, 40
     vx, vy, vw, vh = _viewbox(Path(sec["front"]).read_text())
     sbb = stake_section().bounding_box()
     kx = 0.1
@@ -167,23 +169,23 @@ def main():
     D2.append(f'<line x1="{SX(sbb.min.X) - 4:.2f}" y1="{SZ(0):.2f}" x2="{SX(sbb.max.X) + 4:.2f}" y2="{SZ(0):.2f}" stroke="{INK}" stroke-width="0.3"/>')
     xr2 = SX(sbb.max.X) + 5
     D2 += leader(SX(P["capsule"][0] / 2 - 2), SZ(-P["capsule_depth"]), xr2 + 3, SZ(-P["capsule_depth"]), f"2 CAPSULE {P['capsule'][0]:.0f} x {P['capsule'][1]:.0f}")
-    D2 += leader(SX(D["pipe_id"] / 2 - 3), SZ(D["cap_top"] + 50), xr2 + 3, SZ(D["cap_top"] + 110), "FOAM PLUGS")
+    D2 += leader(SX(D["pipe_id"] / 2 - 3), SZ(D["cap_top"] + 50), xr2 + 3, SZ(D["cap_top"] + 110), "FOAM PLUG")
+    D2 += leader(SX(P["stand"][0] / 2 - 1), SZ(-P["embed"] + 120), xr2 + 3, SZ(-P["embed"] + 90), "STAND TUBE 40")
     D2 += leader(SX(P["grout_d"] / 2 - 5), SZ(-P["embed"] + 200), xr2 + 3, SZ(-P["embed"] + 200), f"GROUT {P['grout_d']:.0f} x {P['grout_l']:.0f}")
     D2 += leader(SX(P["pipe"][0] / 2), SZ(-80), xr2 + 3, SZ(-40), f"1 PIPE {P['pipe'][0]} x {P['pipe'][1]}")
-    D2 += leader(SX(P["head"][0] / 2 - 2), SZ(D["head_top"] - 40), xr2 + 3, SZ(D["head_top"]), f"3 HEAD {P['head'][0]:.0f}, GLAND +X")
+    D2 += leader(SX(P["head"][0] / 2 - 2), SZ(D["head_top"] - 40), xr2 + 3, SZ(D["head_top"]), f"3 HEAD {P['head'][0]:.0f}, CONDUIT IN AND OUT")
     D2 += dim_v(SX(sbb.min.X) - 3, SZ(D["head_top"]), SZ(0), f"{D['head_top']:.0f}")
     D2.append(_t(SX(0), SZ(0) - 1.2, "GROUND", 1.6, 600, MUTED, "middle"))
     s._layers += D2
     s.add_notes("Main dimensions and interfaces (mm)", [
-        f"Stake {P['pipe'][0]} x {P['pipe'][1]} galv. pipe, {P['pipe_l']:.0f} long, {P['embed']:.0f} in ground",
-        f"Grout {P['grout_d']:.0f} dia x {P['grout_l']:.0f}, {D['grout_vol_l']:.1f} L; capsule {P['capsule_depth']:.0f} deep",
+        f"Stake {P['pipe'][0]} x {P['pipe'][1]} galv. pipe, {P['pipe_l']:.0f} long, {P['embed']:.0f} in ground, screwed end cap",
+        f"Hole {P['grout_d']:.0f} dia x {D['hole_depth']:.0f}; grout {D['grout_vol_l']:.1f} L; capsule {P['capsule_depth']:.0f} deep on stand tube",
         f"Crack gauge: anchors {P['anchor_span']:.0f} apart, pins {P['pin_d']:.0f} x {P['pin_l']:.0f}, stroke {P['stroke']:.0f}",
         f"Mast (option) {P['mast'][0]} x {P['mast'][1]}, {P['mast_h']:,.0f} high; footing {P['footing'][0]:.0f} x {P['footing'][1]:.0f}",
         f"Switch post {P['switch_post'][0]} dia, {P['switch_post'][2]:,.0f} high, {P['switch_offset'] / 1000:.0f} m from mast on site",
-        f"FieldNode massing per FND model; node bottom {P['node_z0']:,.0f}",
-        f"Bus: 4-core 0.5 mm2 on the 5 V port; alert unit on the 12 V port",
-        f"Site: stakes {SITE['stake_spacing_m']:.0f} m apart on the fall line; cable {D['cable_m']:.0f} m (sheet spacing is not site spacing)",
-    ], x=276, y=165, width=146)
+        f"FieldNode massing per FND-DDR-003; node bottom {P['node_z0']:,.0f}; alert unit on V-blocks and bands",
+        f"Bus 4-core 0.5 mm2 on the 5 V port; stakes {SITE['stake_spacing_m']:.0f} m apart, cable {D['cable_m']:.0f} m on site",
+    ], x=276, y=171, width=146)
     out = s.save(ROOT / "cad" / "drawings" / "SLW-DWG-001")
     shutil.rmtree(work, ignore_errors=True)
     print(f"wrote {out} and .pdf, .png at scale 1:{1 / k:g}")

@@ -1,4 +1,5 @@
-"""SlopeWatch sizing calculations, SLW-CAL-001 v0.2 (TRL 3, with the SLW-DDR-002 decisions).
+"""SlopeWatch sizing calculations, SLW-CAL-001 v0.3 (TRL 3, with the SLW-DDR-002 decisions and the
+constructable design of SLW-DDR-003).
 
 Run from the repo root:  python docs/04-calcs/sizing.py
 Prints every number quoted in docs/04-calcs/01-sizing.md and writes docs/04-calcs/results.csv.
@@ -26,7 +27,7 @@ def db_sum(levels):
     return 10 * math.log10(sum(10 ** (x / 10) for x in levels))
 
 
-print("SlopeWatch sizing, SLW-CAL-001 v0.2")
+print("SlopeWatch sizing, SLW-CAL-001 v0.3")
 print(f"Geometry from cad/src/model.py: pipe {P['pipe'][0]} x {P['pipe'][1]} mm, capsule center "
       f"{P['capsule_depth']:.0f} mm deep, mast {P['mast_h']:.0f} mm, reference-site cable {D['cable_m']:.1f} m")
 
@@ -109,9 +110,8 @@ print("\nC. Crack gauge")
 stroke = P["stroke"]
 step = stroke / 4096
 lin = 0.001 * stroke
-a = P["anchor_span"] / 2
 body_l = P["gauge_body"][1]
-rod_l = (a - 30) - (-a + 30 + body_l)
+rod_l = D["rod_l"]                      # steel extension rod between the coupling and the downslope ball joint (SLW-DDR-003)
 alpha_rod, alpha_body = 12e-6, 23e-6
 dT_gauge = 30.0
 d_th = (rod_l * alpha_rod + body_l * alpha_body) * dT_gauge
@@ -177,7 +177,7 @@ need = BG + 15
 r_mach = next(r for r in range(1, 500) if spl(r, 0) < need) - 1
 tag("E3", f"near running plant ({BG:.0f} dB(A) background) an alarm 15 dB above ambient ({need:.0f} dB(A)) reaches only "
           f"about {r_mach} m from the mast")
-h_s = D["mast_top"] + P["siren_box"] / 2
+h_s = D["siren_z"]                      # siren centre on the side-mounted alert box (SLW-DDR-003)
 
 
 def niosh_min(lp):
@@ -258,8 +258,10 @@ pw, pl, _ = P["panel"]
 loads = [
     ("panel", pw * pl / 1e6, 1.2, D["panel_cz"] / 1000),
     ("node enclosure", P["node"][0] * P["node"][2] / 1e6, 1.3, D["node_zc"] / 1000),
-    ("siren, horn and beacon", (P["siren_box"] ** 2 + P["horn"][0] * P["horn"][1] + P["beacon"][0] * P["beacon"][1]) / 1e6,
-     1.2, (D["mast_top"] + 180) / 1000),
+    ("alert box, horn, beacon and back plate", (P["alert_box"][0] * P["alert_box"][2] + P["horn"][0] * P["horn"][1]
+                                                + P["beacon"][0] * P["beacon"][1]
+                                                + P["alert_plate"][0] * (P["alert_plate"][1] - P["alert_box"][2])) / 1e6,
+     1.2, D["alert_zc"] / 1000),
     ("mast", P["mast"][0] * P["mast_h"] / 1e6, 1.2, P["mast_h"] / 2000),
 ]
 F = [(n, q * A * cd, z) for n, A, cd, z in loads]
@@ -286,11 +288,11 @@ tag("H4", f"footing {fd * 1000:.0f} mm x {fdep * 1000:.0f} mm in medium soil: la
 
 # ------------------------------------------------------------------ I. Installation (R10)
 print("\nI. Installing one stake")
-tag("I1", f"hole {P['grout_d']:.0f} mm x {P['embed'] + 20:.0f} mm, {D['hole_vol_l']:.1f} L of spoil; grout {D['grout_vol_l']:.2f} L, "
+tag("I1", f"hole {P['grout_d']:.0f} mm x {D['hole_depth']:.0f} mm, {D['hole_vol_l']:.1f} L of spoil; grout {D['grout_vol_l']:.2f} L, "
           f"about {D['grout_vol_l'] * 2.0:.1f} kg of dry mix")
-tasks = [("auger the hole (about 55 mm/min in residual soil)", (P["embed"] + 20) / 55),
+tasks = [("auger the hole (about 55 mm/min in residual soil)", D["hole_depth"] / 55),
          ("mix grout by hand", 5), ("set the pipe plumb, pour and rod the grout", 5),
-         ("backfill and tamp the upper hole", 8), ("fit plugs and capsule, head and gland, connect the bus", 7),
+         ("backfill and tamp the upper hole", 8), ("fit stand tube, capsule with collars and plug; tape, head and conduit fittings; connect the bus", 8),
          ("check the reading on a handheld", 3)]
 tt = sum(m for _, m in tasks)
 tag("I2", "; ".join(f"{n} {m:.0f} min" for n, m in tasks) + f"; total {tt:.0f} min against 45 min")
@@ -324,11 +326,12 @@ fn = cost.get(6, 0.0)
 specific = total - fn
 no_mast = specific - cost.get(8, 0.0)       # reference site since SLW-DDR-002: existing pole, mast is a site option
 tag("K1", f"BOM {len(rows)} lines, all priced; total with FieldNode core and the optional mast ${total:.2f}")
-tag("K2", f"reference site (SlopeWatch-specific parts, existing pole, FieldNode costed in FieldNode) ${no_mast:.2f} against "
-          f"${budget:.0f}: {'within' if no_mast <= budget else 'over'} by ${abs(budget - no_mast):.2f} "
+tag("K2", f"value-engineering target ${budget:.0f} (budget_usd, a hypothetical control target); estimated cost of the "
+          f"constructable design, reference site (SlopeWatch-specific parts, existing pole, FieldNode costed in FieldNode) "
+          f"${no_mast:.2f}: ${abs(budget - no_mast):.2f} {'under' if no_mast <= budget else 'over'} the target "
           f"({(no_mast / budget - 1) * 100:+.1f} %)")
 tag("K3", f"site option, new mast and footing (line 8) +${cost.get(8, 0.0):.2f}: ${specific:.2f}, "
-          f"{'within' if specific <= budget else 'over'} ${budget:.0f} by ${abs(budget - specific):.2f}; "
+          f"${abs(budget - specific):.2f} {'under' if specific <= budget else 'over'} the target; "
           f"reference site with the FieldNode core ${no_mast + fn:.2f}")
 tag("K4", f"stakes, capsules and heads ${cost[1] + cost[2] + cost[3]:.2f}; per extra stake ${(cost[1] + cost[2] + cost[3]) / 3:.2f} "
           f"plus about 10 m of cable")
@@ -345,7 +348,9 @@ results = [
     ("R2", "Limit false tilt from temperature", f"{wet4[7]:.4f} deg/day, {wet_rate:.5f} deg/h (wet soil, 0.4 m)", "0.02 deg/day, 0.002 deg/h", "Met on paper"),
     ("R4", "Sample and report", f"10 min reads; {6 * air[12]:.1f} s/h at SF12", "10 min; 60 and 10 min uplinks", "Met on paper"),
     ("R12", "Open, local data", f"{flash / 1000:.0f} kB for 90 days", "90 days, CSV, any server", "Met on paper"),
-    ("R11", "Affordable", f"${no_mast:.0f} for the reference site (existing pole); ${specific:.0f} with the optional new mast", f"${budget:.0f} SlopeWatch-specific, reference site", "Met on paper"),
+    ("R11", "Affordable", f"${no_mast:.2f} for the reference site (existing pole); ${specific:.2f} with the optional new mast",
+     f"${budget:.0f} value-engineering target, SlopeWatch-specific, reference site",
+     f"{'Under' if no_mast <= budget else 'Over'} the value-engineering target by ${abs(budget - no_mast):.2f}"),
     ("R3", "Measure crack opening", f"{stroke:.0f} mm stroke, {step:.3f} mm step, {lin:.2f} mm linearity", "100 mm, 0.1 mm", "Met by design"),
     ("R5", "Local alarm without a network", f"{t_siren:.0f} s", "60 s", "Met by design"),
     ("R10", "Installable by a small team", f"{tt:.0f} min estimate", "45 min, hand tools", "Not verifiable at TRL 3"),

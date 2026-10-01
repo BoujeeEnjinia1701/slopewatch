@@ -248,3 +248,54 @@ This is an appearance model only: no tolerances and no fabrication detail. `trl:
 - Kit 1.5.0 synced: STANDARDS v1.5 (sections 12 to 15: product renders, storefront images and image quality, public release, authorship and signing), `.kit/cards.py`, `.kit/image_qc.py`, `.kit/release_gate.py`, issue templates, and the `/render-product` and `/release` commands. `CLAUDE.md` now matches `.kit/CLAUDE.md`.
 - Every `media/render-*.png` recaptioned from its original render with the new layout: the title, concept label and repository sit in a band above the render and the view note in a band below it, each line wrapped to the image width, so no text overlaps other text or the render or runs off the image. `media/card.png` and `media/social-preview.png` regenerated with the same rules.
 - `python .kit/image_qc.py` and `python .kit/release_gate.py` pass. trl stays 3.
+
+## Session 2026-10-01: build plan and design for construction (kit 1.7.0)
+
+Amish approved the build plan format on 2026-09-30 and asked for it across all repos, with open decisions kept in a separate design decisions register. This session installed kit 1.7.0 (`CLAUDE.md` now matches `.kit/CLAUDE.md`), made the design constructable and wrote the build plan and the register. Nothing was built; TRL stays 3.
+
+### What was done
+
+- `cad/src/model.py`: rebuilt as separate components (`build_components()`), with 79 constructability checks (`python cad/src/model.py --check`), all passing. STEP and STL regenerated.
+- `docs/decisions/0003-design-for-construction.md` (SLW-DDR-003 v0.1, Draft): every change below, made under Amish's 2026-09-30 instruction to make the design physically buildable; open for his review.
+- `cad/src/build_plan_media.py`: overview, 16 making sketches (`cad/drawings/SLW-DWG-101` to `116`), 12 joint close-ups, 18 assembly step pictures, a bus wiring diagram and a site layout (`docs/05-build-plan/`).
+- `docs/05-build-plan.md` (SLW-BLD-001 v0.1) and `docs/06-design-decisions.md` (SLW-DEC-001 v0.1).
+- SLW-DWG-001 Rev P3 to P4; SLW-CAL-001 v0.3, SLW-REQ-001 v0.5, SLW-PRC-001 v0.5; `bom/bom.csv` and `bom/bom-notes.md`; concept media re-rendered; README links line and "Building the prototype" section; `project.yaml` gains `design_state: constructable` and the new documents in `trl_evidence`.
+
+### Design changes made for construction (SLW-DDR-003)
+
+1. Capsule held on the pipe axis by two printed centring collars and set at 0.4 m by a 40 mm PVC stand tube on the pipe's bottom cap (the lower foam plug is replaced by the stand tube).
+2. Pipe bottom closed by a screwed 1.5 in malleable-iron end cap; hole augered 829 mm so grout runs under it.
+3. Stake head made from stock 110 mm drainage fittings (110 x 50 mm reducer, 94 mm of pipe, end cap), sealed on a tape wrap and held by two M5 screws drilled through the socket into the pipe.
+4. Two M20 conduit fittings on each head (bus in upslope, bus out downslope) with lever connectors inside, replacing the single cable gland.
+5. Crack gauge: 40 x 40 x 60 mm aluminium clamp blocks with M8 set screws, M6 rod-end ball joints, a coupling and a 501 mm stainless extension rod.
+6. Guard: folded 1.5 mm galvanized channel on feet, 48 mm above the pin tops, pegged on its upslope half only (it used to pass through both pins and float).
+7. Reader box hung under the guard web on two M4 screws, with a conduit fitting on its downslope end.
+8. Alert unit: alert box on a 160 x 360 mm aluminium back plate clamped to the pole or mast with two V-blocks and two band clamps (the FieldNode fixing); siren centre 3.23 m on the mast; push-on mast cap.
+9. Keyed switch box on a galvanized back plate held to its post by two hose clips.
+10. FieldNode massing updated to its constructable design (FND-DDR-003).
+11. Earth bond with a rod clamp, a mast bonding clamp and a 16 mm² conductor.
+
+### Key results
+
+- Requirement status (SLW-CAL-001 v0.3): 0 not met, 4 at risk (R6, R7, R8, R9), 4 met on paper, 2 met by design, 2 not verifiable at TRL 3, and R11 over the value-engineering target.
+- Value-engineering target: USD 250. Estimated cost of the constructable design: USD 296.50 for the reference site (USD 46.50 over the target); $324.50 with the optional mast.
+- Optional mast in a 35 m/s gust: 136 MPa, factor 1.7 on yield (was 2.1), footing factor 2.2 (was 2.7), because the alert unit's back plate is now in the wind area.
+- Crack gauge thermal swing 0.36 mm a day (was 0.39); installation estimate 44 min (was 43), at the R10 limit; level at the keyed switch 95.5 dB(A).
+
+### Proposed, awaiting Amish
+
+See the register (SLW-DEC-001). New from this session: accept SLW-DDR-003; the mast margin (A1, recommend accept 1.7 for the prototype); mounting on larger poles or walls (A2, recommend wall holes in both back plates); the pole for the first prototype (A3, recommend the mast). Still open from earlier sessions: O1 to O3, second alert unit near machinery, cable protection and cut-cable detection, head colour and marking, and the FieldNode 12 V rail rating and port pinout.
+
+### Stale, to regenerate on Amish's Mac
+
+`cad/src/product_model.py`, the photoreal renders `media/render-*.png`, `media/card.png` and `media/social-preview.png` show the concept stake head (120 mm cap, one gland, drip loop into a conduit stub); the head is now a 110 mm drainage-fitting head with two conduit fittings. They were not regenerated here. `media/render-hero.png` is not in this cloud copy.
+
+### Safety
+
+- The build plan carries safety stops S1 to S7 (slope work, augering, grout, the FieldNode cell, raising the mast, the first siren test, leaving the site).
+- The optional mast's wind margin falls to 1.7 on yield; check it against local wind data before a site installation.
+- All earlier safety concerns still apply.
+
+### Recommended next step
+
+Amish to review SLW-DDR-003 and decide items 1 to 4 of the register. TRL 4 (building to this plan) remains on hold.

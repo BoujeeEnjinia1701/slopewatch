@@ -2,13 +2,13 @@
 
 ![TRL 3](https://img.shields.io/badge/TRL-3%20of%209-0F766E) ![Hardware: CERN-OHL-S-2.0](https://img.shields.io/badge/hardware-CERN--OHL--S--2.0-111827) ![Software: MIT](https://img.shields.io/badge/software-MIT-111827) [![DOI](https://zenodo.org/badge/1388477951.svg)](https://zenodo.org/badge/latestdoi/1388477951) [![REUSE compliant](https://github.com/BoujeeEnjinia1701/slopewatch/actions/workflows/reuse.yml/badge.svg)](https://github.com/BoujeeEnjinia1701/slopewatch/actions/workflows/reuse.yml) [![Archived in Software Heritage](https://archive.softwareheritage.org/badge/origin/https://github.com/BoujeeEnjinia1701/slopewatch/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/BoujeeEnjinia1701/slopewatch)
 
-**Area:** Mining · **TRL:** 3 of 9 (proof of concept on paper) · **Prototype budget:** about $250 USD · **Difficulty:** 3 of 5
+**Area:** Mining · **TRL:** 3 of 9 (proof of concept on paper) · **Value-engineering target:** about $250 USD · **Difficulty:** 3 of 5
 
 A network of low-cost tilt and displacement sensors for waste dumps, tailings dams, pit walls and landslide-prone slopes, reporting through FieldNode and alerting when movement accelerates.
 
 ![SlopeWatch: buried tilt sensor stake for moving slopes, product render](media/render-hero.png)
 
-[Exploded render](media/render-exploded.png) · [Detail render](media/render-detail.png) · [Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement SLW-DWG-001 (PDF)](cad/drawings/SLW-DWG-001.pdf) · [Calculations SLW-CAL-001](docs/04-calcs/01-sizing.md) · [Decisions SLW-DDR-002](docs/decisions/0002-recommendations-accepted.md) · [Review note](docs/REVIEW.md)
+[Exploded render](media/render-exploded.png) · [Detail render](media/render-detail.png) · [Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement SLW-DWG-001 (PDF)](cad/drawings/SLW-DWG-001.pdf) · [Calculations SLW-CAL-001](docs/04-calcs/01-sizing.md) · [Prototype build plan](docs/05-build-plan.md) · [Design decisions register](docs/06-design-decisions.md) · [Review note](docs/REVIEW.md)
 
 ## Concept rationale
 
@@ -62,16 +62,22 @@ Full design precis: [docs/02-concept.md](docs/02-concept.md)
 
 ## Key components
 
-- Three tilt stakes: 48.3 mm steel pipe grouted 0.8 m into the slope, each with a sealed MEMS inclinometer capsule 0.4 m below ground
+- Three tilt stakes: 48.3 mm steel pipe grouted 0.8 m into the slope, each with a sealed MEMS inclinometer capsule held on the pipe axis 0.4 m below ground, and a head made from stock drainage fittings that joins the capsule to the bus
 - Crack displacement gauge (100 mm range) with its own bus reader, across a tension crack at the crest
 - RS-485 sensor bus cable in conduit
 - FieldNode power and radio core (shared lab component) on an existing pole at the toe, or on the optional mast
-- Siren and beacon alert unit driven by the node, with a keyed silence switch on its own post about 5 m from the mast
+- Siren and beacon alert unit driven by the node, clamped to the pole like the FieldNode core, with a keyed silence switch on its own post about 5 m from the mast
 - Gateway and alert software: any LoRaWAN server, SMS alerts and an inverse-velocity plot
 
-Checked by calculation at TRL 3 ([SLW-CAL-001](docs/04-calcs/01-sizing.md)): readings every 10 min; the siren starts about 13 s after a confirmed warning with no network; temperature drift of a buried capsule stays within 0.0012 degrees per hour, about eight times below the precaution threshold; five sunless days in the precaution state with one alarm use about 7.3 Wh of the FieldNode cell's 13.1 Wh at -10 °C. Under Amish's decisions of 2026-09-25 ([SLW-DDR-002](docs/decisions/0002-recommendations-accepted.md)), the reference site mounts the node on an existing pole, with the mast as a site option, and the keyed silence switch stands on its own post about 5 m from the mast, where the siren gives about 95 dB(A) instead of about 105 dB(A). The SlopeWatch-specific parts cost $245 per reference site against the $250 budget ($269 where a new mast is needed); the FieldNode core ($126) is costed in its own project. Siren reach near machinery, the FieldNode 12 V rail current, the FieldNode enclosure temperature and the remote alert time at the slowest radio setting are at risk. See the [design precis](docs/02-concept.md) and [requirements](docs/03-requirements.md).
+Checked by calculation at TRL 3 ([SLW-CAL-001](docs/04-calcs/01-sizing.md)): readings every 10 min; the siren starts about 13 s after a confirmed warning with no network; temperature drift of a buried capsule stays within 0.0012 degrees per hour, about eight times below the precaution threshold; five sunless days in the precaution state with one alarm use about 7.3 Wh of the FieldNode cell's 13.1 Wh at -10 °C. Under Amish's decisions of 2026-09-25 ([SLW-DDR-002](docs/decisions/0002-recommendations-accepted.md)), the reference site mounts the node on an existing pole, with the mast as a site option, and the keyed silence switch stands on its own post about 5 m from the mast, where the siren gives about 95 dB(A) instead of about 105 dB(A). Value-engineering target: USD 250. Estimated cost of the constructable design: USD 296.50 per reference site for the SlopeWatch-specific parts (USD 46.50 over the target; $324.50 where a new mast is needed); the FieldNode core ($126) is costed in its own project. Siren reach near machinery, the FieldNode 12 V rail current, the FieldNode enclosure temperature and the remote alert time at the slowest radio setting are at risk. See the [design precis](docs/02-concept.md) and [requirements](docs/03-requirements.md).
 
 The priced bill of materials is in [bom/bom.csv](bom/bom.csv); the parametric model is `cad/src/model.py`, with STEP and STL files in `cad/step/` and `cad/stl/`.
+
+## Building the prototype
+
+![SlopeWatch prototype: every component pulled apart and numbered in build order](docs/05-build-plan/overview.png)
+
+The [prototype build plan](docs/05-build-plan.md) (SLW-BLD-001) shows, in pictures, how to make each of the twenty components of one site kit and put them together in eighteen steps; nothing has been built yet. The made parts are the steel stakes with their stand tubes, printed collars and potted capsules, stake heads from stock drainage fittings, the crack gauge's pins, clamp blocks, rod and folded guard, and the aluminium and steel plates that clamp the alert unit and the keyed switch to their posts. Writing the plan made the design buildable: the capsule is now held on the pipe axis, the head can join the bus in and out, the gauge and its guard have real fixings, and the alert unit clamps to a pole the same way as the FieldNode core ([SLW-DDR-003](docs/decisions/0003-design-for-construction.md), open for Amish's review). Every picture is drawn from the model, and the model checks that each part touches what it should and clears what it should not.
 
 ## Safety
 
