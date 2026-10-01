@@ -52,8 +52,9 @@ def ortho_cells(sheet, views, names=("front", "top", "right")):
     dims = {n: _viewbox(Path(views[n]).read_text())[2:] for n in names}
     fw, fh = dims["front"]; tw, th = dims["top"]; rw, rh = dims["right"]
     k = sheet.scale
-    ax += (aw - (k * (max(fw, tw) + rw) + gap)) / 2
-    ay += (ah - (k * (th + max(fh, rh)) + gap + 2 * lab)) / 2
+    dl = 11   # room Sheet.add_ortho reserves for its overall dimensions
+    ax += (aw - (k * (max(fw, tw) + rw) + gap + dl)) / 2 + dl
+    ay += (ah - (k * (th + max(fh, rh)) + gap + 2 * lab + dl)) / 2 + dl
     colw = k * max(fw, tw)
     front_y = ay + k * th + lab + gap
     row_h = k * max(fh, rh)
@@ -102,11 +103,12 @@ def main():
     views = safe_views(asm, work)
     sec = safe_views(stake_section(), work / "section", names=("front",))
     bb = asm.bounding_box()
-    s = Sheet(project="SlopeWatch", title="General arrangement", dwg_no="SLW-DWG-001", rev="P2",
+    s = Sheet(project="SlopeWatch", title="General arrangement", dwg_no="SLW-DWG-001", rev="P3",
               author="Amish Chadha", date=DATE, scale=None, theme="technical",
               material="Galvanized steel, cement grout, bought-in parts per bom/bom.csv. PRELIMINARY, NOT FOR FABRICATION",
               revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC"),
-                         ("P2", "Keyed switch on own post 5 m from mast; mast a site option (DDR-002)", DATE, "AC")])
+                         ("P2", "Keyed switch on own post 5 m from mast; mast a site option (DDR-002)", DATE, "AC"),
+                         ("P3", "Layout and labels tidied", DATE, "AC")])
     s.add_ortho(views)
     k = s.scale
     c = ortho_cells(s, views)
@@ -119,7 +121,7 @@ def main():
     Z = lambda mz: y + h - (mz - bb.min.Z) * k
     zg = Z(0)
     L.append(f'<line x1="{x - 8:.2f}" y1="{zg:.2f}" x2="{x + w + 4:.2f}" y2="{zg:.2f}" stroke="{INK}" stroke-width="0.35"/>')
-    L.append(_t(x + w + 4, zg - 1, "GROUND", 1.9, 600, MUTED, "end"))
+    L.append(_t(X(xm) - 3, zg - 1, "GROUND", 1.9, 600, MUTED, "end"))
     # mast heights on the right of the mast
     xr = X(bb.max.X) + 4
     for i, (zz, label) in enumerate(((D["alert_top"], f"{D['alert_top']:,.0f} top of beacon"),
@@ -148,12 +150,12 @@ def main():
 
     # top view: note the facing
     x, y, w, h = c["top"]
-    L.append(_t(x + w / 2, y - 4, "+X DOWNSLOPE ON SITE; NODE AND HORN FACE -Y", 1.8, 400, MUTED, "middle"))
+    L.append(_t(x + w / 2, y + h + 14.5, "+X DOWNSLOPE ON SITE; NODE AND HORN FACE -Y", 1.8, 400, MUTED, "middle"))
 
     s._layers += L
     # detail A: stake section at 1:10 in the right column
-    s.add_svg(sec["front"], 290, 30, 40, 120, scale=0.1, label="Detail A", sublabel="Stake section, scale 1:10")
-    dx0, dy0 = 290, 30
+    s.add_svg(sec["front"], 290, 34, 40, 120, scale=0.1, label="Detail A", sublabel="Stake section, scale 1:10")
+    dx0, dy0 = 290, 34
     vx, vy, vw, vh = _viewbox(Path(sec["front"]).read_text())
     sbb = stake_section().bounding_box()
     kx = 0.1
@@ -180,8 +182,7 @@ def main():
         f"Switch post {P['switch_post'][0]} dia, {P['switch_post'][2]:,.0f} high, {P['switch_offset'] / 1000:.0f} m from mast on site",
         f"FieldNode massing per FND model; node bottom {P['node_z0']:,.0f}",
         f"Bus: 4-core 0.5 mm2 on the 5 V port; alert unit on the 12 V port",
-        f"Site: stakes {SITE['stake_spacing_m']:.0f} m apart on the fall line; cable {D['cable_m']:.0f} m",
-        "Spacing on the sheet is not site spacing; front view from -Y",
+        f"Site: stakes {SITE['stake_spacing_m']:.0f} m apart on the fall line; cable {D['cable_m']:.0f} m (sheet spacing is not site spacing)",
     ], x=276, y=165, width=146)
     out = s.save(ROOT / "cad" / "drawings" / "SLW-DWG-001")
     shutil.rmtree(work, ignore_errors=True)
