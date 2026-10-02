@@ -3,9 +3,9 @@ doc_id: SLW-BLD-001
 title: SlopeWatch prototype build plan
 project: SlopeWatch
 doc_type: Build plan
-version: "0.1"
+version: "0.2"
 status: Draft
-date: '2026-10-01'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -13,6 +13,10 @@ revisions:
     date: '2026-10-01'
     author: Amish Chadha
     change: First build plan from the template, with pictures by component and step; design made constructable (SLW-DDR-003)
+  - version: "0.2"
+    date: '2026-10-02'
+    author: Amish Chadha
+    change: "Decisions of 2026-10-02 carried in: stake head marking, mast conditions in stop S5, logging only until thresholds are set in stop S7"
 ---
 
 # SlopeWatch prototype build plan
@@ -35,7 +39,7 @@ The prototype is one site kit for a slope: three tilt stakes grouted into the sl
 
 ## 2. What changed to make it buildable
 
-The concept showed what SlopeWatch does; several of its parts could not be made or fixed as drawn. Each change below keeps what the system does, and all of them are recorded in decision record SLW-DDR-003, open for Amish's review.
+The concept showed what SlopeWatch does; several of its parts could not be made or fixed as drawn. Each change below keeps what the system does, and all of them are recorded in decision record SLW-DDR-003, accepted by Amish on 2026-10-02.
 
 *Table 1. Changes from the concept.*
 
@@ -160,7 +164,7 @@ The capsule hangs on its lead as it goes down the pipe and comes to rest on the 
 2. Drill two 20.5 mm holes opposite each other, centred 46 mm up from the pipe's lower end; check the hole size on the conduit fitting's datasheet first.
 3. Push the pipe fully into the reducer's 110 mm socket and solvent-cement it.
 4. Dry-fit the end cap; it is cemented after the bus is joined (step 7).
-5. Paint the head a bright colour so the stake is seen.
+5. Paint the head signal amber with a retroreflective band, and fix a stake ID label and a downslope arrow on the crown, so the stake is seen and can be reported on.
 
 **How it fits the parts next to it.**
 
@@ -600,9 +604,9 @@ Stop at each point. Carry on only when everything listed is true.
 - **S2. Before augering or driving.** Buried services have been checked with the site owner; the auger operator has a firm stance; no one stands downslope of the auger or the sledge.
 - **S3. Before mixing grout.** Gloves, eye protection and long sleeves on; clean water at hand to wash off splashes.
 - **S4. Before the FieldNode cell goes in.** Every safety stop of the FieldNode build plan has been passed.
-- **S5. Before raising the mast or climbing to fit the alert unit.** Two people; a stable ladder footed by the second person; no overhead power line within reach of the mast or ladder; the mast's concrete has set for at least 3 days; the earth bond is fitted.
+- **S5. Before raising the mast or climbing to fit the alert unit.** Two people; a stable ladder footed by the second person; no overhead power line within reach of the mast or ladder; the mast's concrete has set for at least 3 days; the earth bond is fitted. The prototype mast stands only on a fenced test slope, and no one stands under it in high wind.
 - **S6. Before the siren first sounds.** Hearing protection on everyone within 10 m; neighbours and site workers told that a test is coming, so a test is not taken for a real alarm.
-- **S7. Before leaving the site.** The keyed switch is locked with its key held by the named person; every SMS recipient knows the system is a research prototype; signs at the site say what SlopeWatch cannot detect.
+- **S7. Before leaving the site.** The keyed switch is locked with its key held by the named person; every SMS recipient knows the system is a research prototype; signs at the site say what SlopeWatch cannot detect. Until a geotechnical partner has set the site's thresholds, the system logs only and raises no public alarm.
 
 ## 7. Tools, skills and workspace
 

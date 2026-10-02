@@ -3,9 +3,9 @@ doc_id: SLW-REQ-001
 title: SlopeWatch requirements
 project: SlopeWatch
 doc_type: Requirements
-version: "0.5"
+version: "0.6"
 status: Draft
-date: '2026-10-01'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -29,6 +29,10 @@ revisions:
   date: '2026-10-01'
   author: Amish Chadha
   change: Status from SLW-CAL-001 v0.3 for the constructable design (SLW-DDR-003); R11 reported against the value-engineering target
+- version: "0.6"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: R7, R8 and threshold notes from the decisions of 2026-10-02 (SLW-DEC-001); no requirement changed status
 ---
 
 # SlopeWatch requirements
@@ -47,8 +51,8 @@ Table 1. SlopeWatch requirements for one site.
 | R4 | Sample and report often enough to see acceleration | Every sensor read every 10 min or faster; uplink every 60 min in the normal state and every 10 min in the precaution or warning state | Firmware sketch review; airtime calculation | Met on paper: 0.30 % of time at SF12 against the 1 % EU868 limit; a site that runs at SF12 uses a TwinKit gateway rather than The Things Network (SLW-DDR-002) |
 | R5 | Local alarm without a network | Siren and beacon start within 60 s of a warning condition, driven by the on-site node alone | Design review; later bench test | Met by design: about 13 s |
 | R6 | Remote alert | At least two named people notified by SMS or app within 5 min of a warning, where gateway and mobile coverage exist | Latency calculation; later end-to-end test | **At risk:** 1.6 min at the first try, 4.6 min at SF12 with one lost uplink; no remote alert at a site without a gateway |
-| R7 | Alarm audible where people work | 65 dB(A) or more at 100 m from the mast in open ground | Spreading-loss calculation; later field measurement | **At risk:** 65.5 to 68.5 dB(A) in open ground; **not met** near running machinery. The keyed switch now sits about 5 m from the mast, at about 95 dB(A) instead of 105 dB(A) (SLW-DDR-002) |
-| R8 | Energy autonomy | 5 days with no sun, including one 30 min alarm, on the FieldNode cell | Energy calculation | Met on energy (7.3 Wh of 13.1 Wh at -10 °C, with the precaution beacon at 1 % duty or less, decided in SLW-DDR-002); **at risk** on the FieldNode 12 V rail current (0.45 A, no rating stated; FieldNode asked to rate it at 0.5 A or more, SLW-DDR-002) |
+| R7 | Alarm audible where people work | 65 dB(A) or more at 100 m from the mast in open ground | Spreading-loss calculation; later field measurement | **At risk:** 65.5 to 68.5 dB(A) in open ground; **not met** near running machinery. The keyed switch now sits about 5 m from the mast, at about 95 dB(A) instead of 105 dB(A) (SLW-DDR-002). Sites with running machinery get a second alert unit at the work face, linked by LoRa (decided 2026-10-02) |
+| R8 | Energy autonomy | 5 days with no sun, including one 30 min alarm, on the FieldNode cell | Energy calculation | Met on energy (7.3 Wh of 13.1 Wh at -10 °C, with the precaution beacon at 1 % duty or less, decided in SLW-DDR-002); **at risk** on the FieldNode 12 V rail current (0.45 A, no rating stated; FieldNode asked to rate it at 0.5 A or more, SLW-DDR-002); if FieldNode has not rated it before the TRL 4 build, the alert unit gets its own small battery (decided 2026-10-02) |
 | R9 | Survive burial and weather | Capsule and stake head IP67 and buried to 0.4 m; node IP65; operate -10 to 50 °C; cable in conduit rated for burial and UV | Datasheets and design review | **At risk:** SlopeWatch parts met by choice of parts; the FieldNode enclosure exceeds 60 °C in 45 °C sun (FND-CAL-001) |
 | R10 | Installable by a small team | Each stake installed by two trained people with hand tools (post-hole auger or driven pilot, hand-mixed grout) in 45 min or less; no work below an actively moving face | Method review; later timed trial | **Not verifiable at TRL 3:** 44 min estimated for the constructable design, at the limit |
 | R11 | Affordable | Parts specific to SlopeWatch for one reference site (node on an existing pole) within the $250 value-engineering target, excluding the FieldNode core (costed in the FieldNode project), any LoRaWAN gateway and the optional mast, which is a site option (SLW-DDR-002) | Priced BOM (`bom/bom.csv`) | Over the value-engineering target by $46.50: $296.50 for the constructable design; $324.50 at a site that needs the optional mast |
@@ -57,7 +61,7 @@ Table 1. SlopeWatch requirements for one site.
 
 ## Assumptions
 
-- Tilt thresholds of 0.01 degrees per hour (precaution) and 0.1 degrees per hour (warning) follow Uchimura et al. (2015); site-specific thresholds must be set with a geotechnical engineer after a baseline period.
+- Tilt thresholds of 0.01 degrees per hour (precaution) and 0.1 degrees per hour (warning) follow Uchimura et al. (2015); site-specific thresholds must be set with a geotechnical engineer after a baseline period. Until a geotechnical partner has set them for a site, the thresholds drive logging only, not public alarms (decided 2026-10-02).
 - The FieldNode core provides about 19 Wh of LiFePO4 storage (3.2 V, 6 Ah), switched 3.3, 5 and 12 V rails on two M12 5-pin ports (one rail per port), SPI flash and a LoRaWAN radio, as described in FND-PRC-001 and FND-REQ-001 v0.3. SlopeWatch uses one port at 5 V for the sensor bus and the other at 12 V for the alert unit.
 - Siren sound level 110 dB(A) at 1 m, from typical 12 V piezo sirens; spherical spreading with air absorption and 0 to 3 dB of ground attenuation (SLW-CAL-001, section E).
 - Soil temperature ranges and properties as in SLW-CAL-001, Table 1.

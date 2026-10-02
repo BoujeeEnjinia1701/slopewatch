@@ -3,9 +3,9 @@ doc_id: SLW-DDR-003
 title: SlopeWatch design for construction
 project: SlopeWatch
 doc_type: Design decision record
-version: "0.1"
+version: "0.2"
 status: Draft
-date: '2026-10-01'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -13,12 +13,16 @@ revisions:
   date: '2026-10-01'
   author: Amish Chadha
   change: Changes that make the concept physically buildable, with the reason for each; made under Amish's 2026-09-30 instruction to make the design physically buildable; open for his review
+- version: "0.2"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: Accepted by Amish, including A1 (sharpened), A2 and A3
 ---
 
 # 0003: Design for construction
 
 - **Date:** 2026-10-01
-- **Status:** proposed. The changes in Tables 1 and 2 were made under Amish's 2026-09-30 instruction to make the design physically buildable; they are open for his review. The items in Table 3 would change what the product does, its reach or its safety margin and are "Proposed, awaiting Amish"; they are carried in the design decisions register (SLW-DEC-001).
+- **Status:** accepted. Amish, 2026-10-02: "i approve your recommendations for all 555 open decisions." This covers every change in Tables 1 and 2 and the recommendations for A1 to A3 in Table 3, as written for the register on 2026-10-01 (SLW-DEC-001); A1 was sharpened to set conditions for the prototype and for site installations. The changes were made under Amish's 2026-09-30 instruction to make the design physically buildable.
 
 ## Context
 
@@ -54,16 +58,17 @@ The changes keep what SlopeWatch does: the same three grouted tilt stakes 0.8 m 
 | Documents | SLW-PRC-001 v0.5, SLW-REQ-001 v0.5, SLW-CAL-001 v0.3; build plan SLW-BLD-001 and design decisions register SLW-DEC-001 added. | Follows the model. |
 | Appearance model | `cad/src/product_model.py` and the photoreal renders (`media/render-*.png`), `media/card.png` and `media/social-preview.png` still show the concept head (120 mm cap, single gland, drip loop) and are stale. The appearance session's proposed cap screws (2026-09-26 item 3) are now part of the design as the two head screws; its conduit stub (item 4) is replaced by the two conduit fittings. | Renders are made on Amish's Mac. |
 
-*Table 3. Proposed, awaiting Amish.*
+*Table 3. Proposed for Amish; A1 to A3 decided on 2026-10-02.*
 
 | # | Question | Options | Recommendation |
 | --- | --- | --- | --- |
-| A1 | The side-mounted alert unit lowers the optional mast's margin in a 35 m/s gust from a factor of 2.1 to 1.7 on yield [H2]. | (a) accept 1.7 for the prototype; (b) narrow the alert back plate below the box to cut its wind area; (c) a 60.3 mm mast where the mast option is used. | (a) for the prototype, with the mast checked against local wind data before a site installation. |
-| A2 | The pole fixing (V-blocks and band clamps) fits round poles of 40 to 70 mm. The reference site says "an existing pole or building", and many existing poles are larger timber poles. | (a) state the reference site as a 40 to 70 mm round pole, the mast otherwise; (b) add four wall holes to both back plates so the node and alert unit can be coach-screwed to a timber pole or wall; (c) longer bands and a wider V for large poles. | (b): it keeps the "pole or building" scope with no new part. |
-| A3 | Which pole the first prototype goes on. | (a) build the optional mast, so the prototype stands alone on a test slope; (b) use an existing 48 mm pole at the test site. | (a). |
+| A1 | The side-mounted alert unit lowers the optional mast's margin in a 35 m/s gust from a factor of 2.1 to 1.7 on yield [H2]. | (a) accept 1.7 for the prototype; (b) narrow the alert back plate below the box to cut its wind area; (c) a 60.3 mm mast where the mast option is used. | (a) for the prototype, with the mast checked against local wind data before a site installation. Decided on 2026-10-02: (a) for the prototype on a fenced test slope with no one under the mast in high wind; any site installation uses (c), the 60.3 mm mast, unless local gust data show winds well below 35 m/s. |
+| A2 | The pole fixing (V-blocks and band clamps) fits round poles of 40 to 70 mm. The reference site says "an existing pole or building", and many existing poles are larger timber poles. | (a) state the reference site as a 40 to 70 mm round pole, the mast otherwise; (b) add four wall holes to both back plates so the node and alert unit can be coach-screwed to a timber pole or wall; (c) longer bands and a wider V for large poles. | (b): it keeps the "pole or building" scope with no new part. Accepted by Amish, 2026-10-02; the back plate change is to be agreed with FieldNode. |
+| A3 | Which pole the first prototype goes on. | (a) build the optional mast, so the prototype stands alone on a test slope; (b) use an existing 48 mm pole at the test site. | (a). Accepted by Amish, 2026-10-02. |
 
 ## Consequences
 
+- With A1 to A3 decided, the first prototype stands on the optional mast on a fenced test slope, both back plates get four wall holes (to be agreed with FieldNode), and site installations use the 60.3 mm mast unless local gust data allow the 48.3 mm one.
 - `design_state: constructable` in `project.yaml`. The build plan SLW-BLD-001 shows every component and step in pictures generated from the model (`cad/src/build_plan_media.py`).
 - Requirement status (SLW-CAL-001 v0.3): 0 not met, 4 at risk (R6, R7, R8, R9), 4 met on paper, 2 met by design, 2 not verifiable at TRL 3, and R11 over the value-engineering target by $46.50.
 - The capsule's board size, the stake head's socket fit on the pipe, the sensor's rod ends and the alert and switch boxes' corner holes are checked when parts are bought (SLW-DEC-001).

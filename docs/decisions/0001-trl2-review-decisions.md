@@ -3,9 +3,9 @@ doc_id: SLW-DDR-001
 title: SlopeWatch TRL 2 review decisions
 project: SlopeWatch
 doc_type: Design decision record
-version: "0.2"
+version: "0.3"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -17,12 +17,16 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Recommendations accepted by Amish (DDR-002)
+- version: "0.3"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: O1 to O3 decided by Amish on 2026-10-02 (recommendations approved, SLW-DEC-001)
 ---
 
 # 0001: TRL 2 review decisions
 
 - **Date:** 2026-09-25
-- **Status:** accepted in part. Items D1 to D7 are decided by Amish, 2026-09-25: go with recommendation (see SLW-DDR-002); items O1 to O3 had no recommendation and remain "Proposed, awaiting Amish".
+- **Status:** accepted in part. Items D1 to D7 are decided by Amish, 2026-09-25: go with recommendation (see SLW-DDR-002); items O1 to O3 had no recommendation then and were decided on 2026-10-02, when Amish approved the recommendations later written for them ("i approve your recommendations for all 555 open decisions."; SLW-DEC-001).
 
 ## Context
 
@@ -50,9 +54,9 @@ The options for each item are those listed in `docs/REVIEW.md` (session 2026-09-
 
 | # | Item | Status |
 | --- | --- | --- |
-| O1 | The `problem` wording change in `project.yaml` ("often give warning") made at TRL 2 (item 8). The TRL 2 note offered "accept or revert" without a recommendation, so the wording stays as it is and the choice stays with Amish. | Proposed, awaiting Amish |
-| O2 | First co-design partner and site type (item 9): an artisanal mining cooperative, a quarry, or a hillside community with a district disaster office. No preference was stated. | Proposed, awaiting Amish |
-| O3 | Crack-gauge thresholds (1 mm per day and 1 mm per hour are placeholders), to be set per site with a geotechnical partner. No recommendation was made. SLW-CAL-001 adds that the precaution rate must be taken over 24 h (see Consequences). | Proposed, awaiting Amish |
+| O1 | The `problem` wording change in `project.yaml` ("often give warning") made at TRL 2 (item 8). The TRL 2 note offered "accept or revert" without a recommendation, so the wording stays as it is and the choice stays with Amish. | Decided by Amish, 2026-10-02 (recommendation approved, SLW-DEC-001): the `problem` wording "often give warning" is accepted |
+| O2 | First co-design partner and site type (item 9): an artisanal mining cooperative, a quarry, or a hillside community with a district disaster office. No preference was stated. | Decided by Amish, 2026-10-02 (recommendation approved, SLW-DEC-001): first partner and site type to approach is an operating aggregate quarry with a geotechnical engineer on staff, testing on a bench away from the work face; a hillside community and its district disaster office only after TRL 4 |
+| O3 | Crack-gauge thresholds (1 mm per day and 1 mm per hour are placeholders), to be set per site with a geotechnical partner. No recommendation was made. SLW-CAL-001 adds that the precaution rate must be taken over 24 h (see Consequences). | Decided by Amish, 2026-10-02 (recommendation approved, SLW-DEC-001): a geotechnical partner sets thresholds per site before any alarm goes live; until then the published tilt-rate thresholds and the crack-gauge placeholders are for logging only, not for public alarms |
 
 ## Consequences
 

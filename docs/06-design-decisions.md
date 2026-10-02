@@ -3,9 +3,9 @@ doc_id: SLW-DEC-001
 title: SlopeWatch design decisions register
 project: SlopeWatch
 doc_type: Design decisions register
-version: "0.1"
+version: "0.2"
 status: Draft
-date: '2026-10-01'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -13,6 +13,10 @@ revisions:
     date: '2026-10-01'
     author: Amish Chadha
     change: Register opened with the open decisions from the review note, SLW-DDR-001 to SLW-DDR-003 and the build plan work; budget treated as a value-engineering target
+  - version: "0.2"
+    date: '2026-10-02'
+    author: Amish Chadha
+    change: Amish approved the recommendations for open decisions 1 to 12 (SLW-DDR-003 accepted); moved to decisions made
 ---
 
 # SlopeWatch design decisions register
@@ -21,20 +25,7 @@ Every design decision still to be made, and every decision made, in one place. E
 
 ## Open decisions
 
-| # | Decision needed | Options | Recommendation | Affects in the build | Source |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Accept the design-for-construction changes P1 to P11 | Accept as made; ask for changes | Accept | Every component of the build plan | SLW-DDR-003, Table 1 |
-| 2 | Mast margin in wind with the side-mounted alert unit (factor 1.7 on yield in a 35 m/s gust, was 2.1) | (a) accept for the prototype; (b) narrow the alert back plate below the box; (c) a 60.3 mm mast | (a), with a check against local wind data before a site installation | Mast (site option), alert back plate | SLW-DDR-003, A1; SLW-CAL-001 [H2] |
-| 3 | Mounting on larger poles or walls: the V-block fixing fits round poles of 40 to 70 mm, while the reference site says "an existing pole or building" | (a) state the reference site as a 40 to 70 mm pole, the mast otherwise; (b) add four wall holes to both back plates for coach screws; (c) longer bands and a wider V | (b) | Alert unit back plate; FieldNode back plate (cross-repo) | SLW-DDR-003, A2 |
-| 4 | Pole for the first prototype | (a) build the mast option; (b) an existing 48 mm pole at the test site | (a) | Steps 13 to 16 | SLW-DDR-003, A3 |
-| 5 | The `problem` wording in `project.yaml` ("often give warning"), changed at TRL 2 | Accept; revert | None made | None | SLW-DDR-001 O1, SLW-DDR-002 |
-| 6 | First co-design partner and site type | Artisanal mining cooperative; quarry; hillside community with a district disaster office | None made | Test slope for steps 2 to 19 | SLW-DDR-001 O2 |
-| 7 | Crack-gauge thresholds (placeholders 1 mm per day over 24 h, 1 mm per hour) | Set per site with a geotechnical partner | None made | Firmware alert rules, not the hardware | SLW-DDR-001 O3 |
-| 8 | Alarm reach near running machinery (R7 not met there) | Second alert unit at the work face, linked by LoRa; radio pager for operators | None made | A second alert unit would repeat sections 3.11 to 3.13 | SLW-PRC-001, open questions; SLW-CAL-001 [E3] |
-| 9 | Protecting the surface cable from rockfall and movement, and detecting a cut cable | Bury where the ground allows; armoured cable; a fault message when a stake stops answering | None made | Bus conduit (step 19); firmware | SLW-PRC-001, open questions |
-| 10 | Stake head colour and marking (appearance session, 2026-09-26, items 1 and 2) | Signal amber with a retroreflective band; stake ID label and a downslope arrow on the crown | Adopt both | Stake head paint and label (section 3.5) | REVIEW 2026-09-26 |
-| 11 | FieldNode 12 V rail rating of at least 0.5 A continuous (R8), requested of FieldNode under SLW-DDR-002 and not yet rated there | Wait for FieldNode; give the alert unit its own small battery | Wait for FieldNode (decided as a request on 2026-09-25) | Alert unit power; first check "Alert rail current" | SLW-DDR-002 item 9 |
-| 12 | Sensor port pin assignment of the FieldNode M12 ports (needed for the bus plug and the alert plug, including the switch input on port B) | Agreed with FieldNode | None made | Field-wired M12 plugs (section 3.17) | FND-DDR-001 O2 |
+None. All open decisions were decided on 2026-10-02.
 
 ## To confirm when parts are bought
 
@@ -55,6 +46,7 @@ Value-engineering target: USD 250 (a hypothetical control target, not a limit). 
 
 - The largest lines are the three tilt sensor capsules (USD 82.50, mostly the three inclinometers at about USD 18 each), the crack gauge with its reader (USD 46), the alert unit with its switch post (USD 43), the bus cable in conduit (USD 42) and the three stakes (USD 39).
 - Making the design constructable added USD 51.50: end caps and stand tubes (USD 12), collars (USD 1.50), stake heads from drainage fittings with conduit fittings and connectors (USD 18), the gauge's clamp blocks, ball joints, rod coupling, folded guard and pegs (USD 8), the alert and switch mounting plates and clamps (USD 10), and tape and a plug (USD 2).
+- Decided on 2026-10-02 and not yet priced: stake head marking (amber paint, retroreflective band, labels), wall holes in both back plates, and, outside the reference site, the 60.3 mm mast for site installations, a second alert unit at sites with running machinery, armoured cable across rockfall zones and an alert unit battery if FieldNode has not rated its 12 V rail.
 - Savings worth trying: bury the bus cable without conduit where the ground is soft and stable (up to about USD 15); buy the inclinometers and boards in a batch for several sites; make the guard from offcut sheet; use plain M20 cable glands on the stake heads where the conduit stops short of the head (about USD 2 a stake); price a second-source crack sensor with ball joints included.
 
 ## Decisions made
@@ -63,6 +55,18 @@ Value-engineering target: USD 250 (a hypothetical control target, not a limit). 
 | --- | --- | --- | --- |
 | 2026-09-25 | TRL 2 review items D1 to D7: FieldNode core costed in FieldNode; tailings dams kept in the pitch with limits; surface tilt stakes plus a crack gauge; wired RS-485 bus; SCL3300 in mode 1; published tilt-rate thresholds and keyed 30 min silence; alert unit at the toe | Amish: "i accept all your recommendations, go with them across all repos." | SLW-DDR-001, SLW-DDR-002 |
 | 2026-09-25 | Reference site on an existing pole, mast a site option; FieldNode asked to rate its 12 V rail; keyed switch on its own post about 5 m from the siren; precaution beacon at 1 % duty or less; own TwinKit gateway at SF12 sites | Amish, same instruction: go with recommendation | SLW-DDR-002, items 8 to 12 |
-| 2026-09-30 | Make the design physically buildable while drawing the build plan, keeping what the product does; changes recorded for review | Amish: "If you are realising that the design cannot be built as per concept - fix the design assumptions to match and be physically feasible as you draw the illustrations." | SLW-DDR-003 (changes open for his review) |
+| 2026-09-30 | Make the design physically buildable while drawing the build plan, keeping what the product does; changes recorded for review and accepted on 2026-10-02 (below) | Amish: "If you are realising that the design cannot be built as per concept - fix the design assumptions to match and be physically feasible as you draw the illustrations." | SLW-DDR-003 (changes open for his review) |
 | 2026-09-30 | Build plan format approved; open decisions kept out of the build plan, in this register | Amish: "this is the correct build plan ... this is a good quality document format. Extend this across all the other repos" | SLW-BLD-001, SLW-DEC-001 |
 | 2026-10-01 | `budget_usd` is a hypothetical value-engineering target, not a limit; cost reported against it | Amish: "the budgets are a hypothethical control target to ensure we are thinking along a value engineering lens. its ok to ensure wording reflects that the hypothesis budget was x - the real cost being accrued is y" | This register, Value engineering; SLW-CAL-001 v0.3 |
+| 2026-10-02 | Design for construction accepted: the changes P1 to P11, as made | Amish: "i approve your recommendations for all 555 open decisions." | SLW-DDR-003, Table 1 |
+| 2026-10-02 | Mast factor of 1.7 on yield accepted for the prototype on a fenced test slope with no one under the mast in high wind; any site installation uses the 60.3 mm mast unless local gust data show winds well below 35 m/s | Amish: "i approve your recommendations for all 555 open decisions." | SLW-DDR-003, A1; SLW-CAL-001 [H2] |
+| 2026-10-02 | Four wall holes are added to both back plates so the node and the alert unit can be coach-screwed to a timber pole or wall; the change is to be agreed with FieldNode | Amish: "i approve your recommendations for all 555 open decisions." | SLW-DDR-003, A2 |
+| 2026-10-02 | The optional mast is built for the first prototype | Amish: "i approve your recommendations for all 555 open decisions." | SLW-DDR-003, A3 |
+| 2026-10-02 | The `problem` wording "often give warning" is accepted | Amish: "i approve your recommendations for all 555 open decisions." | SLW-DDR-001 O1, SLW-DDR-002 |
+| 2026-10-02 | First co-design partner and site type to approach: an operating aggregate quarry with a geotechnical engineer on staff, testing on a bench away from the work face; a hillside community and its district disaster office only after TRL 4 | Amish: "i approve your recommendations for all 555 open decisions." | SLW-DDR-001 O2 |
+| 2026-10-02 | A geotechnical partner sets thresholds per site before any alarm goes live; until then the published tilt-rate thresholds and the crack-gauge placeholders are used for logging only, not for public alarms | Amish: "i approve your recommendations for all 555 open decisions." | SLW-DDR-001 O3 |
+| 2026-10-02 | At sites with running machinery, a second alert unit at the work face, linked by LoRa; pagers stay a later option | Amish: "i approve your recommendations for all 555 open decisions." | SLW-PRC-001, open questions; SLW-CAL-001 [E3] |
+| 2026-10-02 | A fault message whenever a stake stops answering; the bus runs in buried conduit where the ground allows, and armoured cable only across rockfall zones | Amish: "i approve your recommendations for all 555 open decisions." | SLW-PRC-001, open questions |
+| 2026-10-02 | Stake heads in signal amber with a retroreflective band, a stake ID label and a downslope arrow on the crown | Amish: "i approve your recommendations for all 555 open decisions." | REVIEW 2026-09-26 |
+| 2026-10-02 | The request to FieldNode for a 12 V rail rated at least 0.5 A continuous stands; if FieldNode has not rated it before the TRL 4 build, the alert unit gets its own small battery | Amish: "i approve your recommendations for all 555 open decisions." | SLW-DDR-002 item 9 |
+| 2026-10-02 | FieldNode's candidate pinout adopted (pin 1 switched rail, pin 2 data A, pin 3 ground, pin 4 data B, pin 5 analog); SlopeWatch uses 12 V on pin 1 with the bus on pins 2 and 4, and the keyed switch input on pin 5 of port B | Amish: "i approve your recommendations for all 555 open decisions." | FND-DDR-001 O2 |

@@ -299,3 +299,53 @@ See the register (SLW-DEC-001). New from this session: accept SLW-DDR-003; the m
 ### Recommended next step
 
 Amish to review SLW-DDR-003 and decide items 1 to 4 of the register. TRL 4 (building to this plan) remains on hold.
+
+## Session 2026-10-02: open decisions decided
+
+On 2026-10-02 Amish approved every recommendation written for the open decisions: "i approve your recommendations for all 555 open decisions." Nothing was built or tested; TRL 4 remains on hold.
+
+### Decisions recorded
+
+12 decisions moved from "Open decisions" to "Decisions made" in the design decisions register, dated 2026-10-02. Design for construction (SLW-DDR-003) accepted with A1 (sharpened), A2 and A3; the problem wording kept; an operating aggregate quarry named as the first partner to approach; thresholds for logging only until set per site; a second alert unit at machinery sites; cable protection and a fault message; stake marking; a battery fallback for the alert unit; FieldNode's candidate M12 pinout adopted.
+
+### Documents changed
+
+- `docs/01-problem.md` (SLW-PRB-001 v0.5)
+- `docs/02-concept.md` (SLW-PRC-001 v0.6)
+- `docs/03-requirements.md` (SLW-REQ-001 v0.6)
+- `docs/05-build-plan.md` (SLW-BLD-001 v0.2)
+- `docs/06-design-decisions.md` (SLW-DEC-001 v0.2)
+- `docs/decisions/0001-trl2-review-decisions.md` (SLW-DDR-001 v0.3)
+- `docs/decisions/0002-recommendations-accepted.md` (SLW-DDR-002 v0.2)
+- `docs/decisions/0003-design-for-construction.md` (SLW-DDR-003 v0.2)
+- `bom/bom-notes.md` (not a controlled document)
+- `README.md` (not a controlled document)
+- `docs/pdf/`: every controlled document re-rendered.
+
+### Follow-up actions to carry approved decisions into the design
+
+The model, drawings, build plan pictures, BOM quantities and prices, and calculations were not changed in this session. These actions carry the approved decisions into them:
+
+1. Decision 3 (model): Add four wall holes to the alert unit back plate in cad/src/model.py; agree the same change for the FieldNode back plate with FieldNode (cross-repo).
+2. Decision 3 (drawings): Alert unit back plate making sketch: add the four wall holes and a coach-screw fixing note; build plan picture of the back plate.
+3. Decision 2 (calcs): SLW-CAL-001 [H2]: add the 60.3 mm mast case for site installations and state the local gust condition.
+4. Decision 2 (bom): BOM line 8: add the 60.3 mm mast as the site-installation option and price it.
+5. Decision 7 (docs): Firmware notes (TRL 4): run in logging-only mode until site thresholds are set by a geotechnical partner.
+6. Decision 8 (bom): Price a second alert unit as an option for sites with running machinery.
+7. Decision 9 (docs): Firmware notes (TRL 4): a fault message whenever a stake stops answering.
+8. Decision 9 (bom): Add armoured bus cable as a priced option for rockfall zones.
+9. Decision 10 (pictures): Build plan: recolour the stake head in the step and making pictures to signal amber with a retroreflective band, ID label and downslope arrow; same in the appearance model and renders.
+10. Decision 10 (bom): BOM line 3: add the amber paint, retroreflective band and labels.
+11. Decision 11 (bom): If FieldNode has not rated its 12 V rail before the TRL 4 build, add a small battery for the alert unit and price it.
+12. Decision 12 (drawings): Build plan section 3.17 and the wiring diagram: show the M12 pin assignment (12 V on pin 1, bus on pins 2 and 4, keyed switch input on pin 5 of port B) and label the port with its rail voltage.
+13. Decision 12 (docs): Cross-repo: ask FieldNode to adopt its candidate M12 pinout and to label each port with its rail voltage.
+14. Decision 1 (pictures): At the next render session on Amish's Mac, redraw the photoreal renders, card and social preview to the constructable design (stake head, conduit fittings, cap screws).
+
+### Points found in the review
+
+Raised when the recommendations were written (2026-10-01) and not yet acted on:
+
+- The value-engineering section prices the FieldNode core at USD 126; FieldNode's constructable design is now USD 139.
+- Open decision 11 is already decided as a request to FieldNode (SLW-DDR-002, 2026-09-25); only the fallback is open.
+- FieldNode publishes a 100 mW sensor allowance, while the SlopeWatch alarm draws 0.45 A at 12 V (about 5.4 W) while sounding; FieldNode's rating needs to cover alarm peaks as well as averages.
+- Cross-repo with NoiseMap: ports set to different rail voltages (3.3 V and 12 V) need clear labels.

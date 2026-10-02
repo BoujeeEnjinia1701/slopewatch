@@ -3,9 +3,9 @@ doc_id: SLW-DDR-002
 title: SlopeWatch recommendations accepted
 project: SlopeWatch
 doc_type: Design decision record
-version: "0.1"
+version: "0.2"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -13,12 +13,16 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Record the recommendations accepted by Amish on 2026-09-25, what changed in the repo, and the items still open
+- version: "0.2"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: O1 to O3 decided by Amish on 2026-10-02 (recommendations approved, SLW-DEC-001)
 ---
 
 # 0002: Recommendations accepted
 
 - **Date:** 2026-09-25
-- **Status:** accepted. Every item below with a recommendation is decided by Amish, 2026-09-25: go with recommendation. Items without a recommendation remain "Proposed, awaiting Amish".
+- **Status:** accepted. Every item below with a recommendation is decided by Amish, 2026-09-25: go with recommendation. Items without a recommendation (O1 to O3) were decided on 2026-10-02 (SLW-DEC-001).
 
 ## Context
 
@@ -43,15 +47,15 @@ On 2026-09-25 Amish wrote, in chat: "i accept all your recommendations, go with 
 | 11 | TRL 3 review item 7, precaution beacon duty | Keep the slow flash at 1 % duty or less (as set by SLW-CAL-001) | Status wording in SLW-PRC-001 v0.4 and SLW-REQ-001 v0.4; no number changed |
 | 12 | TRL 3 review item 8, networks at SF12 | A site that needs SF12 uses its own TwinKit gateway rather than The Things Network | Network rule added to SLW-REQ-001 v0.4 (R4 and assumptions), SLW-PRC-001 v0.4 and SLW-CAL-001 v0.2 section D. The gateway stays outside the site cost |
 
-## Items still open
+## Items left open on 2026-09-25
 
-*Table 2. Items with no recommendation, still "Proposed, awaiting Amish".*
+*Table 2. Items with no recommendation here, decided on 2026-10-02.*
 
 | # | Item | Status |
 | --- | --- | --- |
-| O1 | The `problem` wording in `project.yaml` ("often give warning"), changed at TRL 2 with "accept or revert" and no recommendation. The wording stays in place | Proposed, awaiting Amish |
-| O2 | First co-design partner and site type; no preference stated | Proposed, awaiting Amish |
-| O3 | Crack-gauge thresholds (placeholders 1 mm per day over 24 h and 1 mm per hour), to be set with a geotechnical partner; no recommendation | Proposed, awaiting Amish |
+| O1 | The `problem` wording in `project.yaml` ("often give warning"), changed at TRL 2 with "accept or revert" and no recommendation. The wording stays in place | Decided by Amish, 2026-10-02 (recommendation approved, SLW-DEC-001): the `problem` wording "often give warning" is accepted |
+| O2 | First co-design partner and site type; no preference stated | Decided by Amish, 2026-10-02 (recommendation approved, SLW-DEC-001): first partner and site type to approach is an operating aggregate quarry with a geotechnical engineer on staff, testing on a bench away from the work face; a hillside community and its district disaster office only after TRL 4 |
+| O3 | Crack-gauge thresholds (placeholders 1 mm per day over 24 h and 1 mm per hour), to be set with a geotechnical partner; no recommendation | Decided by Amish, 2026-10-02 (recommendation approved, SLW-DEC-001): a geotechnical partner sets thresholds per site before any alarm goes live; until then the published tilt-rate thresholds and the crack-gauge placeholders are for logging only, not for public alarms |
 
 ## Consequences
 

@@ -3,9 +3,9 @@ doc_id: SLW-PRB-001
 title: SlopeWatch problem statement
 project: SlopeWatch
 doc_type: Problem statement
-version: "0.4"
+version: "0.5"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -25,6 +25,10 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Recommendations accepted by Amish (DDR-002)
+- version: "0.5"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: First partner and site type to approach, decided on 2026-10-02 (SLW-DEC-001)
 ---
 
 # SlopeWatch problem statement
@@ -89,7 +93,7 @@ Not every failure gives useful warning. The Brumadinho dam showed only about 30 
 
 ## Open questions
 
-- Which partner and which first site type: an artisanal gold mining cooperative, a quarry, or a hillside community with a district disaster office? Proposed, awaiting Amish (SLW-DDR-001 O2).
+- Which partner and which first site type? Decided by Amish on 2026-10-02 (SLW-DDR-001 O2): the first candidate to approach is an operating aggregate quarry with a geotechnical engineer on staff, testing on a bench away from the work face; a hillside community and its district disaster office only after TRL 4. Not yet agreed with any partner.
 - Tailings dams stay in the pitch with the scope limits above (SLW-DDR-001 D2; decided by Amish, 2026-09-25: go with recommendation, SLW-DDR-002).
 - Who receives alerts and who is allowed to sound or silence the siren? This is a community decision, to be settled in co-design.
 - What stake spacing and how many stakes per site are needed on typical small-mine benches and dumps?
@@ -99,7 +103,7 @@ Not every failure gives useful warning. The Brumadinho dam showed only about 30 
 
 This design is for communities the author is not part of, so requirements come from the people who will use it.
 
-- [ ] Identify a local partner organization (Helpful Engineering network, NGO or university)
+- [ ] Identify a local partner organization. First candidate to approach (decided 2026-10-02, not yet agreed): an operating aggregate quarry with a geotechnical engineer on staff, testing on a bench away from the work face; a hillside community and its district disaster office only after TRL 4
 - [ ] Run co-design sessions with intended users; record who, where and what was learned
 - [ ] Validate load, distance, terrain and cost assumptions in the field
 - [ ] Revise requirements (REQ) from findings before freezing the design
