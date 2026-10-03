@@ -66,6 +66,7 @@ PARAMS = {
     #   holding the driver, horn on its front (dia x length, faces -Y), beacon on its top (dia x height);
     #   band slot offset
     "alert_plate": (160.0, 360.0, 3.0), "alert_drop": 250.0, "alert_box": (120.0, 90.0, 120.0),
+    "alert_wall_holes": (70.0, 45.0, 6.5),   # SLW-DEC-001, 2026-10-02: four wall holes (x each side, z in from the plate ends, dia)
     "siren_box": 120.0, "horn": (110.0, 140.0), "beacon": (110.0, 220.0), "alert_slot_x": 60.0,
     # keyed silence switch box (W x D x H) and center height; on its own post (OD x wall, height above
     #   ground, length driven in) about 5 m from the mast on the +Y side, on a lead in conduit; since
@@ -319,6 +320,14 @@ def stake_components(p=PARAMS):
         s_ = ycyl(0, sg * (ri + 0.5), sg * sod / 2, sz, 2.5) + ycyl(0, sg * sod / 2, sg * (sod / 2 + 3.5), sz, 4.5)
         scr = s_ if scr is None else scr + s_
     C["screws"] = Comp("Head screws (2)", scr, 10, "stake")
+    # stake head marking (SLW-DEC-001, 2026-10-02): signal amber paint is colour only; the 25 mm retroreflective
+    # band round the cap skirt, a stake ID label on the -Y side of the head tube and a downslope (+X) arrow on the crown
+    C["mark_band"] = Comp("Retroreflective band (25 mm)", ztube(0, 0, ht - 28, ht - 3, cap_r + 0.5, cap_r), 3, "stake")
+    lab = (ztube(0, 0, fz - 15, fz + 15, hr + 0.5, hr) & bx(-20, 20, -80, 0, fz - 15, fz + 15))
+    C["mark_label"] = Comp("Stake ID label (40 x 30 mm)", lab, 3, "stake")
+    arrow = (_hull_prism([(-40, -5), (10, -5), (10, 5), (-40, 5)], ht, ht + 0.5)
+             + _hull_prism([(10, -18), (10, 18), (42, 0)], ht, ht + 0.5))
+    C["mark_arrow"] = Comp("Downslope arrow on the crown", arrow, 3, "stake")
     return C
 
 
@@ -451,6 +460,10 @@ def _alert_components(p=PARAMS, R=None):
         for sg in (-1, 1):
             plate = plate - bx(sg * sx - 3.0, sg * sx + 3.0, yf - 1, y0 + 1, zc - 7.5, zc + 7.5)
             plate = plate - ycyl(sg * 18, yf - 1, y0 + 1, zc, 2.25)        # V-block screws, countersunk
+    wx, wz, wd = p["alert_wall_holes"]
+    for sg in (-1, 1):
+        for zc in (hb + wz, hb + ph - wz):
+            plate = plate - ycyl(sg * wx, yf - 1, y0 + 1, zc, wd / 2)      # coach-screw holes for a timber pole or wall
     aw, ad, ah = p["alert_box"]
     bz0 = d["alert_box_z0"]
     box = bx(-aw / 2, aw / 2, yf - ad, yf, bz0, bz0 + ah)
@@ -590,7 +603,7 @@ def _vol(a, b_):
         return float("nan")
 
 
-def checks(p=PARAMS):
+def checks(p=PARAMS, site60=True):
     """Pairs that must touch or stay apart. Returns (description, overlap mm3, gap mm, expectation, ok)."""
     A = build_components(p)
     rows = []
@@ -625,6 +638,10 @@ def checks(p=PARAMS):
     chk("Head screws into the pipe wall", s("screws"), s("pipe"), "touch")
     chk("Head tube in the reducer's 110 socket", s("headtube"), s("reducer"), "touch")
     chk("End cap on the head tube", s("headcap"), s("headtube"), "touch")
+    chk("Retroreflective band on the cap skirt", s("mark_band"), s("headcap"), "touch")
+    chk("Stake ID label on the head tube", s("mark_label"), s("headtube"), "touch")
+    chk("Downslope arrow on the cap crown", s("mark_arrow"), s("headcap"), "touch")
+    chk("Label and band clear of the conduit fittings", s("mark_label") + s("mark_band"), s("fittings"), 5.0)
     chk("Conduit fittings through the head tube", s("fittings"), s("headtube"), "touch")
     chk("Conduit fittings clear of the reducer", s("fittings"), s("reducer"), 2.0)
     chk("Conduit fittings clear of the end cap", s("fittings"), s("headcap"), 2.0)
@@ -664,6 +681,19 @@ def checks(p=PARAMS):
         chk(f"{who} back plate clear of the pole", plate, m("mast_pipe"), 10.0)
     chk("FieldNode core on its back plate", m("node"), m("node_plate"), "touch")
     chk("Alert box on its back plate", m("alert_box"), m("alert_plate"), "touch")
+    wx, wz, wd = p["alert_wall_holes"]
+    _d = derived(p)
+    _ph = p["alert_plate"][1]
+    _y0, _yf = p["node_plate_y0"], p["node_plate_y0"] - p["alert_plate"][2]
+    holes = None
+    for sg in (-1, 1):
+        for zc in (_d["alert_plate_z0"] + wz, _d["alert_plate_z0"] + _ph - wz):
+            h_ = ycyl(sg * wx, _yf, _y0, zc, wd / 2)
+            holes = h_ if holes is None else holes + h_
+    chk("Four wall holes pass through the alert back plate (hole walls only)", holes, m("alert_plate"), "touch")
+    chk("Wall holes clear of the alert box and its screws", holes, m("alert_box") + m("alert_nuts"), 5.0)
+    chk("Wall holes clear of the V-blocks and band clamps", holes, m("alert_vblocks") + m("alert_bands"), 2.0)
+    chk("Coach screw heads (14 mm) clear of the alert box", ycyl(-wx, _yf - 6, _yf, _d["alert_plate_z0"] + wz, 7.0) + ycyl(wx, _yf - 6, _yf, _d["alert_plate_z0"] + wz, 7.0), m("alert_box"), 2.0)
     chk("Alert box screws and nuts on the plate", m("alert_nuts"), m("alert_plate"), "touch")
     chk("Alert box nuts clear of the pole", m("alert_nuts"), m("mast_pipe") + m("mast_cap"), 5.0)
     chk("Horn on the alert box", m("horn"), m("alert_box"), "touch")
@@ -681,6 +711,11 @@ def checks(p=PARAMS):
     chk("Hose clips clear of the switch box", w("switch_bands"), w("switch_box"), 5.0)
     chk("Gland on the switch box", w("switch_gland"), w("switch_box"), "touch")
     chk("Key switch on the switch box", w("switch_key"), w("switch_box"), "touch")
+    if site60 and p is PARAMS:
+        # the site mast (SLW-DEC-001, 2026-10-02): every mount and clearance again on 60.3 x 3.6 mm pipe
+        sub = checks(dict(p, mast=(60.3, 3.6)), site60=False)
+        ok60 = all(r[4] for r in sub)
+        rows.append((f"60.3 x 3.6 mm site mast: all {len(sub)} checks pass again with it", 0.0, 0.0, "touch", ok60))
     return rows
 
 

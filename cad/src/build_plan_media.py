@@ -24,14 +24,15 @@ from model import PARAMS as P, SITE, derived, build_components, fuse, bx, zcyl, 
 OUT = ROOT / "docs" / "05-build-plan"
 DWG = ROOT / "cad" / "drawings"
 DATE = "2026-10-01"
+REV2 = {"105", "111", "116"}      # making sketches revised by the decisions of 2026-10-02
 D = derived(P)
 A = build_components(P)
 ST, GA, MA, SW = A["stake"], A["gauge"], A["mast"], A["switch"]
 XS, XG, XM, XW = P["arr_x"]
 
 COL = {"pipe": "#78716C", "endcap": "#44403C", "grout": "#D6D3D1", "stand": "#E5E7EB", "capsule": "#0F766E",
-       "collars": "#7C3AED", "plug": "#FDE68A", "lead": "#111827", "tape": "#1F2937", "reducer": "#D4A017",
-       "headtube": "#EAB308", "headcap": "#CA8A04", "fittings": "#374151", "conduit": "#334155", "screws": "#111827",
+       "collars": "#7C3AED", "plug": "#FDE68A", "lead": "#111827", "tape": "#1F2937", "reducer": "#F59E0B",
+       "headtube": "#FFB000", "headcap": "#F59E0B", "band": "#E5E7EB", "label": "#F8FAFC", "arrow": "#111827", "fittings": "#374151", "conduit": "#334155", "screws": "#111827",
        "pins": "#57534E", "clamps": "#94A3B8", "setscrews": "#111827", "studs": "#111827", "balls": "#64748B",
        "sensor": "#7C3AED", "coupling": "#374151", "rod": "#A8A29E", "guard": "#9CA3AF", "pegs": "#44403C",
        "reader": "#0E7490", "mast": "#94A3B8", "footing": "#D6D3D1", "earth": "#15803D", "node": "#1E3A8A",
@@ -69,7 +70,7 @@ def made():
         "stand": part("Stand tube", ST["stand"].shape, COL["stand"]),
         "capsule": part("Sensor capsule with centring collars", S(ST, "capsule", "collars", "lead"), COL["capsule"]),
         "plug": part("Foam plug", ST["plug"].shape, COL["plug"]),
-        "head": part("Stake head, tape wrap and screws", S(ST, "reducer", "headtube", "headcap", "tape", "screws"), COL["reducer"]),
+        "head": part("Stake head, tape wrap and screws", S(ST, "reducer", "headtube", "headcap", "tape", "screws", "mark_band", "mark_label", "mark_arrow"), COL["reducer"]),
         "fittings": part("Conduit fittings and bus conduit", S(ST, "fittings", "conduit_st"), COL["fittings"]),
         "pins": part("Anchor pins (2)", GA["pins"].shape, COL["pins"]),
         "clamps": part("Clamp blocks (2) with set screws and studs", S(GA, "clamps", "setscrews", "studs"), COL["clamps"]),
@@ -138,7 +139,10 @@ def sheets(only=None):
 
     def sheet(no, *a, **k):
         if only is None or no in only:
-            out.append(bv.component_sheet(*a, dwg_no=f"SLW-DWG-{no}", **k, **base))
+            if str(no) in REV2:
+                k = dict(k, date="2026-10-02", rev="P2", revisions=[("P1", "Making sketch for the prototype build plan", "2026-10-01", "AC"),
+                                                  ("P2", "SLW-DEC-001: head marking, wall holes, 60.3 mm site mast", "2026-10-02", "AC")])
+            out.append(bv.component_sheet(*a, dwg_no=f"SLW-DWG-{no}", **k, **{x: y for x, y in base.items() if x not in k}))
 
     pipe = S(ST, "pipe", "endcap")
     sheet(101, Part("Stake pipe", pipe, COL["pipe"]), stake_ctx + [M["capsule"]],
@@ -209,7 +213,7 @@ def sheets(only=None):
                  "  pipe by both collars; the foam plug sits 10 mm above it.",
                  "Check: reads within 0.1 degree of a spirit level on the bench."])
 
-    head = S(ST, "reducer", "headtube", "headcap", "fittings")
+    head = S(ST, "reducer", "headtube", "headcap", "fittings", "mark_band", "mark_label", "mark_arrow")
     sheet(105, Part("Stake head", head, COL["reducer"]), [M["pipe"], M["fittings"]],
           title="SlopeWatch stake head (make 3): making sketch", material="Stock PVC drainage fittings, 110 mm",
           view_shape=at(head, z=-D["head_bot"]), inset_view=(18, -60),
@@ -221,7 +225,9 @@ def sheets(only=None):
                  "  fitting's datasheet). One faces upslope, one downslope.",
                  "Push the pipe fully into the reducer's 110 socket and the cap onto",
                  "  its top; solvent-cement both joints.",
-                 "Paint the outside in a bright colour for visibility.",
+                 "Paint the outside signal amber. Round the cap skirt wind 25 mm",
+                 "  retroreflective tape; stick a 40 x 30 mm ID label on the -Y side and",
+                 "  an arrow on the crown pointing downslope (+X).",
                  "Fit: the reducer's 50 mm socket goes over the stake pipe on a tape",
                  "  wrap; two M5 self-tapping screws hold it, drilled through the",
                  "  socket into the pipe at assembly, 20 mm above the socket rim.",
@@ -322,6 +328,8 @@ def sheets(only=None):
                  "V-block screws: 4.5 mm at 18 mm each side, 20 and 190 mm up,",
                  "  countersunk from the front.",
                  "Alert box screws: 5.5 mm at 45 mm each side, 235 and 325 mm up.",
+                 "Wall holes: four 6.5 mm at 70 mm each side, 45 and 315 mm up, for",
+                 "  M6 coach screws into a timber pole or wall.",
                  "Deburr every hole and edge.",
                  "Fit: V-blocks on the back; the alert box on the front, top part;",
                  "  the two band clamps go round the pole through the slots below",
@@ -406,7 +414,8 @@ def sheets(only=None):
           title="SlopeWatch mast (site option): making sketch", material="Galvanized steel pipe 48.3 x 3.2 mm (1.5 in)",
           view_shape=mp, inset_view=(10, -60),
           notes=["Only where the site has no 40 to 70 mm pole for the node and the",
-                 "  alert unit. Cut 3,750 mm of 48.3 x 3.2 mm galvanized pipe.",
+                 "  alert unit. Prototype mast: 3,750 mm of 48.3 x 3.2 mm galvanized pipe",
+                 "  (fenced test slope only); a working site uses 60.3 x 3.6 mm pipe.",
                  "File both ends square; touch up with zinc-rich paint.",
                  "Paint a ground mark 550 mm from the lower end.",
                  "Push a 48 mm plastic pipe cap onto the top end.",
@@ -453,7 +462,7 @@ def joints(only=None):
        "head socket on the pipe, cut open", "The 50 mm socket slides over the tape wrap; two screws go through it into the pipe wall",
        cut="+Y", elev=12, azim=-75, size=(8, 6))
     w = (-200, 200, -80, 80, D["stake_top"] - 60, D["head_top"] + 10)
-    jn(4, [part("Head (reducer, 110 tube, end cap)", win(S(ST, "reducer", "headtube", "headcap"), *w), COL["reducer"]),
+    jn(4, [part("Head (reducer, 110 tube, end cap)", win(S(ST, "reducer", "headtube", "headcap", "mark_band"), *w), COL["reducer"]),
            part("Conduit fitting, bus in (upslope)", win(ST["fittings"].shape, -200, 0, -80, 80, w[4], w[5]), COL["fittings"]),
            part("Conduit fitting, bus out (downslope)", win(ST["fittings"].shape, 0, 200, -80, 80, w[4], w[5]), COL["fittings"]),
            part("20 mm conduit", win(ST["conduit_st"].shape, *w), COL["conduit"]),
@@ -565,7 +574,7 @@ def steps(only=None):
     top = lambda p_: Part(p_.name, win(p_.shape, -300, 300, -300, 300, -120, 600), p_.color, None, p_.explode, p_.alpha)  # noqa: E731
     below = [top(M["pipe"]), top(M["capsule"])]
     st(6, below, [mv(part("Tape wrap", ST["tape"].shape, COL["tape"]), (0, 0, 0)),
-                  mv(part("Stake head", S(ST, "reducer", "headtube", "headcap"), COL["reducer"]), (0, 0, 250)),
+                  mv(part("Stake head", S(ST, "reducer", "headtube", "headcap", "mark_band", "mark_label", "mark_arrow"), COL["reducer"]), (0, 0, 250)),
                   mv(part("M5 screws (2)", ST["screws"].shape, COL["screws"]), (0, 0, 0))],
        "head onto the pipe", "Top of the stake. Tape wrap on the pipe top, head pushed on; drill 4.2 mm through socket and pipe; two M5 screws",
        elev=12, azim=-60, label_done=False)
@@ -657,7 +666,7 @@ def bus():
     blk(xs[0], ys, 17, h, "Crack gauge reader", "under the guard;\nsensor lead in by\nM12 gland", "#0E7490")
     for i, x in enumerate(xs[1:], 1):
         blk(x, ys, 17, h, f"Stake {i} head", "capsule lead joined\nto bus in and out\n(lever connectors)", "#CA8A04")
-    blk(92, 38, 25, 21, "FieldNode core", "built to its own plan\nport A: 5 V rail, bus\nport B: 12 V rail, alert\n(M12 5-pin, field-wired plugs)", "#1E3A8A")
+    blk(92, 38, 25, 21, "FieldNode core", "built to its own plan\nM12 5-pin, field-wired plugs\nport A: 5 V rail, bus\nport B: 12 V rail, alert", "#1E3A8A")
     for x0, x1 in zip(xs[:-1], xs[1:]):
         ax.annotate("", xy=(x1, ys + 6), xytext=(x0 + 17.6, ys + 6), arrowprops=dict(arrowstyle="-", color=INK, lw=2.4))
     ax.plot([85.6, 92], [ys + 6, ys + 6], color=INK, lw=2.4)
@@ -666,10 +675,10 @@ def bus():
     ax.text(88.8, ys + 7.8, "surge\nprotector", fontsize=6.6, color=MUT, ha="center")
     # core table
     ax.text(4, 37, "Bus cable: four-core shielded outdoor cable, 0.5 mm2, in 20 mm corrugated conduit, about 60 m in all.", fontsize=8, color=INK)
-    rows = [("Red", "+5 V", "from port A, switched on 12 s every 10 min", RED),
-            ("Black", "0 V", "common; the shield joins 0 V at the node end only", INK),
-            ("Blue", "RS-485 A", "twisted pair with B", BLU),
-            ("White", "RS-485 B", "120 ohm terminator at the node and at the reader", GRY)]
+    rows = [("Red", "+5 V", "port A pin 1; switched on 12 s every 10 min", RED),
+            ("Blue", "RS-485 A", "port A pin 2; twisted pair with B", BLU),
+            ("Black", "0 V", "port A pin 3; the shield joins 0 V at the node end only", INK),
+            ("White", "RS-485 B", "port A pin 4; 120 ohm terminator at the node and at the reader", GRY)]
     for i, (c, f, n, col) in enumerate(rows):
         y = 33 - i * 3.1
         ax.add_patch(plt.Rectangle((4, y - 0.9), 3, 1.8, color=col))
@@ -677,12 +686,12 @@ def bus():
         ax.text(15, y, f, fontsize=7.8, color=INK, va="center", fontweight="bold")
         ax.text(24, y, n, fontsize=7.8, color=MUT, va="center")
     # alert side
-    blk(92, 8, 25, 18, "Alert box", "MOSFET driver: siren and\nbeacon; 12 V from port B\nlead 0.75 mm2, M12 plug", ORA)
+    blk(92, 8, 25, 18, "Alert box", "MOSFET driver: siren and\nbeacon; port B (12 V):\npin 1 12 V, pin 3 0 V,\npin 5 keyed switch input", ORA)
     ax.annotate("", xy=(104.5, 26.6), xytext=(104.5, 37.6), arrowprops=dict(arrowstyle="-", color=ORA, lw=2.2))
-    ax.text(105.5, 32, "port B lead\n(down the pole\nin cable ties)", fontsize=6.8, color=ORA, va="center")
+    ax.text(105.5, 32, "port B lead, 12 V\n(down the pole\nin cable ties)", fontsize=6.8, color=ORA, va="center")
     blk(62, 8, 22, 12, "Keyed switch box", "on its own post about\n5 m away; 7 m lead\nin conduit, 2 x 0.5 mm2", ORA)
     ax.plot([84.6, 92], [14, 14], color=ORA, lw=2.2)
-    ax.text(4, 15.5, "Switch contact to the driver's input; the node reads it through port B's spare pin.",
+    ax.text(4, 15.5, "Switch contact to port B pin 5 (keyed switch input); pins 2 and 4 of port B are unused.",
             fontsize=7.6, color=MUT)
     ax.text(4, 11.6, "Order of joins in a stake head: bus in, bus out and capsule lead, colour to colour,\n"
             "one lever connector per core. Label every cable end with its stake number.", fontsize=7.6, color=MUT, linespacing=1.4)

@@ -255,6 +255,31 @@ print("\nH. Mast in wind")
 V_GUST, RHO_AIR = 35.0, 1.2
 q = 0.5 * RHO_AIR * V_GUST ** 2
 pw, pl, _ = P["panel"]
+
+
+def mast_case(Do, t, V=V_GUST):
+    """Loads, base moment, stress and top deflection of the mast on a given pipe in a gust of V m/s."""
+    q_ = 0.5 * RHO_AIR * V ** 2
+    ld = [
+        ("panel", pw * pl / 1e6, 1.2, D["panel_cz"] / 1000),
+        ("node enclosure", P["node"][0] * P["node"][2] / 1e6, 1.3, D["node_zc"] / 1000),
+        ("alert box, horn, beacon and back plate", (P["alert_box"][0] * P["alert_box"][2] + P["horn"][0] * P["horn"][1]
+                                                    + P["beacon"][0] * P["beacon"][1]
+                                                    + P["alert_plate"][0] * (P["alert_plate"][1] - P["alert_box"][2])) / 1e6,
+         1.2, D["alert_zc"] / 1000),
+        ("mast", Do * P["mast_h"] / 1e6, 1.2, P["mast_h"] / 2000),
+    ]
+    Fs = [(n, q_ * A * cd, z) for n, A, cd, z in ld]
+    Ft = sum(f for _, f, _ in Fs)
+    Mb = sum(f * z for _, f, z in Fs)
+    Zs_ = math.pi * (Do ** 4 - (Do - 2 * t) ** 4) / (32 * Do) / 1e9
+    I_ = Zs_ * Do / 2 / 1000
+    Lm = P["mast_h"] / 1000
+    df = sum(f * (z ** 2) * (3 * Lm - z) / (6 * 200e9 * I_) for _, f, z in Fs)
+    st_ = Mb / Zs_ / 1e6
+    return dict(F=Fs, Ftot=Ft, M=Mb, Zs=Zs_, stress=st_, factor=235 / st_, defl=df)
+
+
 loads = [
     ("panel", pw * pl / 1e6, 1.2, D["panel_cz"] / 1000),
     ("node enclosure", P["node"][0] * P["node"][2] / 1e6, 1.3, D["node_zc"] / 1000),
@@ -283,8 +308,23 @@ fd, fdep = P["footing"][0] / 1000, P["footing"][1] / 1000
 GAMMA, KP = 18000.0, 3.0
 e_arm = M / Ftot
 H_ult = 0.5 * GAMMA * fd * fdep ** 3 * KP / (e_arm + fdep)
+m48 = mast_case(48.3, 3.2)
+m60 = mast_case(60.3, 3.6)
+tag("H2b", f"site mast 60.3 x 3.6 mm (SLW-DEC-001, 2026-10-02), same 35 m/s gust: total {m60['Ftot']:.0f} N, base moment {m60['M']:.0f} N m, "
+           f"section modulus {m60['Zs'] * 1e6:.2f} cm3, stress {m60['stress']:.0f} MPa, factor {m60['factor']:.1f} on 235 MPa yield, "
+           f"top deflection {m60['defl'] * 1000:.0f} mm")
+v_yield48 = V_GUST * math.sqrt(m48["factor"])
+v_yield60 = V_GUST * math.sqrt(m60["factor"])
+v_f2 = V_GUST * math.sqrt(m48["factor"] / 2.0)
+tag("H2c", f"local gust condition: stress grows with the square of the gust; the 48.3 mm mast reaches yield at {v_yield48:.0f} m/s and has a factor "
+           f"of 2.0 at {v_f2:.0f} m/s; the 60.3 mm mast reaches yield at {v_yield60:.0f} m/s. A site installation uses the 60.3 mm mast unless "
+           f"the local 3 s design gust is below {v_f2:.0f} m/s (factor 2.0 or better on the 48.3 mm mast); at {m48['factor']:.1f} the 48.3 mm mast "
+           f"is for the fenced test slope only, with no one under the mast in high wind")
 tag("H4", f"footing {fd * 1000:.0f} mm x {fdep * 1000:.0f} mm in medium soil: lateral capacity {H_ult:.0f} N "
           f"(load at {e_arm:.2f} m), factor {H_ult / Ftot:.1f}")
+e60 = m60["M"] / m60["Ftot"]
+H60 = 0.5 * GAMMA * fd * fdep ** 3 * KP / (e60 + fdep)
+tag("H4b", f"the same footing under the 60.3 mm mast: load {m60['Ftot']:.0f} N at {e60:.2f} m, capacity {H60:.0f} N, factor {H60 / m60['Ftot']:.1f}")
 
 # ------------------------------------------------------------------ I. Installation (R10)
 print("\nI. Installing one stake")
@@ -321,11 +361,13 @@ def line_no(r):
 
 
 cost = {line_no(r): float(r["qty"]) * float(r["unit_cost_usd"]) for r in rows}
+OPTIONS = {n: c for n, c in cost.items() if n >= 11}        # lines 11 and up are site options, outside every total
+cost = {n: c for n, c in cost.items() if n < 11}
 total = sum(cost.values())
 fn = cost.get(6, 0.0)
 specific = total - fn
 no_mast = specific - cost.get(8, 0.0)       # reference site since SLW-DDR-002: existing pole, mast is a site option
-tag("K1", f"BOM {len(rows)} lines, all priced; total with FieldNode core and the optional mast ${total:.2f}")
+tag("K1", f"BOM {len(rows)} lines, all priced ({len(cost)} in the totals, {len(OPTIONS)} site options outside them); total with FieldNode core and the optional mast ${total:.2f}")
 tag("K2", f"value-engineering target ${budget:.0f} (budget_usd, a hypothetical control target); estimated cost of the "
           f"constructable design, reference site (SlopeWatch-specific parts, existing pole, FieldNode costed in FieldNode) "
           f"${no_mast:.2f}: ${abs(budget - no_mast):.2f} {'under' if no_mast <= budget else 'over'} the target "
@@ -333,6 +375,8 @@ tag("K2", f"value-engineering target ${budget:.0f} (budget_usd, a hypothetical c
 tag("K3", f"site option, new mast and footing (line 8) +${cost.get(8, 0.0):.2f}: ${specific:.2f}, "
           f"${abs(budget - specific):.2f} {'under' if specific <= budget else 'over'} the target; "
           f"reference site with the FieldNode core ${no_mast + fn:.2f}")
+tag("K3b", "site options outside every total: " + "; ".join(f"line {n} ${c:.2f}" for n, c in sorted(OPTIONS.items()))
+    + f"; a 60.3 mm site mast in place of line 8 changes the site cost by +${OPTIONS.get(11, 0) - cost.get(8, 0):.2f}")
 tag("K4", f"stakes, capsules and heads ${cost[1] + cost[2] + cost[3]:.2f}; per extra stake ${(cost[1] + cost[2] + cost[3]) / 3:.2f} "
           f"plus about 10 m of cable")
 

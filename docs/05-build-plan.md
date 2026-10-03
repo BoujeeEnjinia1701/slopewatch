@@ -3,7 +3,7 @@ doc_id: SLW-BLD-001
 title: SlopeWatch prototype build plan
 project: SlopeWatch
 doc_type: Build plan
-version: "0.2"
+version: "0.3"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -17,6 +17,10 @@ revisions:
     date: '2026-10-02'
     author: Amish Chadha
     change: "Decisions of 2026-10-02 carried in: stake head marking, mast conditions in stop S5, logging only until thresholds are set in stop S7"
+  - version: "0.3"
+    date: '2026-10-02'
+    author: Amish Chadha
+    change: "Decisions carried into the pictures and text: wall holes in the alert unit back plate, the 60.3 mm site mast, the port pin assignment and rail voltages, stake head marking and its pictures; cost figures from SLW-CAL-001 v0.4"
 ---
 
 # SlopeWatch prototype build plan
@@ -29,7 +33,7 @@ revisions:
 
 *Figure 1. Every component of one site kit pulled apart and numbered in build order. One of the three tilt stakes is shown; the mast and the switch post are drawn shortened.*
 
-The prototype is one site kit for a slope: three tilt stakes grouted into the slope, each holding a sealed tilt sensor capsule 0.4 m below ground; a crack gauge across a tension crack at the crest; one cable in conduit joining them to a FieldNode core on a pole at the toe; a siren and beacon alert unit clamped to the same pole; and a keyed silence switch on its own post about 5 m away. Figure 1 shows the 20 components in the order you make or fit them, and Figure 2 shows where each goes on the slope. The made parts are cut and drilled steel pipe and bar, a printed collar, potted capsules, stake heads assembled from stock drainage fittings, a machined aluminium clamp block, a folded steel guard and three flat plates; the boxes are bought and drilled, and the FieldNode core is built to its own plan. The work is sawing, drilling, tapping and filing steel and aluminium, one 3D print, potting electronics, augering and grouting, and wiring at screw and lever terminals. The SlopeWatch parts cost about $297 for the reference site, from the bill of materials.
+The prototype is one site kit for a slope: three tilt stakes grouted into the slope, each holding a sealed tilt sensor capsule 0.4 m below ground; a crack gauge across a tension crack at the crest; one cable in conduit joining them to a FieldNode core on a pole at the toe; a siren and beacon alert unit clamped to the same pole; and a keyed silence switch on its own post about 5 m away. Figure 1 shows the 20 components in the order you make or fit them, and Figure 2 shows where each goes on the slope. The made parts are cut and drilled steel pipe and bar, a printed collar, potted capsules, stake heads assembled from stock drainage fittings, a machined aluminium clamp block, a folded steel guard and three flat plates; the boxes are bought and drilled, and the FieldNode core is built to its own plan. The work is sawing, drilling, tapping and filing steel and aluminium, one 3D print, potting electronics, augering and grouting, and wiring at screw and lever terminals. The SlopeWatch parts cost about $304 for the reference site, from the bill of materials.
 
 ![Figure 2. Reference site layout](05-build-plan/site.png)
 
@@ -312,9 +316,10 @@ Four 8 mm x 300 mm ground pegs go through the feet on the upslope half only, so 
 2. Band slots: four slots 6 wide and 15 tall, 60 each side of centre, centred 20 and 190 up. Chain drill with a 3 mm drill and file them square.
 3. V-block screw holes: four 4.5 mm holes, 18 each side of centre, 20 and 190 up, countersunk from the front.
 4. Alert box screw holes: four 5.5 mm holes, 45 each side of centre, 235 and 325 up.
-5. Deburr every hole on both faces.
+5. Wall holes: four 6.5 mm holes, 70 each side of centre, 45 and 315 up (45 in from each end), for coach screws when the unit goes on a timber pole or a wall instead of a steel pole.
+6. Deburr every hole on both faces.
 
-**How it fits the parts next to it.** The V-blocks sit on its back, the alert box on the top part of its front. The two band clamps go round the pole and through the slots, below the box. On the mast, the top 110 mm of the plate stands above the mast top so the beacon clears it.
+**How it fits the parts next to it.** The V-blocks sit on its back, the alert box on the top part of its front. The two band clamps go round the pole and through the slots, below the box. On the mast, the top 110 mm of the plate stands above the mast top so the beacon clears it. On a timber pole or wall, leave off the V-blocks and bands and fix the plate with four M6 coach screws through the wall holes; the screw heads clear the alert box by 3 mm.
 
 **Check before moving on.** Lay the V-blocks and the box on it and look through each hole: they line up without forcing a screw.
 
@@ -417,7 +422,7 @@ The switch box (a bought IP65 box, 100 x 60 x 70 mm, with the keyed switch on it
 
 *Figure 29. Mast making sketch (SLW-DWG-116).*
 
-**What it is and what it is made from.** Only where the site has no 40 to 70 mm pole for the FieldNode core and the alert unit. Galvanized steel pipe 48.3 x 3.2 mm, 3,750 mm long, cast 550 mm into a concrete footing 320 mm across and 600 mm deep, with a push-on top cap, a 16 mm earth rod 1.2 m long and a bond.
+**What it is and what it is made from.** Only where the site has no 40 to 70 mm pole for the FieldNode core and the alert unit. The prototype's mast is galvanized steel pipe 48.3 x 3.2 mm and stands on a fenced test slope only. A mast for a working site is the heavier 60.3 x 3.6 mm pipe, unless local gust data show winds well below 35 m/s (the 48.3 mm pipe has a factor of 1.7 on yield in a 35 m/s gust, the 60.3 mm pipe 2.9); the V-blocks and bands fit both. Pipe, 3,750 mm long, cast 550 mm into a concrete footing 320 mm across and 600 mm deep, with a push-on top cap, a 16 mm earth rod 1.2 m long and a bond.
 
 **How to make it.**
 
@@ -441,7 +446,7 @@ The FieldNode core's bottom is 1,750 mm above the ground. The alert unit's back 
 
 *Figure 31. Block-level wiring. One four-core cable chains the reader and the three stake heads to FieldNode port A; the alert box takes port B.*
 
-The bus cable is four-core shielded outdoor cable, 0.5 mm², about 60 m in 20 mm corrugated conduit: red +5 V, black 0 V, blue RS-485 A and white RS-485 B, with the shield joined to 0 V at the node end only and a 120 ohm terminator across A and B at the node and at the reader. In each stake head, join bus in, bus out and the capsule lead colour to colour, one lever connector per core. The bus ends in a field-wired M12 5-pin plug with a surge protector at the node. The alert box takes 12 V from port B on a 0.75 mm² lead with its own M12 plug, run down the pole in cable ties; the keyed switch joins it on a 7 m two-core lead in conduit. Label every cable end with its stake or box.
+The bus cable is four-core shielded outdoor cable, 0.5 mm², about 60 m in 20 mm corrugated conduit: red +5 V, black 0 V, blue RS-485 A and white RS-485 B, with the shield joined to 0 V at the node end only and a 120 ohm terminator across A and B at the node and at the reader. In each stake head, join bus in, bus out and the capsule lead colour to colour, one lever connector per core. The bus ends in a field-wired M12 5-pin plug with a surge protector at the node, on port A, the 5 V port: pin 1 +5 V (red), pin 2 RS-485 A (blue), pin 3 0 V (black), pin 4 RS-485 B (white). The alert box takes 12 V from port B, the 12 V port, on a 0.75 mm² lead with its own M12 plug, run down the pole in cable ties: pin 1 12 V, pin 3 0 V, pin 5 the keyed switch input, which joins it on a 7 m two-core lead in conduit; the alert unit leaves pins 2 and 4 of port B unused. Label each port on the node with its rail voltage, 5 V on port A and 12 V on port B, and label each plug with its port. Label every cable end with its stake or box.
 
 **Check before moving on.** With nothing powered, every core reads continuous end to end and no core reads to any other core or to the shield.
 
@@ -451,7 +456,7 @@ Buy to specification, not brand. Line numbers are those of the bill of materials
 
 - **Inclinometer (line 2).** Murata SCL3300 class, run in its ±90 degree mode, on the capsule board.
 - **Crack displacement sensor (line 4).** Linear potentiometer, 100 mm stroke, 0.1 % linearity class, 25 mm body or smaller, with an M6 rod-end ball joint at each end and a removable plunger-end joint; plus a spare M6 rod-end ball joint, two M6 studs, an M6 coupling nut and two M8 set screws.
-- **Stake head parts (line 3).** 110 x 50 mm concentric drainage reducer whose 50 mm socket is 50 to 51 mm inside; 110 mm drainage pipe and end cap; two M20 IP66 conduit fittings for 20 mm corrugated conduit; three five-way lever connectors per head; two M5 x 16 stainless self-tapping screws per head.
+- **Stake head parts (line 3).** 110 x 50 mm concentric drainage reducer whose 50 mm socket is 50 to 51 mm inside; 110 mm drainage pipe and end cap; two M20 IP66 conduit fittings for 20 mm corrugated conduit; three five-way lever connectors per head; two M5 x 16 stainless self-tapping screws per head; for the marking, signal amber paint, 25 mm retroreflective tape about 0.35 m per head, a printed UV-stable vinyl ID label and a vinyl arrow.
 - **Bus cable and conduit (line 5).** 60 m of four-core shielded outdoor cable, 0.5 mm², UV and burial rated; 20 mm corrugated UV-rated conduit; conduit clips with ground pegs, one per metre.
 - **FieldNode core (line 6).** Built and checked to the FieldNode build plan (FND-BLD-001); its two band clamps fit the pole used here.
 - **Alert unit (line 7).** 12 V piezo siren of about 110 dB(A) at 1 m with a sealing flange; 12 V amber LED beacon of about 0.2 A with a gasketed base; two-channel MOSFET driver board; IP65 boxes 120 x 90 x 120 mm and 100 x 60 x 70 mm with corner holes outside the seal; keyed switch rated IP65; two 12 mm stainless band clamps for the pole; two 20 to 32 mm stainless hose clips for the switch post; two M16 glands and one more for the switch box.
@@ -622,9 +627,9 @@ Stop at each point. Carry on only when everything listed is true.
 
 - Model and constructability checks: `cad/src/model.py` (`python cad/src/model.py --check`, 79 checks); STEP and STL exports in `cad/step/` and `cad/stl/`.
 - Pictures: `cad/src/build_plan_media.py`, using `.kit/build_views.py`; written to `docs/05-build-plan/` and `cad/drawings/SLW-DWG-101` to `SLW-DWG-116`.
-- General arrangement: `cad/drawings/SLW-DWG-001.pdf`, Rev P4.
-- Calculations: `docs/04-calcs/01-sizing.md` (SLW-CAL-001 v0.3) and `docs/04-calcs/sizing.py`; crack gauge [C2], siren level [E5], mast [H1] to [H4], installation [I1], [I2], cost [K2], [K3].
+- General arrangement: `cad/drawings/SLW-DWG-001.pdf`, Rev P5.
+- Calculations: `docs/04-calcs/01-sizing.md` (SLW-CAL-001 v0.4) and `docs/04-calcs/sizing.py`; crack gauge [C2], siren level [E5], mast [H1] to [H4] and the site mast [H2b], [H2c], installation [I1], [I2], cost [K2], [K3].
 - Bill of materials: `bom/bom.csv` and `bom/bom-notes.md`.
 - Decisions: `docs/decisions/0003-design-for-construction.md` (SLW-DDR-003), with SLW-DDR-001 and SLW-DDR-002; design decisions register `docs/06-design-decisions.md` (SLW-DEC-001).
-- Requirements: `docs/03-requirements.md` (SLW-REQ-001 v0.5).
+- Requirements: `docs/03-requirements.md` (SLW-REQ-001 v0.7).
 - FieldNode core: the FieldNode repository, build plan FND-BLD-001 and decision record FND-DDR-003.

@@ -1,9 +1,9 @@
 """SlopeWatch product appearance model (build123d), TRL 3.
 
 Finished-product look for photoreal renders of one tilt stake (BOM items 1 to 3 with its bus lead):
-a painted PVC stake head with a filleted crown, a molding line, a retroreflective band, an
-identification label, a raised arrow on the crown that points downslope, two cap screws and an
-M20 cable gland facing downslope with a drip loop in the bus cable; the galvanized pipe; and,
+a signal amber PVC stake head built from a reducer, a 110 mm pipe and an end cap, a retroreflective band, an
+identification label, an arrow on the crown that points downslope, two cap screws and two M20 conduit
+fittings (bus in upslope, bus out downslope) with the conduit running down to the ground; the galvanized pipe; and,
 below ground, the grout column, the two closed-cell foam plugs and the potted sensor capsule with
 its lead. Context is a compact patch of 25 degree slope with a topsoil layer, a few stones and the
 corrugated conduit that carries the bus downslope. A quarter of the ground, grout, pipe and foam
@@ -28,7 +28,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from build123d import (Axis, Box, Cylinder, Plane, Polygon, Pos, RegularPolygon, Rot, Solid, Sphere, Vector,
                        extrude, fillet)
-from model import PARAMS, SITE, derived
+from model import PARAMS, SITE, build_components, derived
 
 TITLE = "SlopeWatch: buried tilt sensor stake for moving slopes"
 
@@ -39,11 +39,11 @@ RENDER_VIEWS = [
              "away to show the grout column and the sensor capsule 0.4 m below ground"},
     {"name": "exploded", "groups": ["shell", "internal", "accessory"], "explode": True, "el": 28, "az": -55,
      "note": "Exploded view from the front right and above (about 28 deg elevation): stake head with label, "
-             "band, screws and cable gland; galvanized pipe and grout column; foam plugs, sensor capsule "
+             "band, screws and conduit fittings; galvanized pipe and grout column; foam plugs, sensor capsule "
              "and lead drawn out to the right"},
     {"name": "detail", "groups": ["shell"], "explode": False, "el": 22, "az": -35,
      "note": "Detail from the front right, slightly above (about 22 deg elevation): the stake head above "
-             "ground without the slope, cable gland and drip loop facing downslope at right"},
+             "ground without the slope, conduit fittings and the conduit run facing downslope at right"},
 ]
 
 # Context patch (render prop, not site geometry)
@@ -161,7 +161,7 @@ def product_parts(P=PARAMS, S=SITE):
     hz0 = top - P["head_overlap"]                         # head underside, 160 mm above ground
     htop = D["head_top"]                                  # 330 mm above ground
     gd, gl = P["gland"]
-    gz = top + 20                                         # gland axis height, as model.py
+    gz = (top + 55 + D["head_top"] - 28) / 2              # conduit fitting axis height, as model.py
     gx0 = hr - 4                                          # gland starts 4 mm inside the head wall
     slope = math.tan(math.radians(S["slope_deg"]))
 
@@ -171,65 +171,36 @@ def product_parts(P=PARAMS, S=SITE):
     cut_low = _quadrant(PATCH_Z0 - 50, 0.0)               # cut-away below ground
 
     # ------------------------------------------------------------ stake head (BOM 3)
+    # constructable design (SLW-DDR-003): 110 x 50 mm reducer, 110 mm pipe and end cap, two M20 conduit fittings
+    # (bus in upslope, bus out downslope), all taken from model.py; marking decided 2026-10-02 (SLW-DEC-001)
     EH = (0, 0, 260)
-    head_o = _zcyl(0, 0, hz0 + hh / 2, hr, hh)
-    head_o = _fillet_try(head_o, _top(head_o), [10.0, 8.0, 5.0])
-    head_o = _fillet_try(head_o, _bottom(head_o), [2.0, 1.0])
-    head = head_o - _zcyl(0, 0, hz0 + (hh - 14) / 2 - 0.01, hr - 5, hh - 14)
-    head -= _xcyl(hr, 0, gz, 10.0, 20)                    # gland hole
-    head -= _ring(hz0 + 16, hr + 1, hr - 0.7, 1.2)        # molding line above the skirt
-    add("Stake head (PVC cap, painted)", head, C_HEAD, "painted", 3, "shell", EH)
+    MS = build_components(P)["stake"]
+    cap = MS["headcap"].shape
+    cap = _fillet_try(cap, _top(cap), [8.0, 5.0, 3.0])
+    add("Stake head reducer (PVC drainage, painted amber)", MS["reducer"].shape, C_HEAD, "painted", 3, "shell", (0, 0, 150))
+    add("Stake head tube (PVC, painted amber)", MS["headtube"].shape, C_HEAD, "painted", 3, "shell", EH)
+    add("Stake head end cap (PVC, painted amber)", cap, C_HEAD, "painted", 3, "shell", EH)
+    add("Retroreflective band", MS["mark_band"].shape, C_REFLECT, "painted", 3, "shell", EH)
+    add("Stake ID label", MS["mark_label"].shape, C_LABEL, "paper", 3, "shell", EH)
+    lz = D["head_bot"] + 72
+    ink = (_box(-10, -hr, lz + 8, 16, 14, 8) + _box(10, -hr, lz + 9, 18, 14, 3) + _box(0, -hr, lz - 2, 32, 14, 3))
+    ink = (_ring(lz, hr + 0.7, hr + 0.1, 30) & ink)
+    add("Stake ID label print", ink, C_INK, "paper", 3, "shell", EH)
+    add("Downslope arrow on crown", MS["mark_arrow"].shape, C_INK, "painted", 3, "shell", EH)
+    add("Cap screws (stainless)", MS["screws"].shape, C_STEEL, "metal", 3, "shell", EH)
+    add("Conduit fittings, M20 (2)", MS["fittings"].shape, C_BLACK, "plastic", 3, "shell", (0, 0, 260))
 
-    ring = Pos(0, 0, hz0 + 4) * (Cylinder(hr - 5, 8) - Cylinder(ro, 10))
-    add("Head reducer ring", ring, C_DARK, "plastic", 3, "shell", (0, 0, 150))
-
-    band = _ring(htop - 42, hr + 0.4, hr - 0.2, 14)
-    add("Retroreflective band", band, C_REFLECT, "painted", 3, "shell", EH)
-
-    # identification label, curved on the head, centred 60 deg round from the gland toward the viewer
-    lz = hz0 + 72
-    lab = _ring(lz, hr + 0.4, hr - 0.2, 48) & _box(0, -hr, lz, 64, 40, 60)
-    add("Stake ID label", Rot(0, 0, 30) * lab, C_LABEL, "paper", 3, "shell", EH)
-    ink = (_box(-14, -hr, lz + 12, 20, 20, 10) + _box(12, -hr, lz + 13, 22, 20, 3)
-           + _box(8, -hr, lz + 7, 14, 20, 2) + _box(0, -hr, lz - 3, 46, 20, 3) + _box(-6, -hr, lz - 11, 34, 20, 2))
-    ink = (_ring(lz, hr + 0.7, hr + 0.1, 40) & ink)
-    add("Stake ID label print", Rot(0, 0, 30) * ink, C_INK, "paper", 3, "shell", EH)
-    tag = (_ring(lz + 12, hr + 0.8, hr + 0.1, 10) & _box(-14, -hr, lz + 12, 20, 20, 10))
-    add("Label accent tag", Rot(0, 0, 30) * tag, C_ACCENT, "painted", 3, "shell", EH)
-
-    # raised arrow on the crown, pointing downslope (+X): install orientation mark
-    arrow = extrude(Polygon((-26, -4), (6, -4), (6, -11), (26, 0), (6, 11), (6, 4), (-26, 4), align=None),
-                    amount=0.8)
-    add("Downslope arrow on crown", Pos(0, 0, htop - 0.2) * arrow, C_ACCENT, "painted", 3, "shell", EH)
-
-    # two stainless cap screws into the pipe, in the overlap zone, on the +Y and -Y sides
-    screws = None
-    for sy in (-1, 1):
-        s = _ycyl(0, sy * (hr + 0.9), hz0 + 22, 4.2, 2.0)
-        s = _fillet_try(s, s.faces().sort_by(Axis.Y)[0 if sy < 0 else -1].edges(), [0.8, 0.4])
-        s -= _box(0, sy * (hr + 2.0), hz0 + 22, 1.0, 1.4, 6.0) + _box(0, sy * (hr + 2.0), hz0 + 22, 6.0, 1.4, 1.0)
-        screws = s if screws is None else screws + s
-    add("Cap screws (stainless)", screws, C_STEEL, "metal", 3, "shell", EH)
-
-    # M20 cable gland facing downslope (x 56 to 96, as model.py)
-    EG = (120, 0, 260)
-    locknut = _hex_x(gx0 + 3.5, 0, gz, 30.0, 5.0)
-    body = _hex_x(gx0 + 8.5, 0, gz, 27.0, 8.0) + _xcyl(gx0 + 8.5 + 8 + 5, 0, gz, gd / 2 - 1.5, 10)
-    dome = _xcyl(gx0 + 26.5 + 6.75, 0, gz, gd / 2, 13.5)
-    dome = _fillet_try(dome, _xmax(dome), [4.0, 3.0, 2.0])
-    add("Cable gland locknut", locknut, C_DARK, "plastic", 3, "shell", EG)
-    add("Cable gland body and seal nut", body + dome, C_BLACK, "plastic", 3, "shell", EG)
-
-    # ------------------------------------------------------------ bus lead and drip loop (BOM 5)
-    gend = gx0 + gl
+    # ------------------------------------------------------------ bus conduit (BOM 5)
+    fz = (top + 55 + htop - 28) / 2
+    xs = hr + 3 + P["fitting"][2] + 90 - 15                  # conduit stub end, as model.py
+    add("Conduit stubs at the head", MS["conduit_st"].shape, C_CABLE, "rubber", 5, "shell", (0, 0, 260))
     cx, cy = CONDUIT_AT
-    ctop = surf(cx) + 70                                   # top of the conduit stub
-    # smooth droop from the gland to the top of the conduit stub (quadratic curve, then straight down)
-    a, b, c = (gend - 2, 0.0, gz), (cx + 18, cy * 0.3, gz - 10), (cx, cy, ctop + 45)
+    ctop = surf(cx) + 70
+    a, b, c = (xs - 2, 0.0, fz), (cx + 18, cy * 0.3, fz - 60), (cx, cy, ctop + 45)
     pts = [tuple((1 - u) ** 2 * a[i] + 2 * (1 - u) * u * b[i] + u ** 2 * c[i] for i in range(3))
            for u in [k / 10 for k in range(11)]]
-    drip = _pipe(pts + [(cx, cy, ctop - 4)], 4.0)
-    add("Bus cable drip loop", drip, C_CABLE, "rubber", 5, "shell", (120, 0, 260))
+    drip = _pipe(pts + [(cx, cy, ctop - 4)], CONDUIT_R)
+    add("Bus conduit run to the ground", drip, C_CABLE, "rubber", 5, "shell", (120, 0, 260))
 
     # ------------------------------------------------------------ pipe (BOM 1), split at ground level
     EP = (0, 0, 0)

@@ -3,7 +3,7 @@ doc_id: SLW-DDR-003
 title: SlopeWatch design for construction
 project: SlopeWatch
 doc_type: Design decision record
-version: "0.2"
+version: "0.3"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -17,6 +17,10 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: Accepted by Amish, including A1 (sharpened), A2 and A3
+- version: "0.3"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "A1 to A3 carried into the model, BOM, calculations and pictures: wall holes in the alert back plate, 60.3 mm site mast priced and calculated, cost USD 304.00 with the stake head marking"
 ---
 
 # 0003: Design for construction
@@ -68,7 +72,7 @@ The changes keep what SlopeWatch does: the same three grouted tilt stakes 0.8 m 
 
 ## Consequences
 
-- With A1 to A3 decided, the first prototype stands on the optional mast on a fenced test slope, both back plates get four wall holes (to be agreed with FieldNode), and site installations use the 60.3 mm mast unless local gust data allow the 48.3 mm one.
+- With A1 to A3 decided (and now carried into the model, BOM and calculations: the alert back plate has four 6.5 mm wall holes, the 60.3 mm site mast is calculated as SLW-CAL-001 [H2b] and priced as BOM line 11, and the reference site is USD 304.00, USD 54.00 over the target with the stake head marking), the first prototype stands on the optional mast on a fenced test slope, both back plates get four wall holes (to be agreed with FieldNode), and site installations use the 60.3 mm mast unless local gust data allow the 48.3 mm one.
 - `design_state: constructable` in `project.yaml`. The build plan SLW-BLD-001 shows every component and step in pictures generated from the model (`cad/src/build_plan_media.py`).
 - Requirement status (SLW-CAL-001 v0.3): 0 not met, 4 at risk (R6, R7, R8, R9), 4 met on paper, 2 met by design, 2 not verifiable at TRL 3, and R11 over the value-engineering target by $46.50.
 - The capsule's board size, the stake head's socket fit on the pipe, the sensor's rod ends and the alert and switch boxes' corner holes are checked when parts are bought (SLW-DEC-001).

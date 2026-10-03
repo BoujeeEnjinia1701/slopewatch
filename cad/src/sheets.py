@@ -1,4 +1,4 @@
-"""SlopeWatch general arrangement sheet SLW-DWG-001, Rev P4 (TRL 3, constructable design SLW-DDR-003).
+"""SlopeWatch general arrangement sheet SLW-DWG-001, Rev P5 (TRL 3, constructable design SLW-DDR-003).
 
 Run from the repo root:  python cad/src/sheets.py
 Writes cad/drawings/SLW-DWG-001.svg, .pdf and .png from the parametric model in cad/src/model.py
@@ -16,6 +16,7 @@ from model import PARAMS as P, SITE, arrangement, stake, derived  # noqa: E402
 
 DATE = "2026-09-25"
 DATE4 = "2026-10-01"
+DATE5 = "2026-10-02"
 
 
 def safe_views(part, workdir, names=("front", "top", "right", "iso"), line_weight=0.35):
@@ -104,13 +105,14 @@ def main():
     views = safe_views(asm, work)
     sec = safe_views(stake_section(), work / "section", names=("front",))
     bb = asm.bounding_box()
-    s = Sheet(project="SlopeWatch", title="General arrangement", dwg_no="SLW-DWG-001", rev="P4",
-              author="Amish Chadha", date=DATE4, scale=None, theme="technical",
+    s = Sheet(project="SlopeWatch", title="General arrangement", dwg_no="SLW-DWG-001", rev="P5",
+              author="Amish Chadha", date=DATE5, scale=None, theme="technical",
               material="Galvanized steel, cement grout, bought-in parts per bom/bom.csv. PRELIMINARY, NOT FOR FABRICATION",
               revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC"),
                          ("P2", "Keyed switch on own post 5 m from mast; mast a site option (DDR-002)", DATE, "AC"),
                          ("P3", "Layout and labels tidied", DATE, "AC"),
-                         ("P4", "Constructable design (DDR-003)", DATE4, "AC")])
+                         ("P4", "Constructable design (DDR-003)", DATE4, "AC"),
+                         ("P5", "SLW-DEC-001: stake head marking, back plate wall holes", DATE5, "AC")])
     s.add_ortho(views)
     k = s.scale
     c = ortho_cells(s, views)

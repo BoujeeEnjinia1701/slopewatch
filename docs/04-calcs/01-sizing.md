@@ -3,7 +3,7 @@ doc_id: SLW-CAL-001
 title: SlopeWatch sizing calculations
 project: SlopeWatch
 doc_type: Calculation
-version: "0.3"
+version: "0.4"
 status: Draft
 date: '2026-10-01'
 author: Amish Chadha
@@ -21,11 +21,15 @@ revisions:
   date: '2026-10-01'
   author: Amish Chadha
   change: Re-run for the constructable design (SLW-DDR-003); crack gauge rod, side-mounted alert unit, hole depth, install time and cost updated; cost reported against the value-engineering target
+- version: "0.4"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "Decisions of 2026-10-02 carried in: 60.3 mm site mast case and local gust condition [H2b, H2c], stake head marking and four site options priced (BOM lines 3, 11 to 14); cost re-run; no requirement changed status"
 ---
 
 # SlopeWatch sizing calculations
 
-On paper, SlopeWatch meets six of its thirteen requirements (four by calculation, two by design), has four at risk, misses none, leaves two that only a field trial can show, and is over its value-engineering target on cost (R11). This issue (v0.3) re-runs the calculations for the constructable design of SLW-DDR-003: the parts added to make the design buildable bring the reference site to $296.50, $46.50 over the $250 value-engineering target, and the side-mounted alert unit lowers the optional mast's factor on yield from 2.1 to 1.7. It keeps Amish's decisions of 2026-09-25 (SLW-DDR-002): the reference site mounts the node on an existing pole, with a new mast as a site option; and the keyed silence switch moves to its own post about 5 m from the siren, which cuts the level there from about 105 to about 95 dB(A). The four at risk are the remote alert time at the slowest radio setting (R6), siren reach (R7), the FieldNode 12 V rail current during an alarm (R8) and the FieldNode enclosure temperature (R9). The v0.1 calculations changed four details of the TRL 2 concept: the sensor capsule moves from 0.3 m to 0.4 m deep, because at 0.3 m wet soil lets the daily temperature cycle through faster than R2 allows; the crack gauge gets its own RS-485 reader; the precaution beacon is limited to 1 % duty, because a 5 % slow flash would drain the cell in a long precaution spell; and the crack-gauge precaution rate is taken over 24 h. Every number here is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [B5], is the line of that script's output that carries it.
+On paper, SlopeWatch meets six of its thirteen requirements (four by calculation, two by design), has four at risk, misses none, leaves two that only a field trial can show, and is over its value-engineering target on cost (R11). This issue (v0.3) re-runs the calculations for the constructable design of SLW-DDR-003: the parts added to make the design buildable bring the reference site to $296.50, $46.50 over the $250 value-engineering target (v0.4, after the stake head marking decided on 2026-10-02: $304.00, $54.00 over), and the side-mounted alert unit lowers the optional mast's factor on yield from 2.1 to 1.7. It keeps Amish's decisions of 2026-09-25 (SLW-DDR-002): the reference site mounts the node on an existing pole, with a new mast as a site option; and the keyed silence switch moves to its own post about 5 m from the siren, which cuts the level there from about 105 to about 95 dB(A). The four at risk are the remote alert time at the slowest radio setting (R6), siren reach (R7), the FieldNode 12 V rail current during an alarm (R8) and the FieldNode enclosure temperature (R9). The v0.1 calculations changed four details of the TRL 2 concept: the sensor capsule moves from 0.3 m to 0.4 m deep, because at 0.3 m wet soil lets the daily temperature cycle through faster than R2 allows; the crack gauge gets its own RS-485 reader; the precaution beacon is limited to 1 % duty, because a 5 % slow flash would drain the cell in a long precaution spell; and the crack-gauge precaution rate is taken over 24 h. Every number here is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [B5], is the line of that script's output that carries it.
 
 > **Safety:** These are first-principles estimates for a paper proof of concept. They do not show that any slope is safe or that an alarm will come in time. SlopeWatch cannot warn of brittle failures, deep-seated movement or failures between its stakes. See SLW-PRC-001, Safety.
 
@@ -114,7 +118,8 @@ The daily soil temperature wave shrinks with depth by exp(-z/d), where d is the 
 
 - **Loads.** The mast is a site option (SLW-DDR-002); where it is used, a 35 m/s gust puts 51 N on the panel, 29 N on the node enclosure, 81 N on the alert box, horn, beacon and the part of its back plate below the box, and 136 N on the mast: 298 N and a base moment of 653 N·m [H1]. The switch box is no longer on the mast. The side-mounted alert unit of SLW-DDR-003 adds its back plate to the wind area, which v0.2 (48 N, 541 N·m) did not count.
 - **Mast.** The 48.3 x 3.2 mm pipe sees 136 MPa, a factor of 1.7 on the 235 MPa yield [H2], and deflects 79 mm at the top [H3]. The alert unit on the mast adds about 70 % to the base moment of a node alone. An existing pole must carry the same loads; the installer checks it by eye and with the site owner.
-- **Footing.** The 320 mm by 600 mm footing resists 668 N sideways in medium soil, a factor of 2.2 [H4]. Soft or wet ground needs a site check. This is not a code check.
+- **Site mast, 60.3 mm.** Decided on 2026-10-02 (SLW-DEC-001): any site installation uses a 60.3 x 3.6 mm galvanized pipe mast unless local gust data show winds well below 35 m/s. In the same gust the larger pipe adds wind area (332 N, 707 N·m at the base) but has a section modulus of 8.58 cm³, so the stress is 82 MPa, a factor of 2.9 on yield, and the top deflects 38 mm [H2b]. Stress grows with the square of the gust: the 48.3 mm mast reaches yield at 46 m/s and has a factor of 2.0 at 33 m/s, so it is acceptable only where the local 3 s design gust is below 33 m/s; the 60.3 mm mast reaches yield at 59 m/s [H2c]. The prototype's 48.3 mm mast (factor 1.7) stays for the fenced test slope with no one under the mast in high wind. The V-blocks and band clamps fit both pipes (all constructability checks pass again on 60.3 mm).
+- **Footing.** The 320 mm by 600 mm footing resists 668 N sideways in medium soil, a factor of 2.2 under the 48.3 mm mast and 683 N, a factor of 2.1, under the 60.3 mm mast [H4, H4b]. Soft or wet ground needs a site check. This is not a code check.
 
 ## I. Installing one stake (R10)
 
@@ -127,11 +132,11 @@ A 28-byte record per reading gives 363 kB for 90 days in binary, or 1.04 MB as C
 
 ## K. Cost (R11)
 
-`budget_usd` is a hypothetical value-engineering target, not a spending limit (STANDARDS section 18). The BOM has 10 lines, all priced, totaling $450.50 with the FieldNode core and the optional mast [K1]. Under SLW-DDR-001 D1 the FieldNode core ($126) is costed in FieldNode, and under SLW-DDR-002 the reference site mounts the node on an existing pole.
+`budget_usd` is a hypothetical value-engineering target, not a spending limit (STANDARDS section 18). The BOM has 14 lines, all priced: 10 in the totals, which come to $458.00 with the FieldNode core and the 48.3 mm optional mast [K1], and four site options outside every total (lines 11 to 14, below). Under SLW-DDR-001 D1 the FieldNode core ($126) is costed in FieldNode, and under SLW-DDR-002 the reference site mounts the node on an existing pole.
 
-Value-engineering target: USD 250. Estimated cost of the constructable design: USD 296.50 for the reference site (USD 46.50, or 18.6 %, over the target) [K2]. A site that needs the mast and footing (line 8, $28) comes to $324.50, $74.50 over the target; the reference site with the FieldNode core comes to $422.50 [K3]. The three stake sets cost $154.50, $51.50 per extra stake plus about 10 m of cable [K4].
+Value-engineering target: USD 250. Estimated cost of the constructable design: USD 304.00 for the reference site (USD 54.00, or 21.6 %, over the target) [K2]. A site that needs the mast and footing (line 8, $28) comes to $332.00, $82.00 over the target; the reference site with the FieldNode core comes to $430.00 [K3]. Site options priced on 2026-10-02 and outside these totals [K3b]: the 60.3 mm site mast in place of line 8 ($37.00, +$9.00), a second alert unit at a machinery site ($64.00), armoured bus cable per 10 m across a rockfall zone ($38.00) and a battery for the alert unit if FieldNode has not rated its 12 V rail ($20.00). The three stake sets cost $162.00, $51.50 per extra stake plus about 10 m of cable [K4].
 
-The constructable design (SLW-DDR-003) added $51.50 to the reference site: screwed end caps and stand tubes ($12 for three stakes), centring collars ($1.50), stake heads from stock drainage fittings with two conduit fittings and lever connectors ($18), the crack gauge clamp blocks, ball joints, rod coupling, folded guard and pegs ($8), the alert unit's back plate, V-blocks and band clamps and the switch back plate and hose clips ($10), and tape and a field-wireable plug ($2). Earlier, the TRL 3 changes added $6 for the crack-gauge reader and $1 for foam plugs, and SLW-DDR-002 added $8 for the switch post and lead. **R11 is over the value-engineering target by $46.50.** The main cost drivers and the savings worth trying are listed in the design decisions register (SLW-DEC-001). A LoRaWAN gateway, where needed, is outside the site cost.
+The constructable design (SLW-DDR-003) added $51.50 to the reference site: screwed end caps and stand tubes ($12 for three stakes), centring collars ($1.50), stake heads from stock drainage fittings with two conduit fittings and lever connectors ($18), the crack gauge clamp blocks, ball joints, rod coupling, folded guard and pegs ($8), the alert unit's back plate, V-blocks and band clamps and the switch back plate and hose clips ($10), and tape and a field-wireable plug ($2). Earlier, the TRL 3 changes added $6 for the crack-gauge reader and $1 for foam plugs, and SLW-DDR-002 added $8 for the switch post and lead. The stake head marking decided on 2026-10-02 (signal amber paint, a retroreflective band, an ID label and a downslope arrow, $2.50 per stake) adds $7.50. **R11 is over the value-engineering target by $54.00.** The main cost drivers and the savings worth trying are listed in the design decisions register (SLW-DEC-001). A LoRaWAN gateway, where needed, is outside the site cost.
 
 ## L. Results against every requirement
 
@@ -147,7 +152,7 @@ The constructable design (SLW-DDR-003) added $51.50 to the reference site: screw
 | R2 | Limit false tilt from temperature | 0.0092 degrees per day, 0.0012 degrees per hour (wet soil, 0.4 m) | 0.02 per day, 0.002 per hour | Met on paper |
 | R4 | Sample and report | 10 min readings; 10.9 s per hour at SF12 | 10 min; 60 and 10 min uplinks | Met on paper |
 | R12 | Open, local data | 363 kB for 90 days | 90 days, CSV, any server | Met on paper |
-| R11 | Affordable | $296.50 for the reference site (existing pole); $324.50 with the optional mast | $250 value-engineering target, SlopeWatch-specific parts, reference site | Over the value-engineering target by $46.50 |
+| R11 | Affordable | $304.00 for the reference site (existing pole); $332.00 with the optional mast | $250 value-engineering target, SlopeWatch-specific parts, reference site | Over the value-engineering target by $54.00 |
 | R3 | Measure crack opening | 100 mm stroke, 0.024 mm step, 0.10 mm linearity | 100 mm, 0.1 mm | Met by design |
 | R5 | Local alarm without a network | 13 s | 60 s | Met by design |
 | R10 | Installable by a small team | 44 min estimate | 45 min, hand tools | Not verifiable at TRL 3 |
@@ -171,3 +176,14 @@ Counts: 0 not met, 4 at risk, 4 met on paper, 2 met by design, 2 not verifiable 
 | About 3 kB per day | 363 kB for 90 days (about 4 kB per day) | Stands |
 | About $254 without FieldNode, $380 with | $261 and $387 in v0.1; $245 and $371 for the reference site in v0.2 (SLW-DDR-002); $296.50 and $422.50 in v0.3 (SLW-DDR-003) | Precis, BOM notes and README updated |
 | TwinKit gateway about $285 | About $290 (TwinKit TRL 3 BOM) | Updated |
+
+*Table 4. Changes in v0.4 from the decisions of 2026-10-02 (SLW-DEC-001).*
+
+| Quantity | v0.3 | v0.4 |
+| --- | --- | --- |
+| Reference-site cost | $296.50, $46.50 over the $250 target | $304.00, $54.00 over (stake head marking, +$7.50) |
+| Reference site with the 48.3 mm mast, and with the FieldNode core | $324.50 and $422.50 | $332.00 and $430.00 |
+| Site mast | 48.3 x 3.2 mm, factor 1.7 | 60.3 x 3.6 mm for site installations, factor 2.9, +$9.00; 48.3 mm kept for the fenced test slope |
+| Local gust condition | Not stated | 48.3 mm mast only below a 33 m/s local gust (factor 2.0) |
+| Priced site options | None | Lines 11 to 14: $37.00, $64.00, $38.00 and $20.00, outside the totals |
+| Requirement statuses | | None changed |

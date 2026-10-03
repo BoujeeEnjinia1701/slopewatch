@@ -349,3 +349,49 @@ Raised when the recommendations were written (2026-10-01) and not yet acted on:
 - Open decision 11 is already decided as a request to FieldNode (SLW-DDR-002, 2026-09-25); only the fallback is open.
 - FieldNode publishes a 100 mW sensor allowance, while the SlopeWatch alarm draws 0.45 A at 12 V (about 5.4 W) while sounding; FieldNode's rating needs to cover alarm peaks as well as averages.
 - Cross-repo with NoiseMap: ports set to different rail voltages (3.3 V and 12 V) need clear labels.
+
+## Session 2026-10-02: approved follow-ups carried out
+
+Amish approved on 2026-10-02 that every follow-up action from the open-decision sign-off be carried out. trl stays 3; nothing was built, bought or tested. `budget_usd` ($250) is unchanged.
+
+### Follow-ups
+
+1. Done. Decision 3, model: the alert unit back plate has four 6.5 mm wall holes (70 mm each side of the centre line, 45 mm in from each end) in `cad/src/model.py`, with checks for the holes and for the coach screw heads. STEP and STL regenerated; 88 of 88 constructability checks pass, including a check that every mount and clearance still holds on the 60.3 mm mast. The FieldNode back plate part is a cross-repo action (below).
+2. Done. Decision 3, drawings: making sketch SLW-DWG-111 (Rev P2) and build plan section 3.11 show the wall holes and a coach-screw fixing note.
+3. Done. Decision 2, calculations: SLW-CAL-001 v0.4 adds the 60.3 x 3.6 mm site mast [H2b] (332 N, 707 N m, 82 MPa, factor 2.9, 38 mm top deflection; footing factor 2.1 [H4b]) and the local gust condition [H2c]: the 48.3 mm mast has a factor of 2.0 at a 33 m/s gust, so it is acceptable only where the local 3 s design gust is below that; otherwise 60.3 mm.
+4. Done. Decision 2, BOM: new line 11, the 60.3 mm site mast, $37.00 (pipe about $6.50 per metre for 3.75 m, top cap, footing, rod and clamps); an option outside every total, +$9.00 over line 8. Line 8 stays the prototype's 48.3 mm test-slope mast.
+5. Not done: logging-only firmware mode is TRL 4 firmware work.
+6. Done. Decision 8: line 12, second alert unit with LoRa receiver and battery, $64.00 (option, outside the totals).
+7. Not done: the stake fault message is TRL 4 firmware work.
+8. Done. Decision 9: line 13, armoured bus cable per 10 m across a rockfall zone, $38.00 (option).
+9. Done. Decision 10, pictures: the model now carries the marking (25 mm retroreflective band on the cap skirt, 40 x 30 mm ID label on the -Y side of the head tube, downslope arrow on the crown); stake heads are signal amber in the overview, joints, steps and SLW-DWG-105 (Rev P2). The appearance model `cad/src/product_model.py` now builds the head from the model's reducer, pipe, end cap, two M20 conduit fittings and marking.
+10. Done. Decision 10, BOM: line 3 now $13.50 a stake (was $11.00): amber paint about $0.60, retroreflective tape about 0.35 m at about $3.40 per metre ($1.20), ID label and arrow vinyl about $0.70.
+11. Done. Decision 11: line 14, alert unit battery fallback, $20.00 (option; fitted only if FieldNode has not rated its 12 V rail before the TRL 4 build).
+12. Done. Decision 12, drawings: section 3.17 and the wiring diagram (`bus.png`) show the port A pins (1 +5 V, 2 RS-485 A, 3 0 V, 4 RS-485 B) and the port B pins used by the alert unit (1 12 V, 3 0 V, 5 keyed switch input), and label each port with its rail voltage. I read the decision's "bus on pins 2 and 4" as the bus on port A, so the alert unit leaves pins 2 and 4 of port B unused.
+13. Not done here (cross-repo, listed below).
+14. Not done: photoreal renders, card and social preview are made on Amish's Mac. The render scenes are exported (see below).
+
+### Results
+
+- Requirement status changes: none (R11 value only).
+- Value-engineering target: USD 250. Estimated cost of the constructable design: USD 304.00 for the SlopeWatch-specific parts of the reference site (USD 54.00 over the target); USD 332.00 where the 48.3 mm mast is needed; USD 430.00 with the FieldNode core.
+- Also corrected: Table 4 in the precis and the build plan introduction carried the old cost; the label side moved to -Y so it faces the usual camera.
+
+### Render scenes
+
+`/home/claude/renders/slopewatch` (hero, exploded, detail; one .npz and .json each, and `slopewatch__jobs.json`). The appearance model already existed and was updated, not created.
+
+### Cross-repo actions
+
+- FieldNode: add the same four wall holes to the FieldNode back plate (SLW-DEC-001, 2026-10-02).
+- FieldNode: adopt its candidate M12 pinout and label each port with its rail voltage (5 V port A, 12 V port B); SlopeWatch now draws it that way.
+- NoiseMap: ports set to different rail voltages (3.3 V and 12 V) need the same labels.
+- FieldNode: its 12 V rail needs a rating covering alarm peaks (0.45 A at 12 V for the siren), and its core is now USD 139, not the USD 126 on BOM line 6; line 6 was not changed because it is costed in the FieldNode project.
+
+### Documents changed
+
+`docs/02-concept.md` v0.7, `docs/03-requirements.md` v0.7, `docs/04-calcs/01-sizing.md` v0.4 (with `sizing.py` and `results.csv`), `docs/05-build-plan.md` v0.3, `docs/06-design-decisions.md` v0.3, `docs/decisions/0003-design-for-construction.md` v0.3, `README.md`, `bom/bom.csv`, `bom/bom-notes.md`, drawings SLW-DWG-001 (Rev P5), 105, 111 and 116 (Rev P2).
+
+## 2026-10-02: photoreal renders redone on the constructable design
+
+Rendered with Blender Cycles on Amish's Mac from the updated appearance model; captioned with `.kit/photo_caption.py`; `media/card.png` and `media/social-preview.png` regenerated with `.kit/cards.py`. Views: hero, exploded, detail. image_qc passes. Appearance deviations are those logged above as proposed, awaiting Amish.

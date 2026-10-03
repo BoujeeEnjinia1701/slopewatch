@@ -3,7 +3,7 @@ doc_id: SLW-REQ-001
 title: SlopeWatch requirements
 project: SlopeWatch
 doc_type: Requirements
-version: "0.6"
+version: "0.7"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -33,11 +33,15 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: R7, R8 and threshold notes from the decisions of 2026-10-02 (SLW-DEC-001); no requirement changed status
+- version: "0.7"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "R11 figures from SLW-CAL-001 v0.4 (stake head marking, USD 54.00 over the target); no requirement changed status"
 ---
 
 # SlopeWatch requirements
 
-These are first-pass requirements for one monitored site. Four of the thirteen are met on paper by calculation and two by design; four are at risk, two can only be shown in the field, and R11 (cost) is reported against its value-engineering target (SLW-CAL-001 v0.3, Table 3). None is unmet. The `budget_usd` figure of $250 is a hypothetical value-engineering target, not a spending limit. Value-engineering target: USD 250. Estimated cost of the constructable design (SLW-DDR-003): USD 296.50 for the reference site (USD 46.50 over the target), and $324.50 where a new mast is needed. Amish decided on 2026-09-25 (SLW-DDR-002) that the reference site mounts the node on an existing pole, with a new mast as a site option. R11 was redefined under SLW-DDR-001 D1 (the FieldNode core is costed in the FieldNode project), now also decided by Amish. Targets are still proposals, not yet validated with users, and will be revised after co-design sessions (see SLW-PRB-001). "Met on paper" means shown by calculation, not by test.
+These are first-pass requirements for one monitored site. Four of the thirteen are met on paper by calculation and two by design; four are at risk, two can only be shown in the field, and R11 (cost) is reported against its value-engineering target (SLW-CAL-001 v0.4, Table 3). None is unmet. The `budget_usd` figure of $250 is a hypothetical value-engineering target, not a spending limit. Value-engineering target: USD 250. Estimated cost of the constructable design (SLW-DDR-003): USD 304.00 for the reference site (USD 54.00 over the target), and $332.00 where a new mast is needed. Amish decided on 2026-09-25 (SLW-DDR-002) that the reference site mounts the node on an existing pole, with a new mast as a site option. R11 was redefined under SLW-DDR-001 D1 (the FieldNode core is costed in the FieldNode project), now also decided by Amish. Targets are still proposals, not yet validated with users, and will be revised after co-design sessions (see SLW-PRB-001). "Met on paper" means shown by calculation, not by test.
 
 The **reference site** is a slope or dump face up to about 50 m wide with three tilt stakes 10 m apart on the fall line, one crack gauge across a tension crack at the crest, and the FieldNode core and alert unit on an existing pole or building 15 m beyond the toe, within 60 m of cable, with the keyed silence switch on its own post about 5 m from the siren. Where no pole exists, the optional mast (BOM line 8) takes its place (SLW-DDR-002).
 
@@ -55,7 +59,7 @@ Table 1. SlopeWatch requirements for one site.
 | R8 | Energy autonomy | 5 days with no sun, including one 30 min alarm, on the FieldNode cell | Energy calculation | Met on energy (7.3 Wh of 13.1 Wh at -10 °C, with the precaution beacon at 1 % duty or less, decided in SLW-DDR-002); **at risk** on the FieldNode 12 V rail current (0.45 A, no rating stated; FieldNode asked to rate it at 0.5 A or more, SLW-DDR-002); if FieldNode has not rated it before the TRL 4 build, the alert unit gets its own small battery (decided 2026-10-02) |
 | R9 | Survive burial and weather | Capsule and stake head IP67 and buried to 0.4 m; node IP65; operate -10 to 50 °C; cable in conduit rated for burial and UV | Datasheets and design review | **At risk:** SlopeWatch parts met by choice of parts; the FieldNode enclosure exceeds 60 °C in 45 °C sun (FND-CAL-001) |
 | R10 | Installable by a small team | Each stake installed by two trained people with hand tools (post-hole auger or driven pilot, hand-mixed grout) in 45 min or less; no work below an actively moving face | Method review; later timed trial | **Not verifiable at TRL 3:** 44 min estimated for the constructable design, at the limit |
-| R11 | Affordable | Parts specific to SlopeWatch for one reference site (node on an existing pole) within the $250 value-engineering target, excluding the FieldNode core (costed in the FieldNode project), any LoRaWAN gateway and the optional mast, which is a site option (SLW-DDR-002) | Priced BOM (`bom/bom.csv`) | Over the value-engineering target by $46.50: $296.50 for the constructable design; $324.50 at a site that needs the optional mast |
+| R11 | Affordable | Parts specific to SlopeWatch for one reference site (node on an existing pole) within the $250 value-engineering target, excluding the FieldNode core (costed in the FieldNode project), any LoRaWAN gateway and the optional mast, which is a site option (SLW-DDR-002) | Priced BOM (`bom/bom.csv`) | Over the value-engineering target by $54.00: $304.00 for the constructable design; $332.00 at a site that needs the optional mast |
 | R12 | Open, local data | 90 days or more of raw readings kept on the node; open CSV export; works with any LoRaWAN server | Storage calculation and design review | Met on paper: 363 kB for 90 days on 16 MB of flash |
 | R13 | Trustworthy alarms | No more than one false warning per site per year, and a documented statement of the failure modes the system cannot detect | Field trial with partner | **Not verifiable at TRL 3**; statement in SLW-PRC-001 |
 

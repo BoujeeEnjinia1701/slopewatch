@@ -135,7 +135,7 @@ render_all(
                  "Precaution 0.01 deg/h, warning 0.1 deg/h (decided 2026-09-25)",
                  "Thermal drift 0.0012 deg/h worst case (wet soil), R2 limit 0.002",
                  "Reads every 10 min; siren 13 s after a confirmed warning",
-                 "$245 SlopeWatch parts on an existing pole; mast option +$24; FieldNode $126"],
+                 "$304 SlopeWatch parts on an existing pole; mast option +$28; FieldNode $126"],
     cut=False, scale_figure=False, context=[person],
     flow={"title": "data and alert flow (latencies are estimates)", "unit": "min",
           "stages": [("Stakes, crack gauge", "read every 10 min"),
